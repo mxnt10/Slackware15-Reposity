@@ -1,0 +1,110 @@
+#!/bin/bash
+#
+# ### FlareGet 5.0-1 Build - Slackware 15.0 ( x86_64 / i586 ) - By Mauricio Ferrari ###
+#
+##########################################################################################
+
+
+# ### Verificação de Root ###
+ 
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+
+# ### Definições do Pacote ###
+
+
+NAME=${NAME:-flareget}
+VERSION=${VERSION:-5.0_1}
+BUILD=${BUILD:-1}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ; ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+TARVER=${VERSION/_/-}
+PKGVER=i386
+[ $ARCH = arm ] && echo -e "\n Not Support !\n" && exit 1
+[ $ARCH = x86_64 ] && PKGVER=amd64
+
+
+# ### Demais Definições ###
+
+
+CWD=${CWD:-$PWD}
+PKG=${PKG:-/tmp/package-$NAME}
+LINK=https://dl.flareget.com/downloads/files/flareget/debs/$PKGVER/flareget_${TARVER}_$PKGVER.deb
+
+
+# ### Baixar e Extrair o Programa ###
+
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/bin}
+cd $PKG; ar p $CWD/flareget_${TARVER}_$PKGVER.deb data.tar.xz | tar xJv
+
+
+# ### Correção de Permissões ###
+
+
+chown -R root:root .
+chmod -R u+w,go+r-w,a-s .
+chmod 0755 .
+
+
+# ### Descrição do Pacote ###
+
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+flareget: flareget (download accelerator)
+flareget:
+flareget: Multi-threaded download accelerator and manager flareGet is a full 
+flareget: featured, multi-threaded and multi-segment download manager and 
+flareget: accelerator.
+flareget:
+flareget: https://flareget.com/
+flareget:
+flareget:
+flareget:
+flareget:" | tee $PKG/install/slack-desc
+
+
+# ### Script Pós-Instalação ###
+
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi" | tee $PKG/install/doinst.sh
+
+
+# ### Gerando o Pacote ###
+
+
+/sbin/makepkg -l y -c n $CWD/$NAME-$VERSION-$ARCH-$BUILD.txz
+chown -R 1000:users $CWD/$NAME-$VERSION-$ARCH-$BUILD.txz
+
+
+# ### Faxina ###
+
+
+cd $CWD; rm -rf $PKG flareget_${TARVER}_$PKGVER.deb

@@ -1,0 +1,254 @@
+# ChangeLog
+Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+
+
+## [ Released ] - 2021-01-22 #############################################
+
+### Adicionado
+ - Scripts:
+	- cabextract.build
+	- cowsay.build
+	- dpkg.build
+	- fortune-mod-br.build
+	- fortune-mod.build
+	- recode.build
+ - Extras:
+	- Cowsay 3.03 FIX / Fix-local.patch
+###
+
+Atualizado:
+ - Scripts: 
+	- jdk15.build
+		- Link Atualizado.
+	- nulloy.build
+		- Link Atualizado.
+###
+
+### Modificado
+ - Scripts:
+	- googlechrome.build >-->> google-chrome.build
+	- whatsapp.build >-->> whatsapp-desktop.build
+###
+
+### Removido
+ - Pacotes:
+	- Todos os pacotes gerados foram removidos.
+	- qmplay2_ninja.build
+###
+
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-11 #############################################
+
+### Adicionado
+ - Recursos:
+	- Ferramenta de suporte ao repositório, "build-get-1.0-noarch-1".
+###
+
+### Modificado
+ - Scripts:
+	- Todos os scripts foram verificados.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-10 #############################################
+
+### Adicionado
+ - Scripts:
+	- kazam.build
+	- luna-wallpapers.build
+	- python-distutils-extra.build
+	- transmageddon.build
+ - Pacotes:
+	- kazam-1.4.5-noarch-1.txz
+	- luna-wallpapers-0.2-noarch-1.txz
+	- python-distutils-extra-2.39-x86_64-1.txz
+	- transmageddon-1.5-noarch-1.txz
+ - Extras:
+	- Frostwire 6.8.10 FIX / Fix-Launcher.patch
+	- UGet 2.2.3_1 FIX / Fix-Support-gcc10.patch
+	- Transmageddon 1.5 FIX / 0001-Fix-AppStream-metadata-validation.patch
+	- Transmageddon 1.5 FIX / Fix-Bug-getchildren-Python39.patch
+	- Kazam 1.4.5 FIX / configparser_api_changes.patch
+	- Kazam 1.4.5 FIX / fix-PyGIWarnings.patch
+	- Kazam 1.4.5 FIX / pulse_audio_python_38.patch
+	- Kazam 1.4.5 FIX / setlocale.patch
+###
+
+### Atualizado
+ - Scripts:
+	- nulloy.build
+ - Pacotes:
+	- nulloy-0.8.2_92-x86_64-1.txz >-->> nulloy-0.8.2_106-x86_64-1.txz
+###
+
+### Corrigido
+ - Scripts:
+	- frostwire.build
+		- Aplicação de patch de correção.
+	- uget.build
+		- Aplicação de patch de correção.
+ - Extras:
+	- Frostwire 6.8.10 FIX / frostwire-fixed
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-06 #############################################
+
+### Adicionado
+ - Scripts:
+	- flareget.build
+	- gst-plugins-bad.build
+	- gst-plugins-ugly.build
+	- libass.build
+	- libgme.build
+	- libsidplayfp.build
+	- portaudio.build
+	- qmplay2_make.build
+	- qmplay2_ninja.build
+	- xa.build
+ - Pacotes:
+	- flareget-5.0_1-x86_64-1.txz
+	- gst-plugins-bad-1.18.2-x86_64-1.txz
+	- gst-plugins-ugly-1.18.2-x86_64-1.txz
+	- libass-0.15.0-x86_64-1.txz
+	- libgme-0.6.3-x86_64-1.txz
+	- libsidplayfp-2.0.5-x86_64-1.txz
+	- portaudio-190600_20161030-x86_64-1.txz
+	- QMPlay2-20.12.16-x86_64-1.txz
+	- xa-2.3.11-x86_64-1.txz
+ - Extras:
+	- frostwire.desktop
+	- frostwire-fixed
+	- frostwire-original
+###
+
+### Corrigido
+ - Scripts:
+	- aria2.build
+		- Melhor controle de erro.
+	- c-ares.build
+		- Melhor controle de erro.
+	- flare.build
+		- Melhor controle de erro.
+	- nulloy.build
+		- Melhor controle de erro.
+	- telegram.build
+		- Melhor controle de erro.
+	- uget.build
+		- Melhor controle de erro.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-03 #############################################
+
+### Adicionado
+ - Scripts:
+	- flare.build
+	- nulloy.build
+ - Pacotes:
+	- nulloy-0.8.2_92-x86_64-1.txz
+###
+
+### Atualizado
+ - Pacotes:
+	- aria2-1.35.0-x86_64-1.txz
+	- c-ares-1.17.1-x86_64-1.txz
+	- frostwire-6.8.10-x86_64-1.txz
+	- google-chrome-87.0.4280.88-x86_64-1.txz
+	- telegram-2.5.1-x86_64-1.txz
+	- uget-2.2.3_1-x86_64-1.txz
+	- whatsapp-desktop-0.6.1-x86_64-1.txz
+- Extras:
+	- checklink
+###
+
+### Corrigido
+ - Scripts:
+	- aria2.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- c-ares.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- frostwire.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- googlechrome.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- jdk15.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- smoffice2021.build
+		- Alterações nas instruções após gerar o pacote.
+	- telegram.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- uget.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+	- whatsapp.build
+		- Alterações nas instruções após gerar o pacote.
+		- Melhorias no Script Pós Instalação.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2020-12-31 #############################################
+
+### Adicionado
+ - Scripts:
+	- aria2.build
+	- c-ares.build
+	- frostwire.build
+	- jdk15.build
+	- uget.build
+ - Pacotes:
+	- aria2-1.35.0-x86_64-1.txz
+	- c-ares-1.17.1-x86_64-1.txz
+	- frostwire-6.8.10-x86_64-1.txz
+	- uget-2.2.3_1-x86_64-1.txz
+ - Extras:
+	- checklink
+###
+
+### Modificado
+ - Scripts:
+	- googlechrome.build
+		- Incluído verificação do link do Source.
+	- smoffice2021.build
+		- Incluído verificação do link do Source.
+	- telegram.build
+		- Incluído verificação do link do Source.
+	- whatsapp.build
+		- Incluído verificação do link do Source.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2020-12-27 #############################################
+
+### Adicionado
+ - Scripts:
+	- googlechrome.build
+	- smoffice2021.build
+	- telegram.build
+	- whatsapp.build
+ - Pacotes:
+	- google-chrome-87.0.4280.88-x86_64-1.txz
+	- telegram-2.5.1-x86_64-1.txz
+	- whatsapp-desktop-0.6.1-x86_64-1.txz
+###
+
+##########################################################################

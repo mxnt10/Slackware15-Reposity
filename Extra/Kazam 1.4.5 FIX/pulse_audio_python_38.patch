@@ -1,0 +1,66 @@
+--- a/kazam/pulseaudio/pulseaudio.py	2014-08-18 12:48:36.000000000 -0400
++++ b/kazam/pulseaudio/pulseaudio_3_8.py	2020-05-21 17:55:51.384119894 -0400
+@@ -19,6 +19,7 @@
+ #       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ #       MA 02110-1301, USA.
+ 
++import sys
+ import time
+ import logging
+ logger = logging.getLogger("PulseAudio")
+@@ -31,6 +32,11 @@ try:
+ except:
+     raise PAError(PA_LOAD_ERROR, "Unable to load pulseaudio wrapper lib. Is PulseAudio installed?")
+ 
++if sys.version_info > (3,2):
++    perf_counter = time.perf_counter
++else:
++    perf_counter = time.clock
++
+ class pulseaudio_q:
+     def __init__(self):
+         """pulseaudio_q constructor.
+@@ -255,8 +261,8 @@ class pulseaudio_q:
+         try:
+             logger.debug("get_audio_sources() called.")
+             pa_context_get_source_info_list(self.pa_ctx, self._pa_sourcelist_cb, None)
+-            t = time.clock()
+-            while time.clock() - t < 5:
++            t = perf_counter()
++            while perf_counter() - t < 5:
+                 if self.pa_status == PA_FINISHED:
+                     self.sources = self._sources
+                     self._sources = []
+@@ -270,8 +276,8 @@ class pulseaudio_q:
+         try:
+             logger.debug("get_source_info_by_index() called. IDX: {0}".format(index))
+             pa_context_get_source_info_by_index(self.pa_ctx, index, self._pa_sourceinfo_cb, None)
+-            t = time.clock()
+-            while time.clock() - t < 5:
++            t = perf_counter()
++            while perf_counter() - t < 5:
+                 if self.pa_status == PA_FINISHED:
+                     time.sleep(0.1)
+                     ret = self._return_result
+@@ -285,8 +291,8 @@ class pulseaudio_q:
+         try:
+             pa_context_set_source_volume_by_index(self.pa_ctx, index, cvolume,
+                                                   self._pa_context_success_cb, None)
+-            t = time.clock()
+-            while time.clock() - t < 5:
++            t = perf_counter()
++            while perf_counter() - t < 5:
+                 if self.pa_status == PA_FINISHED:
+                     return 1
+             raise PAError(PA_GET_SOURCES_TIMEOUT, "Unable to get sources, operation timed out.")
+@@ -297,8 +303,8 @@ class pulseaudio_q:
+         try:
+             pa_context_set_source_mute_by_index(self.pa_ctx, index, mute,
+                                                   self._pa_context_success_cb, None)
+-            t = time.clock()
+-            while time.clock() - t < 5:
++            t = perf_counter()
++            while perf_counter() - t < 5:
+                 if self.pa_status == PA_FINISHED:
+                     return 1
+             raise PAError(PA_GET_SOURCES_TIMEOUT, "Unable to get sources, operation timed out.")

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# CheckLink v3.0 - Script para Manutenção dos Links - By Mauricio Ferrari - 10/01/2021
+
+CR1=${CR1:-\\033[1;31m}
+CR2=${CR2:-\\033[1;32m}
+
+link_ok() { echo -e "${CR2} $LNK : $ST \033[0m"; }
+link_no() { echo -e "${CR1} $LNK : $ST \033[0m"; }
+
+echo; for LNK in `cat PreCompiled Sources Libraries Others`; do
+	ST=$( curl -Is $LNK | head -n 1 ) ; [ "`echo $ST | cut -d' ' -f2`" != "404" ] && link_ok || link_no
+done
+echo; exit 0
