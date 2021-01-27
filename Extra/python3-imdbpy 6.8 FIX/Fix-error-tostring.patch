@@ -1,0 +1,27 @@
+--- imdbpy-6.8/imdb/parser/http/utils.py-original	2019-07-20 04:28:56.000000000 -0300
++++ imdbpy-6.8/imdb/parser/http/utils.py	2021-01-24 13:11:41.791317845 -0300
+@@ -470,13 +470,13 @@
+                                self._cname, path, exc_info=True)
+             return []
+ 
+-    def tostring(self, element):
++    def tobytes(self, element):
+         """Convert the element to a string."""
+         if isinstance(element, str):
+             return str(element)
+         else:
+             try:
+-                return ElementTree.tostring(element, encoding='utf8')
++                return ElementTree.tobytes(element, encoding='utf8')
+             except Exception:
+                 self._logger.error('%s: unable to convert to string',
+                                    self._cname, exc_info=True)
+@@ -484,7 +484,7 @@
+ 
+     def clone(self, element):
+         """Clone an element."""
+-        return build_tree(self.tostring(element))
++        return build_tree(self.tobytes(element))
+ 
+     def preprocess_string(self, html_string):
+         """Here we can modify the text, before it's parsed."""
