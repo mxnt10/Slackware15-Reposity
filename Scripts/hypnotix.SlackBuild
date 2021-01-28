@@ -1,0 +1,99 @@
+#!/bin/sh
+
+# Slackware build script for hypnotix
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+#
+# Redistribution and use of this script, with or without modification, is
+# permitted provided that the following conditions are met:
+#
+# 1. Redistributions of this script must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS" AND ANY EXPRESS OR IMPLIED
+#  WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+#  MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO
+#  EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+#  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+#  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+#  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+ERRO=0
+[ ! "`ls /var/log/packages/mpv*                  2> /dev/null`" ] && echo -e "\nDependência Faltante: mpv !                 \n" && ERRO=1
+[ ! "`ls /var/log/packages/python3-imdbpy*       2> /dev/null`" ] && echo -e "\nDependência Faltante: python3-imdbpy !      \n" && ERRO=1
+[ ! "`ls /var/log/packages/python3-setproctitle* 2> /dev/null`" ] && echo -e "\nDependência Faltante: python3-setproctitle !\n" && ERRO=1
+[ ! "`ls /var/log/packages/xapp*                 2> /dev/null`" ] && echo -e "\nDependência Faltante: xapp !                \n" && ERRO=1
+[ $ERRO = 1 ] && exit 1
+
+PRGNAM=${PRGNAM:-hypnotix}
+VERSION=${VERSION:-1.4_1}
+ARCH=${ARCH:-noarch}
+BUILD=${BUILD:-1}
+DIRVER=$( echo $VERSION | cut -d_ -f1 )
+
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+LINK=https://github.com/linuxmint/hypnotix/archive/1.4.tar.gz
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/{bin,lib/$PRGNAM,share/{applications,glib-2.0/schemas,$PRGNAM/pictures/badges,icons/hicolor/scalable/apps}}}
+cd $TMP; tar xvf $CWD/$DIRVER.tar.?z
+cd $PRGNAM-$DIRVER
+chown -R root:root .
+find -L .  -perm /111 -a \! -perm 755 -a -exec chmod 755 {} \+ -o \
+        \! -perm /111 -a \! -perm 644 -a -exec chmod 644 {} \+
+
+make; install -D -t $PKG/usr/bin usr/bin/hypnotix
+install -D -t $PKG/usr/lib/hypnotix usr/lib/hypnotix/{common,hypnotix}.py
+install -Dm644 -t $PKG/usr/lib/hypnotix usr/lib/hypnotix/mpv.py
+install -Dm644 -t $PKG/usr/share/applications usr/share/applications/hypnotix.desktop
+install -Dm644 -t $PKG/usr/share/glib-2.0/schemas usr/share/glib-2.0/schemas/org.x.hypnotix.gschema.xml
+install -Dm644 -t $PKG/usr/share/hypnotix usr/share/hypnotix/*.{css,png,ui}
+install -Dm644 -t $PKG/usr/share/hypnotix/pictures usr/share/hypnotix/pictures/*.svg
+install -Dm644 -t $PKG/usr/share/hypnotix/pictures/badges usr/share/hypnotix/pictures/badges/*
+install -Dm644 -t $PKG/usr/share/icons/hicolor/scalable/apps usr/share/icons/hicolor/scalable/apps/hypnotix.svg
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+        |-----handy-ruler------------------------------------------------------|
+hypnotix: hypnotix (An IPTV streaming application)
+hypnotix:
+hypnotix: Hypnotix is an IPTV streaming application with support for 
+hypnotix: live TV, movies and series.
+hypnotix:
+hypnotix: https://github.com/linuxmint/hypnotix
+hypnotix:
+hypnotix:
+hypnotix:
+hypnotix:
+hypnotix:" | tee $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi" | tee $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD.txz
+cd $CWD; rm -rf $PKG $TMP/$PRGNAM-$DIRVER $DIRVER.tar.?z

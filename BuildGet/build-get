@@ -3,7 +3,7 @@
 ################################################################################
 #                                                                              #
 #                                                                              #
-# Build Get 1.0 - Instalação de Pacotes para o Slackware 15.0                  #
+# Build Get 1.1 - Instalação de Pacotes para o Slackware 15.0                  #
 #                                                                              #
 # By Mauricio Ferrari                                                          #
 #                                                                              #
@@ -23,22 +23,6 @@
 #                                                                              #
 #                                                                              #
 #                            ### Copyright 2021 ###                            #
-#                                                                              #
-#                                                                              #
-################################################################################
-#                                                                              #
-#                                                                              #
-# ChangeLog:                                                                   #
-#                                                                              #
-# ## [1.0] - 2021-00-00                                                        #
-#                                                                              #
-#                                                                              #
-# Recursos:                                                                    #
-#   - Checagem de: Root, Update, Pacotes Criados e Instalados.                 #
-#   - Atualizar Lista de Pacotes.                                              #
-#   - Listar os Pacotes Disponíveis.                                           #
-#   - Gerar o Pacote dos Programas.                                            #
-#   - Instalação dos Pacotes.                                                  #
 #                                                                              #
 #                                                                              #
 ################################################################################
@@ -61,40 +45,13 @@ BUILDURL="${BUILDLINK}/${BUILDNAME}"
 
 ################################################################################
 
-# ### Função Info ###
+# ### Info Function ###
 
 ################################################################################
 
 info()
 {
-echo "
-################################################################################
-#                                                                              #
-#                                                                              #
-# Build Get 1.0 - Instalação de Pacotes para o Slackware 15.0                  #
-#                                                                              #
-# By Mauricio Ferrari                                                          #
-#                                                                              #
-#                                                                              #
-# Descrição:                                                                   #
-#                                                                              #
-# Esse software tem como objetivo facilitar o download e a instalação de       #
-# pacotes no Slackware 15.0 através de scripts semelhantes ao SlackBuilds.     #
-#                                                                              #
-#                                                                              #
-# Comandos:                                                                    #
-#                                                                              #
-# update  - Atualiza a Base de Dados.                                          #
-# list    - Lista os Programas da Base de Dados.                               # 
-# build   - Gera o Pacote do Programa.                                         #
-# install - Gera e Instala o Pacote do Programa.                               #
-#                                                                              #
-#                                                                              #
-#                            ### Copyright 2021 ###                            #
-#                                                                              #
-#                                                                              #
-################################################################################
-"; exit 0
+	head -29 $( basename $0 ) | sed "1d"; exit 0
 }
 
 ################################################################################

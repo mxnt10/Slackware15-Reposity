@@ -1,14 +1,15 @@
 # Slackware15-Reposity Extras
-*Scripts ou Configurações Extras para o Slackware 15.0 ( x86_64 / i586 ).*
+*Scripts or Extra Settings for Slackware 15.0 Stable ( x86_64 / i586 ).*
 <br/><br/>
 
-Recursos Disponíveis:
+Available resources:
 ```
-- checklink: Usado para detectar links inválidos presentes nos scripts desse repositório.
+- checklink: Used for detect invalid links presents in that repository's scripts.
 
-- Cowsay 3.03 FIX       : Patch para o Slackware. 
-- Frostwire 6.8.10 FIX  : Patch para o Slackware.
-- Kazam 1.4.5 FIX       : Patch de Execução e Áudio Python 3.8.
-- Transmageddon 1.5 FIX : Patch de Execução Python 3.9.
-- UGet 2.2.3_1 FIX      : Patch de Compilação GCC10.
+- Cowsay 3.03 FIX        : Patch for Slackware. 
+- Frostwire 6.8.10 FIX   : Patch for Slackware.
+- Kazam 1.4.5 FIX        : Execution and Audio Patch for Python 3.8.
+- python3-imdbpy 6.8 FIX : Patch for Python 3.9 and Error Feature Fixed.
+- Transmageddon 1.5 FIX  : Execution Patch for Python 3.9.
+- UGet 2.2.3_1 FIX       : Build Patch for GCC10.
 ```

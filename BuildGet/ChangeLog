@@ -1,0 +1,26 @@
+# ChangeLog
+All notable changes to this project will be documented in this file.
+Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
+
+
+## [ 1.1 ] - 2021-01-27 ##################################################
+
+### Changed / Modificado
+	- Info Function.
+	- Download SlackBuild instead of build script.
+###
+
+##########################################################################
+
+
+## [ 1.0 ] - 2021-01-10 ##################################################
+
+### Added / Adicionado
+	- Checagem de: Root, Update, Pacotes Criados e Instalados.
+	- Atualizar Lista de Pacotes.
+	- Listar os Pacotes Disponíveis.
+	- Gerar o Pacote dos Programas.
+	- Instalação dos Pacotes.
+###
+
+##########################################################################

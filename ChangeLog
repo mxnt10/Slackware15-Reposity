@@ -1,39 +1,71 @@
 # ChangeLog
-Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+All notable changes to this project will be documented in this file.
+Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
+
+
+## [ Released ] - 2021-01-28 #############################################
+
+### Added / Adicionado
+ - Script:
+	- hypnotix.SlackBuild
+	- libplacebo.SlackBuild
+	- lua.SlackBuild
+	- mpv.SlackBuild
+	- mujs.SlackBuild
+	- python3-imdbpy.SlackBuild
+	- python3-setproctitle.SlackBuild
+ - Extra:
+	- python3-imdbpy 6.8 FIX / Fix-array-tostring.patch
+	- python3-imdbpy 6.8 FIX / Fix-error-feature.patch
+	- python3-imdbpy 6.8 FIX / Fix-error-tostring.patch
+	- python3-imdbpy 6.8 FIX / Imdbpy-modify.patch
+###
+
+### Changed / Modificado
+ - script:
+	- All scripts have been renamed to SlackBuild.
+ - Package:
+	- build-get-1.0-noarch-1 --> build-get-1.1-noarch-1
+
+##########################################################################
 
 
 ## [ Released ] - 2021-01-22 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- cabextract.build
 	- cowsay.build
 	- dpkg.build
 	- fortune-mod-br.build
 	- fortune-mod.build
 	- recode.build
- - Extras:
+ - Extra:
 	- Cowsay 3.03 FIX / Fix-local.patch
 ###
 
-Atualizado:
- - Scripts: 
+### Upgraded / Atualizado
+ - script: 
 	- jdk15.build
-		- Link Atualizado.
+		- Link Upgraded.
 	- nulloy.build
-		- Link Atualizado.
+		- Link Upgraded.
 ###
 
-### Modificado
- - Scripts:
+### Changed / Modificado
+ - script:
 	- googlechrome.build >-->> google-chrome.build
 	- whatsapp.build >-->> whatsapp-desktop.build
 ###
 
-### Removido
- - Pacotes:
-	- Todos os pacotes gerados foram removidos.
+### Removed / Removido
+ - Packages:
+	- All generated packages have been removed.
 	- qmplay2_ninja.build
+ - Extra:
+	- FrostWire 6.8.10 FIX / frostwire.desktop
+	- FrostWire 6.8.10 FIX / frostwire-fixed
+	- FrostWire 6.8.10 FIX / frostwire-original
 ###
 
 
@@ -42,14 +74,14 @@ Atualizado:
 
 ## [ Released ] - 2021-01-11 #############################################
 
-### Adicionado
- - Recursos:
-	- Ferramenta de suporte ao repositório, "build-get-1.0-noarch-1".
+### Added / Adicionado
+ - Resources:
+	- Support tool to the repository, "build-get-1.0-noarch-1".
 ###
 
-### Modificado
- - Scripts:
-	- Todos os scripts foram verificados.
+### Fixed / Corrigido
+ - script:
+	- All scripts have been verified.
 ###
 
 ##########################################################################
@@ -57,18 +89,18 @@ Atualizado:
 
 ## [ Released ] - 2021-01-10 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- kazam.build
 	- luna-wallpapers.build
 	- python-distutils-extra.build
 	- transmageddon.build
- - Pacotes:
+ - Packages:
 	- kazam-1.4.5-noarch-1.txz
 	- luna-wallpapers-0.2-noarch-1.txz
 	- python-distutils-extra-2.39-x86_64-1.txz
 	- transmageddon-1.5-noarch-1.txz
- - Extras:
+ - Extra:
 	- Frostwire 6.8.10 FIX / Fix-Launcher.patch
 	- UGet 2.2.3_1 FIX / Fix-Support-gcc10.patch
 	- Transmageddon 1.5 FIX / 0001-Fix-AppStream-metadata-validation.patch
@@ -79,20 +111,20 @@ Atualizado:
 	- Kazam 1.4.5 FIX / setlocale.patch
 ###
 
-### Atualizado
- - Scripts:
+### Upgraded / Atualizado
+ - script:
 	- nulloy.build
- - Pacotes:
+ - Packages:
 	- nulloy-0.8.2_92-x86_64-1.txz >-->> nulloy-0.8.2_106-x86_64-1.txz
 ###
 
-### Corrigido
- - Scripts:
+### Fixed / Corrigido
+ - script:
 	- frostwire.build
-		- Aplicação de patch de correção.
+		- Patch of application correction.
 	- uget.build
-		- Aplicação de patch de correção.
- - Extras:
+		- Patch of application correction.
+ - Extra:
 	- Frostwire 6.8.10 FIX / frostwire-fixed
 ###
 
@@ -101,8 +133,8 @@ Atualizado:
 
 ## [ Released ] - 2021-01-06 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- flareget.build
 	- gst-plugins-bad.build
 	- gst-plugins-ugly.build
@@ -113,7 +145,7 @@ Atualizado:
 	- qmplay2_make.build
 	- qmplay2_ninja.build
 	- xa.build
- - Pacotes:
+ - Packages:
 	- flareget-5.0_1-x86_64-1.txz
 	- gst-plugins-bad-1.18.2-x86_64-1.txz
 	- gst-plugins-ugly-1.18.2-x86_64-1.txz
@@ -123,26 +155,26 @@ Atualizado:
 	- portaudio-190600_20161030-x86_64-1.txz
 	- QMPlay2-20.12.16-x86_64-1.txz
 	- xa-2.3.11-x86_64-1.txz
- - Extras:
+ - Extra:
 	- frostwire.desktop
 	- frostwire-fixed
 	- frostwire-original
 ###
 
-### Corrigido
- - Scripts:
+### Fixed / Corrigido
+ - script:
 	- aria2.build
-		- Melhor controle de erro.
+		- Better error control.
 	- c-ares.build
-		- Melhor controle de erro.
+		- Better error control.
 	- flare.build
-		- Melhor controle de erro.
+		- Better error control.
 	- nulloy.build
-		- Melhor controle de erro.
+		- Better error control.
 	- telegram.build
-		- Melhor controle de erro.
+		- Better error control.
 	- uget.build
-		- Melhor controle de erro.
+		- Better error control.
 ###
 
 ##########################################################################
@@ -150,16 +182,16 @@ Atualizado:
 
 ## [ Released ] - 2021-01-03 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- flare.build
 	- nulloy.build
- - Pacotes:
+ - Packages:
 	- nulloy-0.8.2_92-x86_64-1.txz
 ###
 
-### Atualizado
- - Pacotes:
+### Upgraded / Atualizado
+ - Packages:
 	- aria2-1.35.0-x86_64-1.txz
 	- c-ares-1.17.1-x86_64-1.txz
 	- frostwire-6.8.10-x86_64-1.txz
@@ -167,38 +199,38 @@ Atualizado:
 	- telegram-2.5.1-x86_64-1.txz
 	- uget-2.2.3_1-x86_64-1.txz
 	- whatsapp-desktop-0.6.1-x86_64-1.txz
-- Extras:
+- Extra:
 	- checklink
 ###
 
-### Corrigido
- - Scripts:
+### Fixed / Corrigido
+ - script:
 	- aria2.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- c-ares.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- frostwire.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- googlechrome.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- jdk15.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- smoffice2021.build
-		- Alterações nas instruções após gerar o pacote.
+		- Changes to instructions after generating the package.
 	- telegram.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- uget.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 	- whatsapp.build
-		- Alterações nas instruções após gerar o pacote.
-		- Melhorias no Script Pós Instalação.
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
 ###
 
 ##########################################################################
@@ -206,32 +238,32 @@ Atualizado:
 
 ## [ Released ] - 2020-12-31 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- aria2.build
 	- c-ares.build
 	- frostwire.build
 	- jdk15.build
 	- uget.build
- - Pacotes:
+ - Packages:
 	- aria2-1.35.0-x86_64-1.txz
 	- c-ares-1.17.1-x86_64-1.txz
 	- frostwire-6.8.10-x86_64-1.txz
 	- uget-2.2.3_1-x86_64-1.txz
- - Extras:
+ - Extra:
 	- checklink
 ###
 
-### Modificado
- - Scripts:
+### Fixed / Corrigido
+ - script:
 	- googlechrome.build
-		- Incluído verificação do link do Source.
+		- Source link verification included.
 	- smoffice2021.build
-		- Incluído verificação do link do Source.
+		- Source link verification included.
 	- telegram.build
-		- Incluído verificação do link do Source.
+		- Source link verification included.
 	- whatsapp.build
-		- Incluído verificação do link do Source.
+		- Source link verification included.
 ###
 
 ##########################################################################
@@ -239,13 +271,13 @@ Atualizado:
 
 ## [ Released ] - 2020-12-27 #############################################
 
-### Adicionado
- - Scripts:
+### Added / Adicionado
+ - script:
 	- googlechrome.build
 	- smoffice2021.build
 	- telegram.build
 	- whatsapp.build
- - Pacotes:
+ - Packages:
 	- google-chrome-87.0.4280.88-x86_64-1.txz
 	- telegram-2.5.1-x86_64-1.txz
 	- whatsapp-desktop-0.6.1-x86_64-1.txz

@@ -1,11 +1,11 @@
 # CheckLink v3.0
-*Script para Manutenção dos Links.*
+*Script for Maintenance of Links.*
 <br/><br/>
 
-Pacotes Verificados:
+Checked Packages:
 ```
-- Libraries   : Bibliotecas.
-- Others      : Outros Recursos.
-- PreCompiled : Programas Já Compilados.
-- Sources     : Programas de Código Fonte.
+- Libraries   : Sources Libraries.
+- Others      : Other Resources.
+- PreCompiled : Pre-Compiled Programs.
+- Sources     : Source Code Programs.
 ```

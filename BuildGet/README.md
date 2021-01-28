@@ -1,10 +1,10 @@
 # Build Get 1.0
-*Instalação de Pacotes para o Slackware 15.0*
+*Packages Installation for Slackware 15.0*
 <br/><br/>
 
 #### Descrição:
 
-Esse software tem como objetivo facilitar o download e a instalação de pacotes no Slackware 15.0 através de scripts semelhantes ao SlackBuilds.
+Esse software tem como objetivo facilitar o download e a instalação de pacotes no Slackware 15.0 Stable através de scripts SlackBuilds.
 <br/><br/>
 
 #### Comandos:
