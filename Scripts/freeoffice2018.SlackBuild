@@ -1,0 +1,173 @@
+#!/bin/sh
+
+# Slackware build script for freeoffice2018
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=${PRGNAM:-freeoffice2018}
+VERSION=${VERSION:-982}
+ARCH=${ARCH:-x86_64}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+[ $ARCH != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+LINK=https://www.softmaker.net/down/softmaker-freeoffice-982-amd64.tgz
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,mime/packages},doc/$PRGNAM-$VERSION}}
+cd $TMP; tar xvf $CWD/softmaker-freeoffice-$VERSION-amd64.tgz
+tar xvf $PRGNAM.tar.lzma -C $PKG/opt/$PRGNAM
+cd $PKG
+
+echo '#!/bin/sh
+# A script to run PlanMaker.
+/opt/freeoffice2018/planmaker "$@"' | tee usr/bin/planmaker18free
+chmod 755 usr/bin/planmaker18free
+
+echo '#!/bin/sh
+# A script to run Presentations.
+ext="${@##*.}"
+shopt -s nocasematch
+case "$ext" in
+    "prs" ) /opt/freeoffice2018/presentations -S\""$@"\";;
+    "pps" ) /opt/freeoffice2018/presentations -S\""$@"\";;
+    "ppsx" ) /opt/freeoffice2018/presentations -S\""$@"\";;
+    * ) /opt/freeoffice2018/presentations "$@";;
+esac' | tee usr/bin/presentations18free
+chmod 755 usr/bin/presentations18free
+
+echo '#!/bin/sh
+# A script to run TextMaker.
+/opt/freeoffice2018/textmaker "$@"' | tee usr/bin/textmaker18free
+chmod 755 usr/bin/textmaker18free
+
+for s in 16 24 32 48 64 128 256 512 1024; do
+	mkdir -p usr/share/icons/hicolor/${s}x${s}/apps
+	for a in pml prl tml; do
+		cp -a opt/$PRGNAM/icons/${a}_${s}.png usr/share/icons/hicolor/${s}x${s}/apps/application-x-${a}18free.png
+	done
+done
+for s in 16 24 32 48 64 128 256 512 1024; do
+	mkdir -p usr/share/icons/hicolor/${s}x${s}/mimetypes
+	for a in pmd pmd_mso pmd_oth prd prd_mso prd_oth tmd tmd_mso tmd_oth; do
+		cp -a opt/$PRGNAM/icons/${a}_${s}.png usr/share/icons/hicolor/${s}x${s}/mimetypes/application-x-${a}.png
+	done
+done
+
+echo "[Desktop Entry]
+Categories=Application;Office;Spreadsheet;
+Comment=PlanMaker lets you create all kinds of spreadsheets -- from simple ones to the most complex ones. Includes a high-caliber charting module.
+Encoding=UTF-8
+Exec=/usr/bin/planmaker18free %F
+GenericName=Spreadsheet
+Icon=application-x-pml18free
+InitialPreference=10
+MimeType=application/x-pmd;application/x-pmdx;application/x-pmv;application/excel;application/x-excel;application/x-ms-excel;application/x-msexcel;application/x-sylk;application/x-xls;application/xls;application/vnd.ms-excel;application/vnd.stardivision.calc;application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;application/vnd.openxmlformats-officedocument.spreadsheetml.template;application/vnd.ms-excel.sheet.macroenabled.12;application/vnd.openxmlformats-officedocument.spreadsheetml.template;application/vnd.ms-excel.template.macroEnabled.12;application/x-dif;text/spreadsheet;text/csv;application/x-prn;application/vnd.ms-excel.sheet.binary.macroenabled.12;
+Name=FreeOffice 2018 PlanMaker
+NoDisplay=false
+Path=/opt/$PRGNAM
+StartupNotify=true
+StartupWMClass=pm
+Terminal=0
+TerminalOptions=
+Type=Application
+Version=1.0
+X-KDE-SubstituteUID=false
+X-KDE-Username=" | tee usr/share/applications/planmaker-free18.desktop
+
+echo "[Desktop Entry]
+Categories=Application;Office;Presentation;
+Comment=The Presentations software lets you design any kind of presentation - even including special effects, animations, and transitions.
+Encoding=UTF-8
+Exec=/usr/bin/presentations18free %F
+GenericName=Presentation
+Icon=application-x-prl18free
+InitialPreference=10
+MimeType=application/x-prdx;application/x-prvx;application/x-prsx;application/x-prd;application/x-prv;application/x-prs;application/ppt;application/mspowerpoint;application/vnd.ms-powerpoint;application/vnd.openxmlformats-officedocument.presentationml.presentation;application/vnd.ms-powerpoint.presentation.macroenabled.12;application/vnd.openxmlformats-officedocument.presentationml.template;application/vnd.ms-powerpoint.template.macroEnabled.12;application/vnd.ms-powerpoint.slideshow.macroenabled.12;application/vnd.openxmlformats-officedocument.presentationml.slideshow;
+Name=FreeOffice 2018 Presentations
+NoDisplay=false
+Path=/opt/$PRGNAM
+StartupNotify=true
+StartupWMClass=pr
+Terminal=0
+TerminalOptions=
+Type=Application
+Version=1.0
+X-KDE-SubstituteUID=false
+X-KDE-Username=" | tee usr/share/applications/presentations-free18.desktop
+
+echo "[Desktop Entry]
+Categories=Application;Office;WordProcessor;
+Comment=The TextMaker word processor lets you work on any type of document.
+Encoding=UTF-8
+Exec=/usr/bin/textmaker18free %F
+GenericName=Word Processor
+Icon=application-x-tml18free
+InitialPreference=10
+MimeType=application/x-tmdx;application/x-tmvx;application/x-tmd;application/x-tmv;application/msword;application/vnd.ms-word;application/x-doc;text/rtf;application/rtf;application/vnd.oasis.opendocument.text;application/vnd.oasis.opendocument.text-template;application/vnd.stardivision.writer;application/vnd.sun.xml.writer;application/vnd.sun.xml.writer.template;application/vnd.openxmlformats-officedocument.wordprocessingml.document;application/vnd.ms-word.document.macroenabled.12;application/vnd.openxmlformats-officedocument.wordprocessingml.template;application/vnd.ms-word.template.macroenabled.12;application/x-pocket-word;application/x-dbf;application/msword-template;
+Name=FreeOffice 2018 TextMaker
+NoDisplay=false
+Path=/opt/$PRGNAM
+StartupNotify=true
+StartupWMClass=tm
+Terminal=0
+TerminalOptions=
+Type=Application
+Version=1.0
+X-KDE-SubstituteUID=false
+X-KDE-Username=" | tee usr/share/applications/textmaker-free18.desktop
+
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+mv opt/$PRGNAM/*.pdf opt/$PRGNAM/mime/copyright usr/doc/$PRGNAM-$VERSION
+cp -a opt/$PRGNAM/mime/softmaker-freeoffice18.xml usr/share/mime/packages/
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+              |-----handy-ruler------------------------------------------------------|
+freeoffice2018: freeoffice2018 (The best free alternative to Microsoft Office)
+freeoffice2018:
+freeoffice2018: FreeOffice is a complete Office suite with a word processor,
+freeoffice2018: a spreadsheet application and a presentation program â€“ all compatible
+freeoffice2018: with their counterparts in Microsoft Office.
+freeoffice2018:
+freeoffice2018:
+freeoffice2018: Homepage: https://www.freeoffice.com/
+freeoffice2018:
+freeoffice2018:
+freeoffice2018:" | tee install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi" | tee install/doinst.sh
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG softmaker-freeoffice-982-amd64.tgz $TMP/{installfreeoffice,$PRGNAM.tar.lzma}

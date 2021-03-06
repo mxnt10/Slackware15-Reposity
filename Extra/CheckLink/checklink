@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# CheckLink v5.0 - Script para Manutenção dos Links - By Mauricio Ferrari - Copyright 2021
+
+CNT=0
+CR1=${CR1:-\\e[1;31m}
+CR2=${CR2:-\\e[1;32m}
+CR3=${CR3:-\\e[1;33m}
+CR4=${CR4:-\\e[1;34m}
+
+printf "\n$CR4 Iniciando... \n\n"
+for LNK in `cat SOURCE`; do
+	CNT=$(( $CNT + 1 ))
+	ST=$( curl -Is $LNK | head -n 1 | cut -d' ' -f2 )
+	CR=$CR3
+	[ "$ST" == "404" ] && CR=$CR1
+	[ "$ST" == "200" ] && CR=$CR2
+	printf "$CR4 %3s" $CNT
+	echo -ne " -$CR $LNK : $ST \e[m\n"
+done
+printf "\n$CR4 Finalizado! \e[m\n\n"; exit 0

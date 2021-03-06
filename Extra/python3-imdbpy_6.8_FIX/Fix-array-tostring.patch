@@ -1,0 +1,11 @@
+--- imdbpy-6.8/imdb/locale/msgfmt.py-original	2019-07-20 04:28:56.000000000 -0300
++++ imdbpy-6.8/imdb/locale/msgfmt.py	2021-01-24 13:11:41.793317845 -0300
+@@ -90,7 +90,7 @@
+                          7*4,               # start of key index
+                          7*4+len(keys)*8,   # start of value index
+                          0, 0)              # size and offset of hash table
+-    output += array.array("i", offsets).tostring()
++    output += array.array("i", offsets).tobytes()
+     output += ids
+     output += strs
+     return output

@@ -1,0 +1,103 @@
+#!/bin/sh
+
+# Slackware build script for lua
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=${PRGNAM:-lua}
+VERSION=${VERSION:-5.1.5}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+LINK=http://www.lua.org/ftp/lua-5.1.5.tar.gz
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+fi
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/{lib${LIBDIRSUFFIX}/pkgconfig,doc/$PRGNAM-$VERSION/{extras,html}}}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+chown -R root:root .
+
+sed -i "s|/usr/local|/usr|" src/luaconf.h
+sed -i "s|lib/lua|lib$LIBDIRSUFFIX/lua|" src/luaconf.h
+sed -i "s|/usr/local|/usr|" etc/lua.pc
+sed -i "s|prefix}/lib|prefix}/lib${LIBDIRSUFFIX}|g" etc/lua.pc
+make linux \
+  CFLAGS="$SLKCFLAGS \$(MYCFLAGS)" \
+  INSTALL_TOP=/usr \
+  INSTALL_LIB=/usr/lib${LIBDIRSUFFIX} \
+  INSTALL_LMOD=/usr/share/lua/5.1 \
+  INSTALL_CMOD=/usr/lib${LIBDIRSUFFIX}/lua/5.1
+make linux install \
+  CFLAGS="$SLKCFLAGS \$(MYCFLAGS)" \
+  INSTALL_TOP=$PKG/usr \
+  INSTALL_LIB=$PKG/usr/lib${LIBDIRSUFFIX} \
+  INSTALL_LMOD=$PKG/usr/share/lua/5.1 \
+  INSTALL_CMOD=$PKG/usr/lib${LIBDIRSUFFIX}/lua/5.1
+
+mkdir -p shared
+cd shared
+  ar -x $PKG/usr/lib${LIBDIRSUFFIX}/liblua.a
+  gcc -ldl -lreadline -lhistory -lncurses -lm -shared *.o -o liblua.so.$VERSION
+  cp -a liblua.so.$VERSION $PKG/usr/lib${LIBDIRSUFFIX}
+  ( cd $PKG/usr/lib${LIBDIRSUFFIX}
+    ln -s liblua.so.$VERSION liblua.so.5.1
+    ln -s liblua.so.$VERSION liblua.so.5
+    ln -s liblua.so.$VERSION liblua.so
+  )
+cd ..
+
+cat etc/lua.pc > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua.pc
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+cp -a COPYRIGHT HISTORY INSTALL README $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a doc/*.html doc/logo.gif doc/lua.css $PKG/usr/doc/$PRGNAM-$VERSION/html
+cp -a etc test $PKG/usr/doc/$PRGNAM-$VERSION/extras
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+   |-----handy-ruler------------------------------------------------------|
+lua: lua (a powerful, fast, light-weight, embeddable scripting language)
+lua:
+lua: Lua combines simple procedural syntax with powerful data description
+lua: constructs based on associative arrays and extensible semantics.
+lua: Lua is dynamically typed, runs by interpreting bytecode for a
+lua: register-based virtual machine, and has automatic memory management
+lua: with incremental garbage collection, making it ideal for
+lua: configuration, scripting, and rapid prototyping.
+lua:
+lua:
+lua:" | tee $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG $TMP/$PRGNAM-$VERSION $PRGNAM-$VERSION.tar.?z

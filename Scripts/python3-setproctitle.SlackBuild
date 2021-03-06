@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# Slackware build script for python3-setproctitle
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=${PRGNAM:-python3-setproctitle}
+PKGNAM=${PKGNAM:-python-setproctitle}
+VERSION=${VERSION:-1.2.1}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+LINK=http://deb.debian.org/debian/pool/main/p/python-setproctitle/python-setproctitle_1.2.1.orig.tar.gz
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/${PKGNAM}_$VERSION.orig.tar.?z
+cd py-setproctitle-version-$VERSION
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+python3 setup.py install --root=$PKG
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+cp -a COPYRIGHT* HISTORY* README* $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+                    |-----handy-ruler------------------------------------------------------|
+python3-setproctitle: python3-setproctitle (python library)
+python3-setproctitle:
+python3-setproctitle: The setproctitle module allows a process to change its title (as
+python3-setproctitle: displayed by system tools such as ps and top).
+python3-setproctitle:
+python3-setproctitle: Changing the title is mostly useful in multi-process systems, for
+python3-setproctitle: example when a master process is forked: changing the children’s
+python3-setproctitle: title allows to identify the task each process is busy with.
+python3-setproctitle:
+python3-setproctitle:
+python3-setproctitle:" | tee $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG $TMP/py-setproctitle-version-$VERSION ${PKGNAM}_$VERSION.orig.tar.?z

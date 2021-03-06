@@ -1,0 +1,377 @@
+# ChangeLog
+All notable changes to this project will be documented in this file.
+Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
+
+
+## [ Released ] - 2021-03-04 #############################################
+
+### Added / Adicionado
+ - Script:
+	- codeblocks.SlackBuild
+	- eclipse-jee.SlackBuild
+	- freeoffice2018.SlackBuild
+	- wxGTK3.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- cowsay.SlackBuild
+	- libsidplayfp.SlackBuild
+	- frostwire.SlackBuild
+	- mujs.SlackBuild
+	- perl-Curses.SlackBuild
+	- refine.SlackBuild
+	- telegram.SlackBuild
+ - Extra:
+	- Cowsay 3.03 FIX        >-->> Cowsay_3.04_FIX
+	- FrostWire 6.8.10 FIX   >-->> Frostwire_6.9.2_FIX
+	- Kazam 1.4.5 FIX        >-->> Kazam_1.4.5_FIX
+	- python3-imdbpy 6.8 FIX >-->> python3-imdbpy_6.8_FIX
+	- Transmageddon 1.5 FIX  >-->> Transmageddon_1.5_FIX
+	- UGet 2.2.3_1 FIX       >-->> UGet_2.2.3-1_FIX
+###
+
+### Changed / Modificado
+ - Script:
+	- Minor adjusts and corrections.
+ - Extra:
+	- All directory names.
+###
+
+### Removed / Removido
+ - Script:
+	- smoffice2021.SlackBuild
+###
+
+### Fixed / Corrigido
+ - Extra:
+	- Frostwire_6.9.2_FIX / Fix-Launcher.patch
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-02-11 #############################################
+
+### Added / Adicionado
+ - Script:
+	- clion.SlackBuild
+	- molotov.SlackBuild
+	- refine.SlackBuild
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-02-01 #############################################
+
+### Added / Adicionado
+ - Script:
+	- asciiquarium.SlackBuild
+	- facebook-desktop.SlackBuild
+	- google-earth.SlackBuild
+	- notable.SlackBuild
+	- perl-Curses.SlackBuild
+	- perl-Term-Animation.SlackBuild
+	- pluto-tv.SlackBuild
+	- spotify.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- whatsapp-desktop.SlackBuild
+ - Extra:
+	- checklink
+###
+
+### Fixed / Corrigido
+ - Script:
+	- frostwire.SlackBuild
+	- google-chrome.SlackBuild
+	- jdk15.SlackBuild
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-28 #############################################
+
+### Added / Adicionado
+ - Script:
+	- hypnotix.SlackBuild
+	- libplacebo.SlackBuild
+	- lua.SlackBuild
+	- mpv.SlackBuild
+	- mujs.SlackBuild
+	- python3-imdbpy.SlackBuild
+	- python3-setproctitle.SlackBuild
+ - Extra:
+	- python3-imdbpy 6.8 FIX / Fix-array-tostring.patch
+	- python3-imdbpy 6.8 FIX / Fix-error-feature.patch
+	- python3-imdbpy 6.8 FIX / Fix-error-tostring.patch
+	- python3-imdbpy 6.8 FIX / Imdbpy-modify.patch
+###
+
+### Changed / Modificado
+ - script:
+	- All scripts have been renamed to SlackBuild.
+ - Package:
+	- build-get-1.0-noarch-1 --> build-get-1.1-noarch-1
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-22 #############################################
+
+### Added / Adicionado
+ - script:
+	- cabextract.build
+	- cowsay.build
+	- dpkg.build
+	- fortune-mod-br.build
+	- fortune-mod.build
+	- recode.build
+ - Extra:
+	- Cowsay 3.03 FIX / Fix-local.patch
+###
+
+### Upgraded / Atualizado
+ - script: 
+	- jdk15.build
+		- Link Upgraded.
+	- nulloy.build
+		- Link Upgraded.
+###
+
+### Changed / Modificado
+ - script:
+	- googlechrome.build >-->> google-chrome.build
+	- whatsapp.build >-->> whatsapp-desktop.build
+###
+
+### Removed / Removido
+ - Packages:
+	- All generated packages have been removed.
+	- qmplay2_ninja.build
+ - Extra:
+	- FrostWire 6.8.10 FIX / frostwire.desktop
+	- FrostWire 6.8.10 FIX / frostwire-fixed
+	- FrostWire 6.8.10 FIX / frostwire-original
+###
+
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-11 #############################################
+
+### Added / Adicionado
+ - Resources:
+	- Support tool to the repository, "build-get-1.0-noarch-1".
+###
+
+### Fixed / Corrigido
+ - script:
+	- All scripts have been verified.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-10 #############################################
+
+### Added / Adicionado
+ - script:
+	- kazam.build
+	- luna-wallpapers.build
+	- python-distutils-extra.build
+	- transmageddon.build
+ - Packages:
+	- kazam-1.4.5-noarch-1.txz
+	- luna-wallpapers-0.2-noarch-1.txz
+	- python-distutils-extra-2.39-x86_64-1.txz
+	- transmageddon-1.5-noarch-1.txz
+ - Extra:
+	- Frostwire 6.8.10 FIX / Fix-Launcher.patch
+	- UGet 2.2.3_1 FIX / Fix-Support-gcc10.patch
+	- Transmageddon 1.5 FIX / 0001-Fix-AppStream-metadata-validation.patch
+	- Transmageddon 1.5 FIX / Fix-Bug-getchildren-Python39.patch
+	- Kazam 1.4.5 FIX / configparser_api_changes.patch
+	- Kazam 1.4.5 FIX / fix-PyGIWarnings.patch
+	- Kazam 1.4.5 FIX / pulse_audio_python_38.patch
+	- Kazam 1.4.5 FIX / setlocale.patch
+###
+
+### Upgraded / Atualizado
+ - script:
+	- nulloy.build
+ - Packages:
+	- nulloy-0.8.2_92-x86_64-1.txz >-->> nulloy-0.8.2_106-x86_64-1.txz
+###
+
+### Fixed / Corrigido
+ - script:
+	- frostwire.build
+		- Patch of application correction.
+	- uget.build
+		- Patch of application correction.
+ - Extra:
+	- Frostwire 6.8.10 FIX / frostwire-fixed
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-06 #############################################
+
+### Added / Adicionado
+ - script:
+	- flareget.build
+	- gst-plugins-bad.build
+	- gst-plugins-ugly.build
+	- libass.build
+	- libgme.build
+	- libsidplayfp.build
+	- portaudio.build
+	- qmplay2_make.build
+	- qmplay2_ninja.build
+	- xa.build
+ - Packages:
+	- flareget-5.0_1-x86_64-1.txz
+	- gst-plugins-bad-1.18.2-x86_64-1.txz
+	- gst-plugins-ugly-1.18.2-x86_64-1.txz
+	- libass-0.15.0-x86_64-1.txz
+	- libgme-0.6.3-x86_64-1.txz
+	- libsidplayfp-2.0.5-x86_64-1.txz
+	- portaudio-190600_20161030-x86_64-1.txz
+	- QMPlay2-20.12.16-x86_64-1.txz
+	- xa-2.3.11-x86_64-1.txz
+ - Extra:
+	- frostwire.desktop
+	- frostwire-fixed
+	- frostwire-original
+###
+
+### Fixed / Corrigido
+ - script:
+	- aria2.build
+		- Better error control.
+	- c-ares.build
+		- Better error control.
+	- flare.build
+		- Better error control.
+	- nulloy.build
+		- Better error control.
+	- telegram.build
+		- Better error control.
+	- uget.build
+		- Better error control.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2021-01-03 #############################################
+
+### Added / Adicionado
+ - script:
+	- flare.build
+	- nulloy.build
+ - Packages:
+	- nulloy-0.8.2_92-x86_64-1.txz
+###
+
+### Upgraded / Atualizado
+ - Packages:
+	- aria2-1.35.0-x86_64-1.txz
+	- c-ares-1.17.1-x86_64-1.txz
+	- frostwire-6.8.10-x86_64-1.txz
+	- google-chrome-87.0.4280.88-x86_64-1.txz
+	- telegram-2.5.1-x86_64-1.txz
+	- uget-2.2.3_1-x86_64-1.txz
+	- whatsapp-desktop-0.6.1-x86_64-1.txz
+- Extra:
+	- checklink
+###
+
+### Fixed / Corrigido
+ - script:
+	- aria2.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- c-ares.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- frostwire.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- googlechrome.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- jdk15.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- smoffice2021.build
+		- Changes to instructions after generating the package.
+	- telegram.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- uget.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+	- whatsapp.build
+		- Changes to instructions after generating the package.
+		- Script improvements Post-installation.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2020-12-31 #############################################
+
+### Added / Adicionado
+ - script:
+	- aria2.build
+	- c-ares.build
+	- frostwire.build
+	- jdk15.build
+	- uget.build
+ - Packages:
+	- aria2-1.35.0-x86_64-1.txz
+	- c-ares-1.17.1-x86_64-1.txz
+	- frostwire-6.8.10-x86_64-1.txz
+	- uget-2.2.3_1-x86_64-1.txz
+ - Extra:
+	- checklink
+###
+
+### Fixed / Corrigido
+ - script:
+	- googlechrome.build
+		- Source link verification included.
+	- smoffice2021.build
+		- Source link verification included.
+	- telegram.build
+		- Source link verification included.
+	- whatsapp.build
+		- Source link verification included.
+###
+
+##########################################################################
+
+
+## [ Released ] - 2020-12-27 #############################################
+
+### Added / Adicionado
+ - script:
+	- googlechrome.build
+	- smoffice2021.build
+	- telegram.build
+	- whatsapp.build
+ - Packages:
+	- google-chrome-87.0.4280.88-x86_64-1.txz
+	- telegram-2.5.1-x86_64-1.txz
+	- whatsapp-desktop-0.6.1-x86_64-1.txz
+###
+
+##########################################################################

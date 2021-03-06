@@ -1,0 +1,91 @@
+#!/bin/sh
+
+# Slackware build script for nulloy
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=${PRGNAM:-nulloy}
+VERSION=${VERSION:-0.8.2_112}
+SRCVER=${SRCVER:-0.8.2.pre112}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM-git}
+LINK=https://github.com/nulloy/nulloy/archive/0.8.2.pre112.tar.gz
+
+LIBDIRSUFFIX=""
+[ "$ARCH" = "x86_64" ] && LIBDIRSUFFIX="64"
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/{share/pixmaps,doc/$PRGNAM-$VERSION}}
+cd $TMP; tar xvf $CWD/$SRCVER.tar.?z
+cd $PRGNAM-$SRCVER
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+sed -i "6s/lib/lib${LIBDIRSUFFIX}/" configure
+sed -i "116s/qmake/qmake-qt5/" configure
+sed -i "117s/lrelease/lrelease-qt5/" configure
+./configure --no-update-check
+make; make INSTALL_ROOT=$PKG install
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+cp -a AUTHORS ChangeLog LICENSE* README* THANKS $PKG/usr/doc/$PRGNAM-$VERSION
+install -D -m 0644 ./src/icons/icon.svg $PKG/usr/share/pixmaps/$PRGNAM.svg
+for N in 16 22 24 32 48 64 96 128; do
+	install -D -m 0644 ./src/icons/icon-$N.png $PKG/usr/share/icons/hicolor/${N}x${N}/apps/$PRGNAM.png
+done
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+      |-----handy-ruler------------------------------------------------------|
+nulloy: nulloy (Audio Player)
+nulloy:
+nulloy: Music player with a waveform progress bar
+nulloy:
+nulloy:
+nulloy:
+nulloy:
+nulloy: Homepage: https://nulloy.com/
+nulloy:
+nulloy:
+nulloy:" | tee $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi" | tee $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG $TMP/$PRGNAM-$SRCVER $SRCVER.tar.?z

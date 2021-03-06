@@ -1,0 +1,106 @@
+#!/bin/sh
+
+# Slackware build script for eclipse-jee
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+
+PRGNAM=${PRGNAM:-eclipse-jee}
+VERSION=${VERSION:-4.18}
+ARCH=${ARCH:-x86_64}
+SRCVERSION=${SRCVERSION:-2020-12-R}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+CWD=${CWD:-$PWD}
+PKG=${PKG:-/tmp/package-$PRGNAM}
+LINK=https://eclipse.c3sl.ufpr.br/technology/epp/downloads/release/2020-12/R/eclipse-jee-2020-12-R-linux-gtk-x86_64.tar.gz
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,pixmaps},doc/$PRGNAM-$VERSION}}
+cd $PKG/opt/$PRGNAM
+tar --strip-components=1 -xvf $CWD/$PRGNAM-$SRCVERSION-linux-gtk-x86_64.tar.gz
+chown -R root:root .
+find -L . \
+ \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
+  -o -perm 511 \) -exec chmod 755 {} \; -o \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+
+cat << EOF > $PKG/usr/bin/$PRGNAM
+#!/bin/sh
+cd \$HOME
+/opt/$PRGNAM/eclipse \$@
+EOF
+chmod 0755 $PKG/usr/bin/$PRGNAM
+
+ECLIPSE_ICON=$(find . -iname "*javaee-ide_x48.png")
+install -D -m 0644 "$PKG/opt/$PRGNAM/${ECLIPSE_ICON}" $PKG/usr/share/pixmaps/$PRGNAM.png
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+mv $PKG/opt/$PRGNAM/configuration/config.ini $PKG/opt/$PRGNAM/configuration/config.ini.new
+mv $PKG/opt/$PRGNAM/eclipse.ini $PKG/opt/$PRGNAM/eclipse.ini.new
+cp -a readme/*.html $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "[Desktop Entry]
+Type=Application
+Exec=env SWT_GTK3=0 eclipse-jee
+Name=Eclipse Java EE
+GenericName=Eclipse IDE for Java EE Developers
+Icon=eclipse-jee
+StartupNotify=true
+Categories=Qt;KDE;GNOME;Development;GTK;" | tee $PKG/usr/share/applications/$PRGNAM.desktop
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+           |-----handy-ruler------------------------------------------------------|
+eclipse-jee: eclipse-jee (Eclipse IDE for Java EE Developers)
+eclipse-jee:
+eclipse-jee: Tools for Java developers creating Java EE and Web applications
+eclipse-jee: including a Java IDE, tools for Java EE, JPA, JSF, Mylyn...
+eclipse-jee:
+eclipse-jee:
+eclipse-jee:
+eclipse-jee: Homepage: http://www.eclipse.org
+eclipse-jee:
+eclipse-jee:
+eclipse-jee:" | tee $PKG/install/slack-desc
+
+echo "config() {
+	NEW=\"\$1\"
+	OLD=\"\$(dirname \$NEW)/\$(basename \$NEW .new)\"
+	if [ ! -r \$OLD ]; then
+		mv \$NEW \$OLD
+	elif [ \"\$(cat \$OLD | md5sum)\" = \"\$(cat \$NEW | md5sum)\" ]; then
+		rm \$NEW
+	fi
+}
+
+if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+config opt/eclipse-jee/configuration/config.ini.new
+config opt/eclipse-jee/eclipse.ini.new" | tee $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG $PRGNAM-$SRCVERSION-linux-gtk-x86_64.tar.gz

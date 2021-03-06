@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# CheckLink v1.0 - Script para Manutenção das Versões - By Mauricio Ferrari - Copyright 2021
+
+
+for LNK in `cat CHECK`; do
+	clear
+	w3m -dump $LNK | less
+done
+exit 0

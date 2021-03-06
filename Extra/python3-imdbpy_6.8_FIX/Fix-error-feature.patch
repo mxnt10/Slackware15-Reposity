@@ -1,0 +1,58 @@
+--- imdbpy-6.8/setup.py-original	2019-07-20 04:28:56.000000000 -0300
++++ imdbpy-6.8/setup.py	2021-01-23 22:13:31.987229819 -0300
+@@ -7,9 +7,9 @@
+ 
+ # version of the software; in the code repository this represents
+ # the _next_ release.  setuptools will automatically add 'dev-rREVISION'.
+-version = '6.8'
++version = '6.9'
+ 
+-home_page = 'https://imdbpy.sourceforge.io/'
++home_page = 'https://imdbpy.github.io/'
+ 
+ long_desc = """IMDbPY is a Python package useful to retrieve and
+ manage the data of the IMDb movie database about movies, people,
+@@ -27,7 +27,7 @@
+ home page: %s
+ """ % home_page
+ 
+-dwnl_url = 'https://imdbpy.sourceforge.io/downloads.html'
++dwnl_url = 'https://imdbpy.github.io/downloads/'
+ 
+ classifiers = """\
+ Development Status :: 5 - Production/Stable
+@@ -80,11 +80,6 @@
+ 
+ data_files = []
+ 
+-featSQLAlchemy = setuptools.dist.Feature(
+-    'SQLAlchemy dependency',
+-    standard=True,
+-    install_requires=['SQLAlchemy']
+-)
+ 
+ params = {
+     # Meta-information.
+@@ -123,7 +118,6 @@
+             'pytest-profiling'
+         ]
+     },
+-    'features': {'sqlalchemy': featSQLAlchemy},
+     'packages': setuptools.find_packages(),
+     'entry_points': """
+         [console_scripts]
+@@ -160,12 +154,11 @@
+     path = list(sys.path)
+     languages = []
+     try:
+-        import imp
++        import importlib
+         scriptPath = os.path.dirname(__file__)
+         modulePath = os.path.join(cwd, scriptPath, REBUILDMO_DIR)
+         sys.path += [modulePath, '.', cwd]
+-        modInfo = imp.find_module(REBUILDMO_NAME, [modulePath, '.', cwd])
+-        rebuildmo = imp.load_module('rebuildmo', *modInfo)
++        rebuildmo = importlib.import_module(os.path.join(REBUILDMO_DIR, REBUILDMO_NAME).replace('/', '.'))
+         os.chdir(modulePath)
+         languages = rebuildmo.rebuildmo()
+         print('Created locale for: %s.' % ' '.join(languages))

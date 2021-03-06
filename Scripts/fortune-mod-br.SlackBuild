@@ -1,0 +1,54 @@
+#!/bin/sh
+
+# Slackware build script for fortune-mod-br
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ ! "`ls /var/log/packages/fortune-mod* 2> /dev/null`" ] && echo -e "\nDependência Faltante: fortune-mod !\n" && exit 1
+
+PRGNAM=${PRGNAM:-fortune-mod-br}
+VERSION=${VERSION:-20160820}
+ARCH=${ARCH:-noarch}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_slack15}
+
+CWD=${CWD:-$PWD}
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+LINK=http://ftp.us.debian.org/debian/pool/main/f/fortunes-br/fortunes-br_20160820_all.deb
+
+set -e
+wget -c $LINK
+mkdir -p $PKG/{install,usr/doc}
+cd $PKG; ar p $CWD/fortunes-br_${VERSION}_all.deb data.tar.xz | tar xJv
+find -L . \
+ \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
+  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+mv $PKG/usr/share/games/fortunes/ $PKG/usr/share/fortune/
+mv $PKG/usr/share/doc/fortunes-br/ $PKG/usr/doc/$PRGNAM-$VERSION/
+
+echo "# HOW TO EDIT THIS FILE:
+# The \"handy ruler\" below makes it easier to edit a package description.
+# Line up the first '|' above the ':' following the base package name, and
+# the '|' on the right side marks the last column you can put a character in.
+# You must make exactly 11 lines for the formatting to be correct.  It's also
+# customary to leave one space after the ':' except on otherwise blank lines.
+
+              |-----handy-ruler------------------------------------------------------|
+fortune-mod-br: fortune-mod-br (The Fortune Cookie Program from BSD games)
+fortune-mod-br:
+fortune-mod-br:
+fortune-mod-br: A collection of several fortune cookies for Portuguese speakers,
+fortune-mod-br: gathered from various sources, ranging from proverbs to
+fortune-mod-br: quotations from literature classics.
+fortune-mod-br:
+fortune-mod-br:
+fortune-mod-br:
+fortune-mod-br:
+fortune-mod-br:" | tee $PKG/install/slack-desc
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $CWD; rm -rf $PKG fortunes-br_${VERSION}_all.deb
