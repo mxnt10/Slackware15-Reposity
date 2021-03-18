@@ -12,4 +12,6 @@ Available resources:
 - python3-imdbpy 6.8 FIX : Patch for Python 3.9 and Error Feature Fixed.
 - Transmageddon 1.5 FIX  : Execution Patch for Python 3.9.
 - UGet 2.2.3-1 FIX       : Build Patch for GCC10.
+- wxGTK2 2.8.12 FIX      : Fix for Xara Execution.
+- XaraLX 0.7r1785 FIX    : Makefile Correction and General Corrections of Compilation.
 ```
