@@ -1,0 +1,51 @@
+#!/bin/sh
+
+# Slackware build script for ccat
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=ccat
+VERSION=1.1.0
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) export ARCH=i586 ;;
+	   *) export ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+
+CWD=$PWD
+TMP=${TMP:-/tmp}
+PKG=${PKG:-$TMP/package-$PRGNAM}
+
+set -e
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $PKG
+
+go get -u github.com/owenthereal/ccat
+mv ~/go/* ./usr
+cp -a usr/src/github.com/owenthereal/ccat/{LICENSE,README.md} $PKG/usr/doc/$PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+echo "    |-----handy-ruler------------------------------------------------------|
+ccat: ccat (cat colorized)
+ccat:
+ccat: The ccat is the colorizing cat. It works similar to cat but
+ccat: displays content with syntax highlighting.
+ccat:
+ccat:
+ccat: https://github.com/owenthereal/ccat
+ccat:
+ccat:
+ccat:
+ccat:" | tee $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG ~/go

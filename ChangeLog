@@ -3,6 +3,49 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2021-03-27 #############################################
+
+### Added / Adicionado
+ - Script:
+	- ccat.SlackBuild
+	- graphicsmagick.SlackBuild
+	- lcab.SlackBuild
+	- libqpsd.SlackBuild
+	- lsdvd.SlackBuild
+	- nosync-browser.SlackBuild
+	- photoqt.SlackBuild
+	- pugixml.SlackBuild
+	- python3-xlib.SlackBuild
+	- vscodium.SlackBuild
+ - Extra:
+	- Folder WhatsApp_0.6.1_FIX.
+	- Folder FrostWire_EXTRA.
+###
+
+### Upgraded / Atualizado
+	-clion.SlackBuild
+	-kazam.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- Minor adjusts and corrections.
+###
+
+### Removed / Removido
+ - Extra:
+	- Kazam_1.4.5_FIX - Unnecessary for new version.
+###
+
+### Fixed / Corrigido
+ - Script:
+	- transmageddon.SlackBuild
+	- whatsapp-desktop.SlackBuild
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2021-03-04 #############################################
 
 ### Added / Adicionado
@@ -117,6 +160,7 @@ Todas as mudanças notáveis ​​neste projeto serão documentadas neste arqui
 	- All scripts have been renamed to SlackBuild.
  - Package:
 	- build-get-1.0-noarch-1 --> build-get-1.1-noarch-1
+###
 
 ##########################################################################
 
@@ -158,7 +202,6 @@ Todas as mudanças notáveis ​​neste projeto serão documentadas neste arqui
 	- FrostWire 6.8.10 FIX / frostwire-fixed
 	- FrostWire 6.8.10 FIX / frostwire-original
 ###
-
 
 ##########################################################################
 

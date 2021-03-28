@@ -6,50 +6,37 @@
 # All rights reserved.
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/python-distutils-extra* 2> /dev/null`" ] && echo -e "\nDependência Faltante: python-distutils-extra !\n" && exit 1
+[ ! "`ls /var/log/packages/python-distutils-extra* 2> /dev/null`" ] && echo -e "\nDependência Faltante: python-distutils-extra !\n" && ERRO=1
+[ ! "`ls /var/log/packages/python3-xlib*           2> /dev/null`" ] && echo -e "\nDependência Faltante: python3-xlib !          \n" && ERRO=1
+[ $ERRO = 1 ] && exit 1
 
-PRGNAM=${PRGNAM:-kazam}
-VERSION=${VERSION:-1.4.5}
-ARCH=${ARCH:-noarch}
+PRGNAM=kazam
+VERSION=1.5.4
+ARCH=noarch
 BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
+TAG=${TAG:-_mxnt}
 
-CWD=${CWD:-$PWD}
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
 TMP=${TMP:-/tmp}
 PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://launchpad.net/kazam/stable/1.4.5/+download/kazam-1.4.5.tar.gz
-PATH1=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Kazam_1.4.5_FIX/configparser_api_changes.patch
-PATH2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Kazam_1.4.5_FIX/fix-PyGIWarnings.patch
-PATH3=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Kazam_1.4.5_FIX/pulse_audio_python_38.patch
-PATH4=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Kazam_1.4.5_FIX/setlocale.patch
+LINK=https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam/+sourcefiles/kazam/1.5.4-0ubuntu6/kazam_1.5.4.orig.tar.gz
 
 set -e
-wget -c $LINK $PATH1 $PATH2 $PATH3 $PATH4
+wget -c $LINK
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
-cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+cd $TMP; tar xvf $CWD/${PRGNAM}_$VERSION.orig.tar.?z*
+cd $PRGNAM-1.5.3
 chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+chmod -R u+w,go+r-w,a+X-s .
 
-patch -Np1 -i $CWD/configparser_api_changes.patch
-patch -Np1 -i $CWD/pulse_audio_python_38.patch
-patch -Np1 -i $CWD/fix-PyGIWarnings.patch
-patch -Np1 -i $CWD/setlocale.patch
+sed -i s,"DISTRO='Ubuntu'","DISTRO='Slackware'",g kazam/version.py
+
 python3 setup.py install --root=$PKG
 cp -a AUTHORS COPYING* PKG-INFO README TODO $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-     |-----handy-ruler------------------------------------------------------|
+echo "     |-----handy-ruler------------------------------------------------------|
 kazam: kazam (screencast and screenshot application)
 kazam:
 kazam: Kazam is a simple screen recording program that will capture the
@@ -72,10 +59,16 @@ fi
 
 if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
 	if [ -x /usr/bin/gtk-update-icon-cache ]; then
-		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
 fi" | tee $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG $TMP/$PRGNAM-$VERSION $PRGNAM-$VERSION.tar.?z {configparser_api_changes,fix-PyGIWarnings,pulse_audio_python_38,setlocale}.patch
+rm -rf $PKG $TMP/$PRGNAM-1.5.3

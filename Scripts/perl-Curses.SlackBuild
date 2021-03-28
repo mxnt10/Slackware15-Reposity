@@ -7,12 +7,11 @@
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 
-PRGNAM=${PRGNAM:-perl-Curses}
-VERSION=${VERSION:-1.37}
-BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
-
+PRGNAM=perl-Curses
 SRCNAM=Curses
+VERSION=1.37
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
 
 case "$( uname -m )" in
 	i?86) ARCH=i586 ;;
@@ -20,7 +19,9 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-CWD=${CWD:-$PWD}
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
 TMP=${TMP:-/tmp}
 PKG=${PKG:-$TMP/package-$PRGNAM}
 LINK=https://cpan.metacpan.org/authors/id/G/GI/GIRAFFED/Curses-1.37.tar.gz
@@ -44,14 +45,10 @@ fi
 
 set -e
 wget -c $LINK
-cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
+cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z*
 cd $SRCNAM-$VERSION
 chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 -o -perm 511 \) \
- -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 600 -o -perm 444 -o -perm 440 -o -perm 400 \) \
- -exec chmod 644 {} \;
+chmod -R u+w,go+r-w,a+X-s .
 
 perl Makefile.PL \
   PREFIX=/usr \
@@ -67,14 +64,7 @@ find $PKG -depth -type d -empty -delete || true
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cp -a Copying MAINTENANCE HISTORY INSTALL README $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-           |-----handy-ruler------------------------------------------------------|
+echo "           |-----handy-ruler------------------------------------------------------|
 perl-Curses: perl-Curses (perl module for Curses)
 perl-Curses:
 perl-Curses: terminal screen handling and optimization
@@ -89,4 +79,4 @@ perl-Curses:" | tee $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG $TMP/$SRCNAM-$VERSION $SRCNAM-$VERSION.tar.?z
+rm -rf $PKG $TMP/$SRCNAM-$VERSION

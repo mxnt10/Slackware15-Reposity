@@ -8,13 +8,15 @@
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 [ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
 
-PRGNAM=${PRGNAM:-google-earth}
-RELEASE=${RELEASE:-pro-stable}
-ARCH=${ARCH:-x86_64}
+PRGNAM=google-earth
+RELEASE=pro-stable
+ARCH=x86_64
 BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
+TAG=${TAG:-_mxnt}
 
-CWD=${CWD:-$PWD}
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
 PKG=${PKG:-/tmp/package-$PRGNAM}
 LINK=https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
 
@@ -24,8 +26,7 @@ VERSION=$(ar p google-earth-${RELEASE}_current_amd64.deb control.tar.gz 2> /dev/
 mkdir -p $PKG/{install,usr/share/mime/packages}
 cd $PKG; ar p $CWD/google-earth-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
 chown -R root:root .
-chmod -R u+w,go+r-w,a-s .
-find . -type d -exec chmod 0755 {} \;
+chmod -R u+w,go+r-w,a+X-s .
 find -L . \( -name "*.png" -o -name "*.kml" -o -name "*.xml" \) -exec chmod 0644 {} \;
 mv $PKG/opt/google/earth/pro/google-earth-pro.desktop $PKG/usr/share/applications
 for icon in 16 22 24 32 48 64 128 256; do
@@ -55,14 +56,7 @@ echo "<?xml version=\"1.0\"?>
   </mime-type>
 </mime-info>" | tee $PKG/usr/share/mime/packages/$PRGNAM-mimetypes.xml
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-           |-----handy-ruler------------------------------------------------------|
+echo "           |-----handy-ruler------------------------------------------------------|
 google-earth: google-earth (Google's famous virtual globe)
 google-earth:
 google-earth: Google Earth is a virtual globe program. It maps a version of the
@@ -85,7 +79,13 @@ fi
 
 if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
 	if [ -x /usr/bin/gtk-update-icon-cache ]; then
-		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
 fi
 
@@ -97,4 +97,4 @@ fi
 
 /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG google-earth-${RELEASE}_current_amd64.deb
+rm -rf $PKG

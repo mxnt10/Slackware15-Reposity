@@ -8,14 +8,16 @@
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 [ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
 
-PRGNAM=${PRGNAM:-eclipse-jee}
-VERSION=${VERSION:-4.18}
-ARCH=${ARCH:-x86_64}
-SRCVERSION=${SRCVERSION:-2020-12-R}
+PRGNAM=eclipse-jee
+VERSION=4.18
+ARCH=x86_64
+SRCVERSION=2020-12-R
 BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
+TAG=${TAG:-_mxnt}
 
-CWD=${CWD:-$PWD}
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
 PKG=${PKG:-/tmp/package-$PRGNAM}
 LINK=https://eclipse.c3sl.ufpr.br/technology/epp/downloads/release/2020-12/R/eclipse-jee-2020-12-R-linux-gtk-x86_64.tar.gz
 
@@ -25,11 +27,7 @@ mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,pixmaps},doc/$PR
 cd $PKG/opt/$PRGNAM
 tar --strip-components=1 -xvf $CWD/$PRGNAM-$SRCVERSION-linux-gtk-x86_64.tar.gz
 chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+chmod -R u+w,go+r-w,a+X-s .
 
 cat << EOF > $PKG/usr/bin/$PRGNAM
 #!/bin/sh
@@ -54,14 +52,7 @@ Icon=eclipse-jee
 StartupNotify=true
 Categories=Qt;KDE;GNOME;Development;GTK;" | tee $PKG/usr/share/applications/$PRGNAM.desktop
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-           |-----handy-ruler------------------------------------------------------|
+echo "           |-----handy-ruler------------------------------------------------------|
 eclipse-jee: eclipse-jee (Eclipse IDE for Java EE Developers)
 eclipse-jee:
 eclipse-jee: Tools for Java developers creating Java EE and Web applications
@@ -94,7 +85,13 @@ fi
 
 if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
 	if [ -x /usr/bin/gtk-update-icon-cache ]; then
-		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
 fi
 
@@ -103,4 +100,4 @@ config opt/eclipse-jee/eclipse.ini.new" | tee $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG $PRGNAM-$SRCVERSION-linux-gtk-x86_64.tar.gz
+rm -rf $PKG

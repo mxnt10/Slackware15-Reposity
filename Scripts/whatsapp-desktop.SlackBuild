@@ -7,34 +7,30 @@
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 
-NAME=${NAME:-whatsapp-desktop}
-VERSION=${VERSION:-0.6.1}
-ARCH=${ARCH:-x86_64}
+PRGNAM=whatsapp-desktop
+VERSION=0.6.1
+ARCH=x86_64
 BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
+TAG=${TAG:-_mxnt}
 
 [ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
-CWD=${CWD:-$PWD}
-PKG=${PKG:-/tmp/package-$NAME}
-LINK=http://packages.linuxmint.com/pool/import/w/whatsapp-desktop/whatsapp-desktop_0.6.1_amd64.deb
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+
+CWD=$PWD
+PKG=${PKG:-/tmp/package-$PRGNAM}
+LINK1=http://packages.linuxmint.com/pool/import/w/whatsapp-desktop/whatsapp-desktop_0.6.1_amd64.deb
+LINK2=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/WhatsApp_0.6.1_FIX/Whatsapp-icon-kde-fix.tar.gz
 
 set -e
-wget -c $LINK
+wget -c $LINK1 $LINK2
 mkdir -p $PKG/{install,usr/bin}
-cd $PKG; ar p $CWD/${NAME}_${VERSION}_amd64.deb data.tar.xz | tar xJv
-ln -sf /opt/$NAME/WhatsApp $PKG/usr/bin
+cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}_amd64.deb data.tar.xz | tar xJv
+ln -sf /opt/$PRGNAM/WhatsApp $PKG/usr/bin
+( cd $PKG/opt/$PRGNAM/resources/app/assets/icon; rm icon{,Warning,WarningWithMsg,WithMsg}.png; tar xvf $CWD/Whatsapp-icon-kde-fix.tar.gz )
 chown -R root:root .
-chmod -R u+w,go+r-w,a-s .
-chmod 0755 .
+chmod -R u+w,go+r-w,a+X-s .
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-                |-----handy-ruler------------------------------------------------------|
+echo "                |-----handy-ruler------------------------------------------------------|
 whatsapp-desktop: whatsapp-desktop (unofficial webapp for whatsapp)
 whatsapp-desktop:
 whatsapp-desktop: Unofficial whatsapp web desktop client for OSX, Linux and Windows.
@@ -48,19 +44,25 @@ whatsapp-desktop:
 whatsapp-desktop:" | tee $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
-	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+        /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
 fi
 
 if [ -x /usr/bin/update-mime-database ]; then
-	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+        /usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
 fi
 
 if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
-	if [ -x /usr/bin/gtk-update-icon-cache ]; then
-		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
-	fi
+        if [ -x /usr/bin/gtk-update-icon-cache ]; then
+                /usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+        fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+        if [ -x /usr/bin/glib-compile-schemas ]; then
+                /usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+        fi
 fi" | tee $PKG/install/doinst.sh
 
-/sbin/makepkg -l y -c n $CWD/$NAME-$VERSION-$ARCH-$BUILD$TAG.txz
-chown -R 1000:users $CWD/$NAME-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG ${NAME}_${VERSION}_amd64.deb
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG

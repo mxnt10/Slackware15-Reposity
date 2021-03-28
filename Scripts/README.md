@@ -86,6 +86,7 @@ Feito com base no *python3*, possui as dependências a seguir:
 - Gtk3    --> gtk+3   : Já instalado.
 - Glib2   --> glib2   : Já instalado.
 - Python3 --> python3 : Já instalado.
+- lsdvd               : Não instalado.
 
 - notify-python     --> python-notify2 : Já instalado.
 - python3-gobject   --> pygobject3     : Já instalado.
@@ -99,10 +100,12 @@ Feito com base no *python3*, possui as dependências a seguir:
 - GStreamer Plugins Ugly 1.x --> gst-plugins-ugly  : Não instalado.
 ```
 
+Você precisará *lsdvd* para um bom funcionamento do programa.
 O *gst-plugins-ugly* e o *gst-plugins-bad* são dependências opcionais. Caso queira, use esses scripts:
 ```
 - gst-plugins-ugly.SlackBuild
 - gst-plugins-bad.SlackBuild
+- lsdvd.SlackBuild
 ```
 
 ### Instalação Kazam
@@ -211,4 +214,14 @@ O *CodeBlocks* é uma IDE de desenvolvimento em C/C++ e tem como dependência o 
 Portanto, use esse script:
 ```
 - wxGTK3.SlackBuild
+```
+
+# Instalação PhotoQT
+
+O *PhotoQT* é um visualizador de imagem que lembra o Visualizador de Photos do Picasa para Windows.
+Ele possui algumas dependências que devem ser instaladas usando esses scripts:
+```
+- graphicsmagick.SlackBuild
+- libqpsd.SlackBuild
+- pugixml.SlackBuild
 ```

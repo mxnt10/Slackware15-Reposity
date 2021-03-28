@@ -7,12 +7,12 @@
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 
-PRGNAM=${PRGNAM:-telegram}
-SRCNAM=${SRCNAM:-tsetup}
-URLNAM=${URLNAM:-tlinux}
-SRCDIR=${SRCDIR:-Telegram}
+PRGNAM=telegram
+SRCNAM=tsetup
+URLNAM=tlinux
+SRCDIR=Telegram
 BUILD=${BUILD:-1}
-TAG=${TAG:-_slack15}
+TAG=${TAG:-_mxnt}
 
 case "$( uname -m )" in
 	i?86) ARCH=i586 ;;
@@ -26,7 +26,9 @@ case "$ARCH" in
 		 *) echo -e "\nArquitetura $ARCH sem Suporte !\n"; exit 1 ;;
 esac
 
-CWD=${CWD:-$PWD}
+mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
 TMP=${TMP:-/tmp}
 PKG=${PKG:-$TMP/package-$PRGNAM}
 LINK=https://updates.tdesktop.com/$URL/$SRC.$VERSION.tar.xz
@@ -36,11 +38,7 @@ wget -c $LINK
 mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,pixmaps}}}
 cd $TMP; tar xvf $CWD/$SRC.$VERSION.tar.?z
 cd $SRCDIR; chown -R root:root .
-find -L . \
- \( -perm 777 -o -perm 775 -o -perm 750 -o -perm 711 -o -perm 555 \
-  -o -perm 511 \) -exec chmod 755 {} \; -o \
- \( -perm 666 -o -perm 664 -o -perm 640 -o -perm 600 -o -perm 444 \
-  -o -perm 440 -o -perm 400 \) -exec chmod 644 {} \;
+chmod -R u+w,go+r-w,a+X-s .
 
 cp -a * $PKG/opt/$PRGNAM
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
@@ -58,14 +56,7 @@ Terminal=false
 Type=Application
 Categories=Network;" | tee $PKG/usr/share/applications/$PRGNAM.desktop
 
-echo "# HOW TO EDIT THIS FILE:
-# The \"handy ruler\" below makes it easier to edit a package description.
-# Line up the first '|' above the ':' following the base package name, and
-# the '|' on the right side marks the last column you can put a character in.
-# You must make exactly 11 lines for the formatting to be correct.  It's also
-# customary to leave one space after the ':' except on otherwise blank lines.
-
-        |-----handy-ruler------------------------------------------------------|
+echo "        |-----handy-ruler------------------------------------------------------|
 telegram: telegram (messaging app)
 telegram:
 telegram: telegram is a cloud-based mobile and desktop messaging app
@@ -88,10 +79,16 @@ fi
 
 if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
 	if [ -x /usr/bin/gtk-update-icon-cache ]; then
-		/usr/bin/gtk-update-icon-cache -f usr/share/icons/hicolor >/dev/null 2>&1
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
 fi" | tee $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-cd $CWD; rm -rf $PKG $TMP/$SRCDIR $SRC.$VERSION.tar.?z
+rm -rf $PKG $TMP/$SRCDIR
