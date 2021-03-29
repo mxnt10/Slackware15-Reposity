@@ -3,10 +3,10 @@
 # CheckLink v5.0 - Script para Manutenção dos Links - By Mauricio Ferrari - Copyright 2021
 
 CNT=0
-CR1=${CR1:-\\e[1;31m}
-CR2=${CR2:-\\e[1;32m}
-CR3=${CR3:-\\e[1;33m}
-CR4=${CR4:-\\e[1;34m}
+CR1=${CR1:-\\e[31m}
+CR2=${CR2:-\\e[32m}
+CR3=${CR3:-\\e[33m}
+CR4=${CR4:-\\e[34m}
 
 printf "\n$CR4 Iniciando... \n\n"
 for LNK in `cat SOURCE`; do

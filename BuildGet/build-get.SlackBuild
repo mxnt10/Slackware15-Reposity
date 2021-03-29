@@ -23,16 +23,15 @@
 #  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 PRGNAM=build-get
-VERSION=${VERSION:-1.1}
-BUILD=${BUILD:-1}
-
+VERSION=2.0
 ARCH=noarch
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
 
 CWD=$PWD
 PKG=/tmp/package-$PRGNAM
 
 set -e
-
 rm -rf $PKG
 mkdir -p $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION}}
 
@@ -46,6 +45,7 @@ find -L . \
 
 install -D -m 0755 $CWD/$PRGNAM $PKG/usr/bin
 
+cat $CWD/LICENSE > $PKG/usr/doc/$PRGNAM-$VERSION/LICENSE
 cat $CWD/ChangeLog > $PKG/usr/doc/$PRGNAM-$VERSION/ChangeLog
 cat $CWD/$PRGNAM.SlackBuild > $PKG/usr/doc/$PRGNAM-$VERSION/$PRGNAM.SlackBuild
 

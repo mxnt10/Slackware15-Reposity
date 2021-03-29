@@ -1,4 +1,4 @@
-# Build Get 1.0
+# Build Get 2.0
 *Packages Installation for Slackware 15.0*
 <br/><br/>
 

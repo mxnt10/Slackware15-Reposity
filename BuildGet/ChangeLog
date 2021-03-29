@@ -1,6 +1,20 @@
 # ChangeLog
 All notable changes to this project will be documented in this file.
-Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
+Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+
+
+## [ 2.0 ] - 2021-03-28 ##################################################
+
+### Changed / Modificado
+	- Package detection improvements.
+	- Code improvements.
+###
+
+### Fixed / Corrigido
+	- Function Update.
+###
+
+##########################################################################
 
 
 ## [ 1.1 ] - 2021-01-27 ##################################################
@@ -16,11 +30,11 @@ Todas as mudanças notáveis ​​neste projeto serão documentadas neste arqui
 ## [ 1.0 ] - 2021-01-10 ##################################################
 
 ### Added / Adicionado
-	- Checagem de: Root, Update, Pacotes Criados e Instalados.
-	- Atualizar Lista de Pacotes.
-	- Listar os Pacotes Disponíveis.
-	- Gerar o Pacote dos Programas.
-	- Instalação dos Pacotes.
+	- Check of: Root, Update, Created and Installed Packages.
+	- Update Packages List.
+	- List Avaliable Packages.
+	- Generate Programs Packages.
+	- Packages Installation. 
 ###
 
 ##########################################################################
