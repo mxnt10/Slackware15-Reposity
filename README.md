@@ -11,22 +11,22 @@ Feel at ease to install the packages you need.
 
 | `Softwares`                   | `Architecture`  | `Packages Description`              | `Required By`            |
 |-------------------------------|-----------------|-------------------------------------|--------------------------|
-| `CLion 2020.3.2`              | `No Arch`       | `IDE for C/C++`                     |                          |
+| `CLion 2021.1`                | `No Arch`       | `IDE for C/C++`                     |                          |
 | `CodeBlocks 20.03`            | `i586 / x86_64` | `IDE for C/C++`                     |                          |
 | `Eclipce-Jee 4.18 (2020-12)`  | `x86_64`        | `IDE for Java JEE`                  |                          |
-| `Facebook Desktop 1.0`        | `x86_64`        | `Unofficial WebApp for Facebook`    |                          |
+| `Facebook Desktop 1.1`        | `x86_64`        | `Unofficial WebApp for Facebook`    |                          |
 | `Flare Game 1.11`             | `i586 / x86_64` | `RPG Game / Include Engine`         |                          |
 | `FlareGet 5.0_1`              | `i586 / x86_64` | `Multisegment Download Manager`     |                          |
 | `Frostwire 6.9.2`             | `x86_64`        | `P2P Bittorrent Downloader`         |                          |
-| `Google Chrome 89.0.4389.90`  | `x86_64`        | `Web Browser`                       |                          |
-| `Google Earth 7.3.3.7786`     | `x86_64`        | `3D Planet Viewer`                  |                          |
-| `Hypnotix 1.4_1`              | `No Arch`       | `Free IPTV`                         |                          |
-| `Kazam 1.4.5`                 | `No Arch`       | `Screenshot and Screencast`         |                          |
+| `Google Chrome Current`       | `x86_64`        | `Web Browser`                       |                          |
+| `Google Earth Pro Current`    | `x86_64`        | `3D Planet Viewer`                  |                          |
+| `Hypnotix 1.5`                | `No Arch`       | `Free IPTV`                         |                          |
+| `Kazam 1.5.4`                 | `No Arch`       | `Screenshot and Screencast`         |                          |
 | `MPV 0.33.0`                  | `i586 / x86_64` | `Multimedia Player`                 | `Hypnotix`               |
 | `Notable 1.8.4`               | `x86_64`        | `Note editor using Markdown`        |                          |
 | `Nulloy 0.8.2_106`            | `i586 / x86_64` | `Audio Player`                      |                          |
 | `PhotoQT 2.1.1`               | `i586 / x86_64` | `Image Viewer`                      |                          |
-| `Pluto TV 1.0`                | `x86_64`        | `Unofficial WebApp for Pluto TV`    |                          |
+| `Pluto TV 1.1`                | `x86_64`        | `Unofficial WebApp for Pluto TV`    |                          |
 | `QMPlay2 20.12.16`            | `i586 / x86_64` | `Multimedia Player`                 |                          |
 | `SoftMaker FreeOffice 2018`   | `x86_64`        | `Office Suite`                      |                          |
 | `Spotify 1.0.72 / 1.1.10`     | `i586 / x86_64` | `Streaming Music player`            |                          |
@@ -71,13 +71,13 @@ Feel at ease to install the packages you need.
 | `Aria2 1.35.0`                | `i586 / x86_64` |                                     | `UGet`                   |
 | `cab-extract 1.9.1`           | `i586 / x86_64` | `Extract CAB Archives`              |                          |
 | `DPKG 1.20.7.1`               | `i586 / x86_64` |                                     |                          |
-| `GST Plugins Bad 1.18.2`      | `i586 / x86_64` |                                     | `Nulloy, Transmageddon`  |
-| `GST Plugins Ugly 1.18.2`     | `i586 / x86_64` |                                     | `Nulloy, Transmageddon`  |
+| `GST Plugins Bad 1.18.2`      | `i586 / x86_64` | `Multimedia Plugin`                 | `Nulloy, Transmageddon`  |
+| `GST Plugins Ugly 1.18.2`     | `i586 / x86_64` | `Multimedia Plugin`                 | `Nulloy, Transmageddon`  |
 | `lcab 1.0b12`                 | `i586 / x86_64` | `Compress Files for CAB Archives`   |                          |
 | `Molotov 1.0`                 | `No Arch`       | `Make USB Boot for Windows 10`      |                          |
 | `NoSync Browser 1.1`          | `No Arch`       |                                     |                          |
 | `Oracle JDK15 15.0.2`         | `x86_64`        | `Virtual Machine Java`              | `FrostWire`              |
-| `Refine 2.0`                  | `i586 / x86_64` | `Read specific lines of text files` |                          |
+| `Refine 2.0`                  | `i586 / x86_64` | `Read Specific Lines of Text Files` |                          |
 | `perl-Curses 1.37`            | `i586 / x86_64` |                                     | `perl-Term-Animation`    |
 | `perl-Term-Animation 2.6`     | `i586 / x86_64` |                                     | `asciiquarium`           |
 | `python-distutils-extra 2.39` | `i586 / x86_64` |                                     | `Kazam`                  |
@@ -92,11 +92,12 @@ Feel at ease to install the packages you need.
 
 | `Packages`                    | `Architecture`  | `Packages Description`              | `Required By`            |
 |-------------------------------|-----------------|-------------------------------------|--------------------------|
-| `asciiquarium 1.1`            | `No Arch`       | `Sea animation in ASCII art`        |                          |
+| `asciiquarium 1.1`            | `No Arch`       | `Sea Animation in ASCII Art`        |                          |
 | `ccat 1.1.0`                  | `i586 / x86_64` | `Colorized cat`                     |                          |
-| `cowsay 3.04`                 | `i586 / x86_64` |                                     |                          |
-| `fortune-mod 2.12.0`          | `i586 / x86_64` |                                     | `fortune-mod-br`         |
+| `cowsay 3.04`                 | `i586 / x86_64` | `Configurable Talking Cow`          |                          |
+| `fortune-mod 2.12.0`          | `i586 / x86_64` | `View Phrases in Terminal`          | `fortune-mod-br`         |
 | `fortune-mod-br 20160820`     | `No Arch`       | `Translation PT-BR for fortune-mod` |                          |
+| `grc 1.12`                    | `i586 / x86_64` | `Colorized Commands`                |                          |
 | `Luna Wallpapers 0.2`         | `No Arch`       | `Elementary Wallpapers`             |                          |
 | `...........................` | `.............` | `.................................` | `......................` |
 

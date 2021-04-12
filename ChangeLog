@@ -1,6 +1,29 @@
 # ChangeLog
 All notable changes to this project will be documented in this file.
-Todas as mudanças notáveis ​​neste projeto serão documentadas neste arquivo.
+Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+
+
+## [ Released ] - 2021-04-10 #############################################
+
+### Added / Adicionado
+ - Script:
+	- grc.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- clion.SlackBuild
+	- facebook.SlackBuild
+	- hypnotix.SlackBuild
+	- plutotv.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- hypnotix.SlackBuild
+###
+
+##########################################################################
 
 
 ## [ Released ] - 2021-03-28 #############################################

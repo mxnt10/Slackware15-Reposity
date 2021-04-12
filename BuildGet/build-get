@@ -3,7 +3,7 @@
 ################################################################################
 #                                                                              #
 #                                                                              #
-# Build Get 2.0 - Instalação de Pacotes para o Slackware 15.0                  #
+# Build Get 2.1 - Instalação de Pacotes para o Slackware 15.0                  #
 #                                                                              #
 # By Mauricio Ferrari                                                          #
 #                                                                              #
@@ -35,7 +35,7 @@
 
 PARAM=$1
 PACKAGE=$2
-CWD=${PWD}
+CWD=$PWD
 BUILDDIR="/var/build-get"
 BUILDSCR="$BUILDDIR/packages"
 BUILDNAME="PACKAGES.TXT"
@@ -51,7 +51,7 @@ BUILDURL="$BUILDLINK/$BUILDNAME"
 
 info()
 {
-	head -29 $( realpath $0 ) | sed "1d"
+	sed "1d" <(head -29 $( realpath $0 ))
 	exit 0
 }
 
@@ -69,7 +69,7 @@ concluido()
 
 checkroot()
 {
-	[ "$UID" != "0" ] && echo -e "\nAlgumas Operações Requerem Root !\n" && exit 1
+	[ "$UID" != 0 ] && echo -e "\nAlgumas Operações Requerem Root !\n" && exit 1
 }
 
 checkstart()
@@ -81,14 +81,14 @@ checkbuild()
 {
 	# Alguns pacotes podem ser gerados com letras maiúsculas.
 	# Portanto, foi usado grep com "-i".
-	CKBUILD=$( ls -R $BUILDSCR 2>/dev/null | egrep -iE "([$PACKAGE][-]([0-9]*[.,_]([a-z]*[0-9])*)*[0-9]*[-][a-z]*([0-9]*)*[_]*([0-9]*)*)" )
+	CKBUILD=$( grep -iE "^$PACKAGE[-]([0-9]*[.,_]([a-z]*[0-9])*)*[0-9]*[-][a-z]*([0-9]*)*[_]*([0-9]*)*" <(ls -R $BUILDSCR 2>&- ) )
 	if [ "$CKBUILD" != "" ]; then
 		echo -ne "\nJá foi Gerado uma Versão desse Pacote: $CKBUILD !\nManter o Pacote(yes/no)? (default: yes): "
 		read OPTION
-		[ "$OPTION" == "no" ] && build
+		[ "$OPTION" = "no" ] && build
 
 		# Se executado o "install" o processo não pode parar por aqui.
-		[ "$PARAM" == "build" ] && echo -e "\nSaindo ...\n" && exit 0
+		[ "$PARAM" = "build" ] && echo -e "\nSaindo ...\n" && exit 0
 	else
 		build
 	fi
@@ -98,11 +98,11 @@ checkinstall()
 {
 	# Alguns pacotes podem ser nomeados com letras maiúsculas.
 	# Portanto, foi usado grep com "-i".
-	CKINSTALL=$( ls /var/log/packages 2>/dev/null | grep -iE ^$PACKAGE-[0-9] )
+	CKINSTALL=$( grep -iE "^$PACKAGE[-]([0-9]*[.,_]([a-z]*[0-9])*)*[0-9]*[-][a-z]*([0-9]*)*[_]*([0-9]*)*" <(ls /var/log/packages 2>&- ) )
 	if [ "$CKINSTALL" != "" ]; then
 		echo -ne "\nJá há uma Versão desse Pacote Instalado: $CKINSTALL !\nContinuar(yes/no)? (default: yes): "
 		read OPTION
-		[ "$OPTION" == "no" ] && echo -e "\nSaindo ...\n" && exit 0
+		[ "$OPTION" = "no" ] && echo -e "\nSaindo ...\n" && exit 0
 
 		# Não é necessário a opção de yes.
 		# Com um simples "Enter", o progresso irá continuar.
@@ -123,16 +123,16 @@ updatelist()
 	[ ! -e "$BUILDDIR"  ] && mkdir -p $BUILDDIR
 	[   -e "$BUILDLIST" ] && mv $BUILDLIST $BAK
 	wget -cq --show-progress -O $BUILDLIST $BUILDURL
-	CKBYTE=$( wc -c $BUILDLIST | awk '{print $1}' )
-	[ "$CKBYTE" == "0" ] && [ ! -e "$BAK" ] && rm -f $BUILDLIST
-	[ "$CKBYTE" == "0" ] && [   -e "$BAK" ] && mv $BAK $BUILDLIST
-	[ "$CKBYTE" == "0" ] && echo -e "\nFalha ao Atualizar a Base de Dados !\n" && exit 1
+	CKBYTE=$( wc -c < $BUILDLIST)
+	[ "$CKBYTE" = 0 ] && [ ! -e "$BAK" ] && rm -f $BUILDLIST
+	[ "$CKBYTE" = 0 ] && [   -e "$BAK" ] && mv $BAK $BUILDLIST
+	[ "$CKBYTE" = 0 ] && echo -e "\nFalha ao Atualizar a Base de Dados !\n" && exit 1
 	
 	# Se o download da base de dados for bem sucedida, o backup não será mais útil.
 	[   -e "$BUILDLIST" ] && rm -f $BAK
 	
 	# Se o checkstart entrou em ação, o processo não pode parar por aqui.
-	[ "$PARAM" == "update" ] && concluido
+	[ "$PARAM" = "update" ] && concluido
 }
 
 ################################################################################
@@ -147,8 +147,8 @@ list()
 	for ((L=0; L<56; L++)); do printf "-"; done
 	printf "\n%5sNº | Pacotes%17s | Versão%10s |\n"
 	for ((L=0; L<56; L++)); do printf "-"; done; echo
-	[ "$PACKAGE" == "" ] && cat $BUILDLIST | nl | sed -r 's/^ / |/'
-	[ "$PACKAGE" != "" ] && grep $PACKAGE $BUILDLIST | nl | sed -r 's/^ / |/'
+	[ "$PACKAGE"  = "" ] && sed -r 's/^ / |/' <(nl $BUILDLIST)
+	[ "$PACKAGE" != "" ] && sed -r 's/^ / |/' <(nl <(grep $PACKAGE $BUILDLIST))
 	for ((L=0; L<56; L++)); do printf "-"; done; echo
 	concluido
 }
@@ -162,19 +162,19 @@ list()
 build()
 {
 	echo -e "\nGerando o Pacote do Programa...\n"
-	[ "$PACKAGE" == "" ] && echo -e "Parâmetro Incompleto. Não há um Programa a ser Instalado !\n" && exit 1
+	[ "$PACKAGE" = "" ] && echo -e "Parâmetro Incompleto. Não há um Programa a ser Instalado !\n" && exit 1
 	[ ! -e $BUILDSCR ] && mkdir $BUILDSCR; cd $BUILDSCR
 
 	# Alguns pacotes podem ser gerados com letras maiúsculas.
 	# Portanto, foi usado grep com "-i".
 	DOWN=$( grep -wio $PACKAGE $BUILDLIST )
-	[ "$DOWN" == "" ] && echo -e "Não foi Possível Encontrar o Pacote $PACKAGE na Lista!\n" && exit 1
+	[ "$DOWN" = "" ] && echo -e "Não foi Possível Encontrar o Pacote $PACKAGE na Lista!\n" && exit 1
 	wget -cq --show-progress -P $BUILDSCR $BUILDLINK/$PACKAGE.SlackBuild
 	chmod +x $BUILDSCR/$PACKAGE.SlackBuild
 	$BUILDSCR/$PACKAGE.SlackBuild
 
 	# Se executado o "install" o processo não pode parar por aqui.
-	[ "$PARAM" == "build" ] && concluido
+	[ "$PARAM" = "build" ] && concluido
 }
 
 ################################################################################
@@ -190,7 +190,7 @@ installer()
 
 	# Alguns pacotes podem ser gerados com letras maiúsculas.
 	# Portanto, foi usado grep com "-i".
-	PRGNAM=$( ls -R $BUILDSCR 2>/dev/null | egrep -iE "([$PACKAGE][-]([0-9]*[.,_]([a-z]*[0-9])*)*[0-9]*[-][a-z]*([0-9]*)*[_]*([0-9]*)*)" )
+	PRGNAM=$( grep -iE "^$PACKAGE[-]([0-9]*[.,_]([a-z]*[0-9])*)*[0-9]*[-][a-z]*([0-9]*)*[_]*([0-9]*)*" <(ls -R $BUILDSCR 2>&- ) )
 	/sbin/upgradepkg --install-new $BUILDSCR/$PACKAGE/$PRGNAM
 	concluido
 }
@@ -201,16 +201,17 @@ installer()
 
 ################################################################################
 
-[ "$PARAM" == ""       ] && info
-[ "$PARAM" == "update" ] && updatelist
+[ "$PARAM" = ""       ] && info
+[ "$PARAM" = "update" ] && updatelist
 
 # Com isso, não há a necessidade de rodar o update da primeira inicialização.
 checkstart
 
-[ "$PARAM" == "list"    ] && list
+[ "$PARAM" = "list" ] && list
+[ "$PACKAGE" = ""   ] && echo -e "\nNenhum Pacote foi Especificado!\n" && exit 1
 
 checkroot
 checkinstall # Não precisa instalar os pacotes já instalados no sistema.
 
-[ "$PARAM" == "build"   ] && checkbuild
-[ "$PARAM" == "install" ] && installer
+[ "$PARAM" = "build"   ] && checkbuild
+[ "$PARAM" = "install" ] && installer

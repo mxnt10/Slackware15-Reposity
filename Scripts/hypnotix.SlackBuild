@@ -14,24 +14,23 @@ ERRO=0
 [ $ERRO = 1 ] && exit 1
 
 PRGNAM=hypnotix
-VERSION=1.4_1
+VERSION=1.5
 ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
-DIRVER=$( echo $VERSION | cut -d_ -f1 )
 
 mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
 TMP=${TMP:-/tmp}
 PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://github.com/linuxmint/hypnotix/archive/1.4.tar.gz
+LINK=https://github.com/linuxmint/hypnotix/archive/1.5.tar.gz
 
 set -e
-wget -c $LINK
+wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
 mkdir -p $PKG/{install,usr/{bin,lib/$PRGNAM,share/{applications,glib-2.0/schemas,$PRGNAM/pictures/badges,icons/hicolor/scalable/apps}}}
-cd $TMP; tar xvf $CWD/$DIRVER.tar.?z
-cd $PRGNAM-$DIRVER
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 find -L .  -perm /111 -a \! -perm 755 -a -exec chmod 755 {} \+ -o \
@@ -82,4 +81,4 @@ fi" | tee $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG $TMP/$PRGNAM-$DIRVER
+rm -rf $PKG $TMP/$PRGNAM-$VERSION

@@ -3,12 +3,12 @@
 | cabextract               | 1.9.1            |
 | c-ares                   | 1.17.1           |
 | ccat                     | 1.1.0            |
-| clion                    | 2020.3.3         |
+| clion                    | 2021.1           |
 | codeblocks               | 20.03            |
 | cowsay                   | 3.04             |
 | dpkg                     | 1.20.7.1         |
 | eclipse-jee              | 4.18             |
-| facebook-desktop         | 1.0              |
+| facebook-desktop         | 1.1              |
 | flareget                 | 5.0_1            |
 | flare                    | 1.11             |
 | fortune-mod-br           | 20160820         |
@@ -18,9 +18,10 @@
 | google-chrome            | 89.0.4389.90     |
 | google-earth             | 7.3.3.7786       |
 | graphicsmagick           | 1.3.36           |
+| grc                      | 1.12             |
 | gst-plugins-bad          | 1.18.3           |
 | gst-plugins-ugly         | 1.18.3           |
-| hypnotix                 | 1.4_1            |
+| hypnotix                 | 1.5              |
 | jdk15                    | 15.0.2           |
 | kazam                    | 1.5.4            |
 | lcab                     | 1.0b12           |
@@ -42,7 +43,7 @@
 | perl-Curses              | 1.37             |
 | perl-Term-Animation      | 2.6              |
 | photoqt                  | 2.1.1            |
-| pluto-tv                 | 1.0              |
+| pluto-tv                 | 1.1              |
 | portaudio                | 190600_20161030  |
 | pugixml                  | 1.11.4           |
 | python3-imdbpy           | 6.8              |
