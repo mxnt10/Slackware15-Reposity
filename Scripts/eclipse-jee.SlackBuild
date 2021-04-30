@@ -15,25 +15,25 @@ SRCVERSION=2020-12-R
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-PKG=${PKG:-/tmp/package-$PRGNAM}
+PKG=/tmp/package-$PRGNAM
 LINK=https://eclipse.c3sl.ufpr.br/technology/epp/downloads/release/2020-12/R/eclipse-jee-2020-12-R-linux-gtk-x86_64.tar.gz
 
 set -e
 wget -c $LINK
+rm -rf $PKG
 mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,pixmaps},doc/$PRGNAM-$VERSION}}
 cd $PKG/opt/$PRGNAM
 tar --strip-components=1 -xvf $CWD/$PRGNAM-$SRCVERSION-linux-gtk-x86_64.tar.gz
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
-cat << EOF > $PKG/usr/bin/$PRGNAM
-#!/bin/sh
+echo "#!/bin/sh
 cd \$HOME
 /opt/$PRGNAM/eclipse \$@
-EOF
+" > $PKG/usr/bin/$PRGNAM
 chmod 0755 $PKG/usr/bin/$PRGNAM
 
 ECLIPSE_ICON=$(find . -iname "*javaee-ide_x48.png")
@@ -43,16 +43,16 @@ mv $PKG/opt/$PRGNAM/configuration/config.ini $PKG/opt/$PRGNAM/configuration/conf
 mv $PKG/opt/$PRGNAM/eclipse.ini $PKG/opt/$PRGNAM/eclipse.ini.new
 cp -a readme/*.html $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "[Desktop Entry]
+echo '[Desktop Entry]
 Type=Application
 Exec=env SWT_GTK3=0 eclipse-jee
 Name=Eclipse Java EE
 GenericName=Eclipse IDE for Java EE Developers
 Icon=eclipse-jee
 StartupNotify=true
-Categories=Qt;KDE;GNOME;Development;GTK;" | tee $PKG/usr/share/applications/$PRGNAM.desktop
+Categories=Qt;KDE;GNOME;Development;GTK;' > $PKG/usr/share/applications/$PRGNAM.desktop
 
-echo "           |-----handy-ruler------------------------------------------------------|
+echo '           |-----handy-ruler------------------------------------------------------|
 eclipse-jee: eclipse-jee (Eclipse IDE for Java EE Developers)
 eclipse-jee:
 eclipse-jee: Tools for Java developers creating Java EE and Web applications
@@ -63,15 +63,15 @@ eclipse-jee:
 eclipse-jee: Homepage: http://www.eclipse.org
 eclipse-jee:
 eclipse-jee:
-eclipse-jee:" | tee $PKG/install/slack-desc
+eclipse-jee:' > $PKG/install/slack-desc
 
-echo "config() {
-	NEW=\"\$1\"
-	OLD=\"\$(dirname \$NEW)/\$(basename \$NEW .new)\"
-	if [ ! -r \$OLD ]; then
-		mv \$NEW \$OLD
-	elif [ \"\$(cat \$OLD | md5sum)\" = \"\$(cat \$NEW | md5sum)\" ]; then
-		rm \$NEW
+echo 'config() {
+	NEW="$1"
+	OLD="$(dirname $NEW)/$(basename $NEW .new)"
+	if [ ! -r $OLD ]; then
+		mv $NEW $OLD
+	elif [ "$(cat $OLD | md5sum)" = "$(cat $NEW | md5sum)" ]; then
+		rm $NEW
 	fi
 }
 
@@ -96,8 +96,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 fi
 
 config opt/eclipse-jee/configuration/config.ini.new
-config opt/eclipse-jee/eclipse.ini.new" | tee $PKG/install/doinst.sh
+config opt/eclipse-jee/eclipse.ini.new' > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

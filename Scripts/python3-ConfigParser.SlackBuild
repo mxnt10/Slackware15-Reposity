@@ -1,0 +1,67 @@
+#!/bin/sh
+
+# Slackware build script for python3-ConfigParser
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+
+PRGNAM=python3-ConfigParser
+SRCNAM=configparser
+VERSION=5.0.2
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://files.pythonhosted.org/packages/c9/9c/c1ac39b3c72a70e93479cb4b7f1123f693293c5e4c40fdb3e1242f740665/configparser-5.0.2.tar.gz
+
+set -e
+wget -c $LINK
+rm -rf $PKG $TMP/$SRCNAM-$VERSION
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.gz
+cd $SRCNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+python3 setup.py install --root=$PKG
+cp -a PKG-INFO README.rst $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo '                    |-----handy-ruler------------------------------------------------------|
+python3-ConfigParser: python3-ConfigParser (backported configparser)
+python3-ConfigParser:
+python3-ConfigParser: The ancient ConfigParser module available in the standard library 2.x
+python3-ConfigParser: has seen a major update in Python 3.9. This is a backport of those
+python3-ConfigParser: changes so that they can be used directly in Python 3.9.
+python3-ConfigParser:
+python3-ConfigParser: Homepage: http://docs.python.org/3/library/configparser.html
+python3-ConfigParser:
+python3-ConfigParser:
+python3-ConfigParser:
+python3-ConfigParser:' > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

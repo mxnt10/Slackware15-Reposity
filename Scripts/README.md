@@ -133,7 +133,7 @@ Ele só precisa da ferramenta a seguir para ser compilado:
 - python-distutils-extra.SlackBuild
 ```
 
-# Instalação Fortune-Mod
+### Instalação Fortune-Mod
 
 Se você não instalou o *bsd-games*, você não terá o *fortune*. Portanto, use o *fortune-mod* como anternativa.
 Mas, é necessário instalar sua dependência, o *recode*. Use esse script:
@@ -141,7 +141,7 @@ Mas, é necessário instalar sua dependência, o *recode*. Use esse script:
 - recode.SlackBuild
 ```
 
-# Instalação MPV
+### Instalação MPV
 
 O reprodutor multimídia *MPV* é muito leve para se usar e não requer muitas dependências essenciais.
 Essas são algumas de suas principais dependências, sendo algumas opcionais:
@@ -174,7 +174,7 @@ Vamos instalar da forma mais simplificada possível:
 - mujs.SlackBuild
 ```
 
-# Instalação Hypnotix
+### Instalação Hypnotix
 
 O *Hypnotix* é um aplicativo de IPTV feito pelo Linux Mint e para o Cinnamon.
 Possui as dependências a seguir:
@@ -199,7 +199,7 @@ Use as instruções para a Instalação do *MPV* e, use esses script:
 - libgnomekbd.SlackBuild (dependência do xapp)
 ```
 
-# Instalação AscIIQuarium
+### Instalação AscIIQuarium
 
 O *AscIIQuarium* é uma animação marítima feito para rodar no Terminal.
 Ele foi feito em *perl* e por isso ele precisa instalar as dependências a seguir:
@@ -208,7 +208,7 @@ Ele foi feito em *perl* e por isso ele precisa instalar as dependências a segui
 - perl-Curses.SlackBuild
 ```
 
-# Instalação CodeBlocks
+### Instalação CodeBlocks
 
 O *CodeBlocks* é uma IDE de desenvolvimento em C/C++ e tem como dependência o *wxGTK3*.
 Portanto, use esse script:
@@ -216,7 +216,7 @@ Portanto, use esse script:
 - wxGTK3.SlackBuild
 ```
 
-# Instalação PhotoQT
+### Instalação PhotoQT
 
 O *PhotoQT* é um visualizador de imagem que lembra o Visualizador de Photos do Picasa para Windows.
 Ele possui algumas dependências que devem ser instaladas usando esses scripts:
@@ -224,4 +224,20 @@ Ele possui algumas dependências que devem ser instaladas usando esses scripts:
 - graphicsmagick.SlackBuild
 - libqpsd.SlackBuild
 - pugixml.SlackBuild
+```
+
+### instalação ProtonVPN
+
+O *ProtonVPN* é um serviço de VPN que usa o *Python3*.
+É um utilitário em linha de comando, mas possui uma interface gráfica.
+Para o seu funcionamento, é necessário as seguintes dependências:
+```
+Para o cli:
+- python3-docopt.SlackBuild
+- python3-Jinja2.SlackBuild
+- python3-MarkupSafe.SlackBuild (dependência do python3-Jinja2)
+- python3-pythondialog.SlackBuild
+
+Para o gui:
+- python3-ConfigParser.SlackBuild
 ```

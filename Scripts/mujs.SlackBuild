@@ -8,7 +8,7 @@
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
 
 PRGNAM=mujs
-VERSION=1.1.0
+VERSION=1.1.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -18,12 +18,12 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://mujs.com/downloads/mujs-1.1.0.tar.xz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://mujs.com/downloads/mujs-1.1.1.tar.xz
 
 if [ "$ARCH" = "i486" ]; then
 	SLKCFLAGS="-O2 -march=i486 -mtune=i686"
@@ -46,7 +46,8 @@ fi
 
 set -e
 wget -c $LINK
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION/}
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 chown -R root:root .
@@ -59,7 +60,7 @@ make shared && make install-shared \
   DESTDIR=$PKG
 cp -a AUTHORS COPYING README docs $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "    |-----handy-ruler------------------------------------------------------|
+echo '    |-----handy-ruler------------------------------------------------------|
 mujs: mujs (javascript interpreter)
 mujs:
 mujs: MuJS is a lightweight Javascript interpreter designed for embedding
@@ -69,9 +70,20 @@ mujs: ECMA-262.
 mujs:
 mujs: Why? Because V8, SpiderMonkey and JavaScriptCore are all too big
 mujs: and complex.
-mujs: MuJS's focus is on small size, correctness and simplicity.
-mujs:" | tee $PKG/install/slack-desc
+mujs: MuJS is focus is on small size, correctness and simplicity.
+mujs:' > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

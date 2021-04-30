@@ -6,14 +6,14 @@
 # All rights reserved.
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/libplacebo* 2> /dev/null`" ] && echo -e "\nDependência Faltante: libplacebo ! \n" && ERRO=1
-[ ! "`ls /var/log/packages/lua*        2> /dev/null`" ] && echo -e "\nDependência Faltante: lua !        \n" && ERRO=1
-[ ! "`ls /var/log/packages/mujs*       2> /dev/null`" ] && echo -e "\nDependência Faltante: mujs !       \n" && ERRO=1
-[ $ERRO = 1 ] && exit 1
+[ ! "`ls /var/log/packages/libplacebo* 2>&-`" ] && echo -e "\nDependência Faltante: libplacebo ! \n" && ERRO=1
+[ ! "`ls /var/log/packages/lua*        2>&-`" ] && echo -e "\nDependência Faltante: lua !        \n" && ERRO=1
+[ ! "`ls /var/log/packages/mujs*       2>&-`" ] && echo -e "\nDependência Faltante: mujs !       \n" && ERRO=1
+[ "$ERRO" = 1 ] && exit 1
 
 PRGNAM=mpv
-VERSION=0.33.0
-WAF_VERSION=${WAF_VERSION:-2.0.20}
+VERSION=0.33.1
+WAF_VERSION=2.0.22
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,13 +23,13 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK1=https://github.com/mpv-player/mpv/archive/v0.33.0/mpv-0.33.0.tar.gz
-LINK2=https://waf.io/waf-2.0.20
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK1=https://github.com/mpv-player/mpv/archive/v0.33.1/mpv-0.33.1.tar.gz
+LINK2=https://waf.io/waf-2.0.22
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -50,6 +50,7 @@ fi
 
 set -e
 wget -c $LINK1 $LINK2
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION/manual}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -83,9 +84,9 @@ find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | gr
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz; rm $i; done
 cp -a Copyright LICENSE.{,L}GPL README.md RELEASE_NOTES VERSION $PKG/usr/doc/$PRGNAM-$VERSION
-for f in "DOCS/*.md DOCS/*.rst DOCS/*.txt"; do cp -a $f $PKG/usr/doc/$PRGNAM-$VERSION/manual/; done
+for f in "DOCS/*.md DOCS/*.rst DOCS/*.txt"; do cp -a $f $PKG/usr/doc/$PRGNAM-$VERSION/manual; done
 
-echo "   |-----handy-ruler------------------------------------------------------|
+echo '   |-----handy-ruler------------------------------------------------------|
 mpv: mpv (a movie player based on MPlayer and mplayer2)
 mpv:
 mpv: mpv is a fork of mplayer2 and MPlayer. It shares some features with
@@ -96,34 +97,34 @@ mpv:
 mpv:
 mpv:
 mpv: mpv homepage: http://mpv.io/
-mpv:" | tee $PKG/install/slack-desc
+mpv:' > $PKG/install/slack-desc
 
-echo "config() {
-  NEW=\"\$1\"
-  OLD=\"\$(dirname \$NEW)/\$(basename \$NEW .new)\"
-  # If there's no config file by that name, mv it over:
-  if [ ! -r \$OLD ]; then
-    mv \$NEW \$OLD
-  elif [ \"\$(cat \$OLD | md5sum)\" = \"\$(cat \$NEW | md5sum)\" ]; then
+echo 'config() {
+  NEW="$1"
+  OLD="$(dirname $NEW)/$(basename $NEW .new)"
+  # If there is no config file by that name, mv it over:
+  if [ ! -r $OLD ]; then
+    mv $NEW $OLD
+  elif [ "$(cat $OLD | md5sum)" = "$(cat $NEW | md5sum)" ]; then
     # toss the redundant copy
-    rm \$NEW
+    rm $NEW
   fi
   # Otherwise, we leave the .new copy for the admin to consider...
 }
 
 preserve_perms() {
-  NEW=\"\$1\"
-  OLD=\"\$(dirname \$NEW)/\$(basename \$NEW .new)\"
-  if [ -e \$OLD ]; then
-    cp -a \$OLD \${NEW}.incoming
-    cat \$NEW > \${NEW}.incoming
-    mv \${NEW}.incoming \$NEW
+  NEW="$1"
+  OLD="$(dirname $NEW)/$(basename $NEW .new)"
+  if [ -e $OLD ]; then
+    cp -a $OLD ${NEW}.incoming
+    cat $NEW > ${NEW}.incoming
+    mv ${NEW}.incoming $NEW
   fi
-  config \$NEW
+  config $NEW
 }
 
 for f in etc/mpv/*.conf.new ; do
-  preserve_perms \$f
+  preserve_perms $f
 done
 
 if [ -x /usr/bin/update-desktop-database ]; then
@@ -144,8 +145,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi' > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -6,29 +6,29 @@
 # All rights reserved.
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
 
 PRGNAM=vscodium
 SRCNAM=VSCodium
 BINNAM=codium
-VERSION=1.54.3
+VERSION=1.55.2
 ARCH=x86_64
 ARCHTAR=x64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://github.com/VSCodium/vscodium/releases/download/1.54.3/VSCodium-linux-x64-1.54.3.tar.gz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/VSCodium/vscodium/releases/download/1.55.2/VSCodium-linux-x64-1.55.2.tar.gz
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,doc/$PRGNAM-$VERSION,share/applications},etc/bash_completion.d}
 cd $PKG/opt/$PRGNAM; tar xvf $CWD/$SRCNAM-linux-$ARCHTAR-$VERSION.tar.gz
-
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
@@ -37,14 +37,14 @@ install -Dm644 resources/app/resources/linux/code.png $PKG/usr/share/icons/hicol
 install -Dm644 resources/completions/bash/$BINNAM $PKG/etc/bash_completion.d/$BINNAM
 cp -a resources/app/LICENSE.txt $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "[Desktop Entry]
+echo '[Desktop Entry]
 Name=VSCodium
 Exec=/usr/bin/codium
 Icon=/usr/share/icons/hicolor/1024x1024/apps/code.png
 Type=Application
-Categories=Development;Programming" | tee $PKG/usr/share/applications/$PRGNAM.desktop
+Categories=Development;Programming' > $PKG/usr/share/applications/$PRGNAM.desktop
   
-echo "        |-----handy-ruler------------------------------------------------------|
+echo '        |-----handy-ruler------------------------------------------------------|
 vscodium: vscodium (Free/Libre Open Source Software Binaries of VSCode)
 vscodium:
 vscodium: VSCodium is a community-driven, freely-licensed binary distribution
@@ -55,9 +55,9 @@ vscodium:
 vscodium:
 vscodium:
 vscodium:
-vscodium:" | tee $PKG/install/slack-desc
+vscodium:' > $PKG/install/slack-desc
 
-echo "if [ -x /usr/bin/update-desktop-database ]; then
+echo 'if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
 fi
 
@@ -75,8 +75,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi' > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

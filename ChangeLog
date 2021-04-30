@@ -3,6 +3,47 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2021-04-30 #############################################
+
+### Added / Adicionado
+ - Script:
+	- discord.SlackBuild
+	- protonvpn-cli.SlackBuild
+ 	- protonvpn-gui.SlackBuild
+	- python3-ConfigParser.SlackBuild
+	- python3-docopt.SlackBuild
+	- python3-Jinja2.SlackBuild
+	- python3-MarkupSafe.SlackBuild
+	- python3-pythondialog.SlackBuild
+	- windscribe.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- mpv.SlackBuild
+	- mujs.SlackBuild
+	- qmplay2.SlackBuild
+	- vscodium.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- eclipse-jee.SlackBuild
+	- kazam.SlackBuild
+	- mpv.SlackBuild
+	- mujs.SlackBuild
+	- qmplay2.SlackBuild
+	- vscodium.SlackBuild
+###
+
+### Removed / Removido
+ - Build-Get:
+	- Discontinued.
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2021-04-10 #############################################
 
 ### Added / Adicionado

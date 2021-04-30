@@ -13,7 +13,7 @@
 [ $ERRO = 1 ] && exit 1
 
 PRGNAM=QMPlay2
-VERSION=20.12.16
+VERSION=21.03.09
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -28,7 +28,7 @@ mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=${TMP:-/tmp}
 PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://github.com/zaps166/QMPlay2/releases/download/20.12.16/QMPlay2-src-20.12.16.tar.xz
+LINK=https://github.com/zaps166/QMPlay2/releases/download/21.03.09/QMPlay2-src-21.03.09.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -84,7 +84,7 @@ QMPlay2:
 QMPlay2: Home page: https://github.com/zaps166/QMPlay2
 QMPlay2:
 QMPlay2:
-QMPlay2:" | tee $PKG/install/slack-desc
+QMPlay2:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -104,7 +104,7 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
