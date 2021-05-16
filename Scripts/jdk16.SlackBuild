@@ -1,25 +1,25 @@
 #!/bin/sh
 
-# Slackware build script for jdk15
+# Slackware build script for jdk16
 
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
-PRGNAM=jdk15
-VERSION=15.0.2
+PRGNAM=jdk16
+VERSION=16.0.1
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-PKG=${PKG:-/tmp/package-$PRGNAM}
-LIBDIRSUFFIX=${LIBDIRSUFFIX:-64}
-LINK=https://download.oracle.com/otn-pub/java/jdk/15.0.2%2B7/0d1cfde4252546c6931946de8db48ee2/jdk-15.0.2_linux-x64_bin.tar.gz
+PKG=/tmp/package-$PRGNAM
+LIBDIRSUFFIX=64
+LINK=https://download.oracle.com/otn-pub/java/jdk/16.0.1+9/7147401fd7354114ac51ef3e1328291f/jdk-16.0.1_linux-x64_bin.tar.gz
 
 set -e
 wget -c --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" $LINK
@@ -45,29 +45,38 @@ ln -s ../../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/legal
 ln -s ../../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/release
 
 cd $PKG
-cat > etc/profile.d/$PRGNAM.sh << EOF
-#!/bin/sh
-export JAVA_HOME=/usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION
-EOF
-cat > etc/profile.d/$PRGNAM.csh << EOF
-#!/bin/csh
-setenv JAVA_HOME /usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION
-EOF
+echo "#!/bin/sh
+export JAVA_HOME=/usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION" > etc/profile.d/$PRGNAM.sh
+
+echo "#!/bin/csh
+setenv JAVA_HOME /usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION" > etc/profile.d/$PRGNAM.csh
+
 chmod 755 etc/profile.d/*
 
 echo "     |-----handy-ruler------------------------------------------------------|
-jdk15: jdk15 (Java Platform Standard Edition Development Kit)
-jdk15:
-jdk15: The Java Platform Standard Edition Development Kit (JDK) includes
-jdk15: both the runtime environment (Java virtual machine,
-jdk15: the Java platform classes and supporting files) and development tools
-jdk15: (compilers, debuggers, tool libraries and other tools).
-jdk15: The JDK is a development environment for building applications,
-jdk15: applets and components that can be deployed with the
-jdk15: Java Platform Standard Edition Runtime Environment.
-jdk15:
-jdk15: https://developer.oracle.com/java/" | tee install/slack-desc
+jdk16: jdk16 (Java Platform Standard Edition Development Kit)
+jdk16:
+jdk16: The Java Platform Standard Edition Development Kit (JDK) includes
+jdk16: both the runtime environment (Java virtual machine,
+jdk16: the Java platform classes and supporting files) and development tools
+jdk16: (compilers, debuggers, tool libraries and other tools).
+jdk16: The JDK is a development environment for building applications,
+jdk16: applets and components that can be deployed with the
+jdk16: Java Platform Standard Edition Runtime Environment.
+jdk16:
+jdk16: https://developer.oracle.com/java/" > install/slack-desc
 
 /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

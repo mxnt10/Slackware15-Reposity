@@ -5,15 +5,13 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=uget
-VERSION=2.2.3_1
+VERSION=2.2.3
+TARVER=$VERSION-1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
-
-TARVER=${VERSION/_/-}
-DIRVER=$( echo $VERSION | cut -d_ -f1 )
 
 case "$( uname -m )" in
 	i?86) ARCH=i586 ;;
@@ -21,11 +19,11 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
 LINK1=https://ufpr.dl.sourceforge.net/project/urlget/uget%20%28stable%29/2.2.3/uget-2.2.3-1.tar.gz
 LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/UGet_2.2.3-1_FIX/Fix-Support-gcc10.patch
 
@@ -48,9 +46,10 @@ fi
 
 set -e
 wget -c $LINK1 $LINK2
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$TARVER.tar.?z
-cd $PRGNAM-$DIRVER
+cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 find -L .  -perm /111 -a \! -perm 755 -a -exec chmod 755 {} \+ -o \
@@ -76,7 +75,7 @@ uget:
 uget: Build options: GSTREAMER=YES, LIBNOTIFY=YES
 uget:
 uget:
-uget:" | tee $PKG/install/slack-desc
+uget:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -96,8 +95,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG $TMP/$PRGNAM-$DIRVER
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

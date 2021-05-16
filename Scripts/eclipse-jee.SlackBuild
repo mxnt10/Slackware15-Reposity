@@ -5,8 +5,8 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=eclipse-jee
 VERSION=4.18
@@ -36,9 +36,7 @@ cd \$HOME
 " > $PKG/usr/bin/$PRGNAM
 chmod 0755 $PKG/usr/bin/$PRGNAM
 
-ECLIPSE_ICON=$(find . -iname "*javaee-ide_x48.png")
-install -D -m 0644 "$PKG/opt/$PRGNAM/${ECLIPSE_ICON}" $PKG/usr/share/pixmaps/$PRGNAM.png
-find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+install -D -m 0644 "$PKG/opt/$PRGNAM/$(find . -iname "*javaee-ide_x48.png")" $PKG/usr/share/pixmaps/$PRGNAM.png
 mv $PKG/opt/$PRGNAM/configuration/config.ini $PKG/opt/$PRGNAM/configuration/config.ini.new
 mv $PKG/opt/$PRGNAM/eclipse.ini $PKG/opt/$PRGNAM/eclipse.ini.new
 cp -a readme/*.html $PKG/usr/doc/$PRGNAM-$VERSION

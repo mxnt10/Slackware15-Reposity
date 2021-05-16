@@ -6,34 +6,36 @@
 # Maintainer: Cézar Augusto de Campos <cezargaiteiro@protonmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=molotov
-VERSION=1.0
+VERSION=1.2
 ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://github.com/cizordj/molotov/releases/download/v1.0/molotov_1.0.tar.xz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/cizordj/molotov/archive/refs/tags/v1.2.tar.gz
 
 set -e
-wget -c $LINK
-mkdir -p $PKG/{install,usr/{bin,man/man1,doc/$PRGNAM-$VERSION}}
-cd $TMP; tar xvf $CWD/${PRGNAM}_$VERSION.tar.?z
-cd $PRGNAM
+wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
+rm -rf $TMP/$PRGNAM-$VERSION
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
-cp -a src/$PRGNAM $PKG/usr/bin
-cp -a debian/$PRGNAM.1 $PKG/usr/man/man1
+make install DESTDIR=$PKG
+
+mv $PKG/usr/share/man $PKG/usr/man
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
-cp -a {HACKING,README}.md LICENSE debian/{changelog,copyright} $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a COPYING {HACKING,README}.md $PKG/usr/doc/$PRGNAM-$VERSION
 
 echo "       |-----handy-ruler------------------------------------------------------|
 molotov: molotov (Creation bootable media from a Windows 10 iso image)
@@ -46,8 +48,19 @@ molotov:
 molotov:
 molotov:
 molotov:
-molotov:" | tee $PKG/install/slack-desc
+molotov:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG $TMP/$PRGNAM
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

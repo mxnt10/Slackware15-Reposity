@@ -5,8 +5,8 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=google-chrome
 RELEASE=stable
@@ -14,14 +14,15 @@ ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-PKG=${PKG:-/tmp/package-$PRGNAM}
+PKG=/tmp/package-$PRGNAM
 LINK=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 set -e
 wget -c $LINK
+rm -rf $PKG
 VERSION=$(ar p google-chrome-${RELEASE}_current_amd64.deb control.tar.xz 2> /dev/null | tar xJO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
 mkdir -p $PKG/install
 cd $PKG; ar p $CWD/google-chrome-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
@@ -53,7 +54,7 @@ google-chrome:
 google-chrome:
 google-chrome:
 google-chrome: Homepage:  http://www.google.com/chrome
-google-chrome:" | tee $PKG/install/slack-desc
+google-chrome:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -73,8 +74,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

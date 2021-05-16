@@ -3,6 +3,75 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2021-05-15 #############################################
+
+### Added / Adicionado
+ - Script:
+	- jdk16.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- dpkg.SlackBuild
+	- frostwire.SlackBuild
+	- molotov.SlackBuild
+	- spotify.SlackBuild
+	- telegram.SlackBuild
+	- vscodium.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- aria2.SlackBuild
+	- asciiquarium.SlackBuild
+	- c-ares.SlackBuild
+	- cabextract.SlackBuild
+	- clion.SlackBuild
+	- codeblocks.SlackBuild
+	- cowsay.SlackBuild
+	- discord.SlackBuild
+	- eclipse-jee.SlackBuild
+	- facebook-desktop.SlackBuild
+	- flare.SlackBuild --> flare-game.SlackBuild
+	- fortune-mod.SlackBuild
+	- fortune-mod-br.SlackBuild
+	- freeoffice2018.SlackBuild
+	- google-chrome.SlackBuild
+	- google-earth.SlackBuild
+	- grc.SlackBuild
+	- kazam.SlackBuild
+	- lcab.SlackBuild
+	- luna-wallpapers.SlackBuild
+	- nosync-browser.SlackBuild
+	- notable.SlackBuild
+	- nulloy.SlackBuild
+	- pluto-tv.SlackBuild
+	- python-distutils-extra.SlackBuild --> python3-distutils-extra.SlackBuild
+	- refine.SlackBuild
+	- telegram.SlackBuild
+	- whatsapp-desktop.SlackBuild
+	- windscribe.SlackBuild
+	- wxGTK3.SlackBuild
+###
+
+### Removed / Removido
+ - Script:
+	- jdk15.SlackBuild
+ - Extra:
+	- checklink folder.
+###
+
+### Fixed / Corrigido
+ - Script:
+	- flareget.SlackBuild
+	- perl-Curses.SlackBuild
+	- perl-Term-Animation.SlackBuild
+	- uget.SlackBuild
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2021-04-30 #############################################
 
 ### Added / Adicionado

@@ -4,8 +4,6 @@
 
 Available resources:
 ```
-- checklink: Used for detect invalid links presents in that repository's scripts.
-
 - Cowsay 3.04 FIX        : Fix Patch for Slackware.
 - FrostWire EXTRA        : Icons for FrostWire.
 - FrostWire 6.9.2 FIX    : Fix Patch for Execution in Slackware.

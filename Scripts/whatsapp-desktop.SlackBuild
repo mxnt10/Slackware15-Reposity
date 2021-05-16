@@ -5,7 +5,8 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=whatsapp-desktop
 VERSION=0.6.1
@@ -13,16 +14,16 @@ ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
-PKG=${PKG:-/tmp/package-$PRGNAM}
+PKG=/tmp/package-$PRGNAM
 LINK1=http://packages.linuxmint.com/pool/import/w/whatsapp-desktop/whatsapp-desktop_0.6.1_amd64.deb
 LINK2=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/WhatsApp_0.6.1_FIX/Whatsapp-icon-kde-fix.tar.gz
 
 set -e
 wget -c $LINK1 $LINK2
+rm -rf $PKG
 mkdir -p $PKG/{install,usr/bin}
 cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}_amd64.deb data.tar.xz | tar xJv
 ln -sf /opt/$PRGNAM/WhatsApp $PKG/usr/bin
@@ -41,7 +42,7 @@ whatsapp-desktop:
 whatsapp-desktop:
 whatsapp-desktop:
 whatsapp-desktop:
-whatsapp-desktop:" | tee $PKG/install/slack-desc
+whatsapp-desktop:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
         /usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -61,8 +62,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
         if [ -x /usr/bin/glib-compile-schemas ]; then
                 /usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
         fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

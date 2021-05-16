@@ -5,8 +5,8 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/c-ares* 2> /dev/null`" ] && echo -e "\nDependência Faltante: c-ares !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/c-ares* 2>&-)" ] && { echo -e "\nDependência Faltante: c-ares !\n"; exit 1; }
 
 PRGNAM=aria2
 VERSION=1.35.0
@@ -19,11 +19,11 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
 LINK=https://github.com/aria2/aria2/releases/download/release-1.35.0/aria2-1.35.0.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
@@ -45,6 +45,7 @@ fi
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/install
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -61,9 +62,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --docdir=/usr/doc/$PRGNAM-$VERSION \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
   --build=$ARCH-slackware-linux
-make; make install DESTDIR=$PKG
+make; make install-strip DESTDIR=$PKG
 
-find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 cp -a AUTHORS COPYING ChangeLog INSTALL LICENSE.OpenSSL NEWS README* $PKG/usr/doc/$PRGNAM-$VERSION
@@ -79,8 +79,19 @@ aria2:
 aria2: Homepage: https://aria2.github.io/
 aria2:
 aria2:
-aria2:" | tee $PKG/install/slack-desc
+aria2:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

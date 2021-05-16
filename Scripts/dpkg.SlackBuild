@@ -5,10 +5,10 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=dpkg
-VERSION=1.20.7.1
+VERSION=1.20.9
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -18,12 +18,12 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=http://deb.debian.org/debian/pool/main/d/dpkg/dpkg_1.20.7.1.tar.xz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=http://deb.debian.org/debian/pool/main/d/dpkg/dpkg_1.20.9.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -44,6 +44,7 @@ fi
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/${PRGNAM}_$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
@@ -63,9 +64,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --disable-start-stop-daemon \
   --enable-silent-rules \
   --build=$ARCH-slackware-linux
-make; make install DESTDIR=$PKG
+make; make install-strip DESTDIR=$PKG
 
-find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 cp debian/changelog doc/README* ABOUT-NLS AUTHORS COPYING NEWS README* THANKS TODO $PKG/usr/doc/$PRGNAM-$VERSION
@@ -81,8 +81,19 @@ dpkg: possible DISASTROUS effects. Do not do it.
 dpkg:
 dpkg: Home page: https://wiki.debian.org/Teams/Dpkg
 dpkg:
-dpkg:" | tee $PKG/install/slack-desc
+dpkg:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

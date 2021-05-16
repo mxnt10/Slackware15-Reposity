@@ -5,13 +5,13 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=vscodium
 SRCNAM=VSCodium
 BINNAM=codium
-VERSION=1.55.2
+VERSION=1.56.2
 ARCH=x86_64
 ARCHTAR=x64
 BUILD=${BUILD:-1}
@@ -22,7 +22,7 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/VSCodium/vscodium/releases/download/1.55.2/VSCodium-linux-x64-1.55.2.tar.gz
+LINK=https://github.com/VSCodium/vscodium/releases/download/1.56.2/VSCodium-linux-x64-1.56.2.tar.gz
 
 set -e
 wget -c $LINK

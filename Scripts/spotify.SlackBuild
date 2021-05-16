@@ -6,38 +6,35 @@
 # All rights reserved.
 
 [ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=spotify
 SRCNAM=spotify-client
+VERSION=1.1.56.595
+DEBARCH=g2d2da0de_amd64
+ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-case "$(uname -m)" in
-	  i?86) VERSION="1.0.72.117"; DEBARCH="g6bd7cc73-35_i386" ; ARCH=i386   ;;
-	x86_64) VERSION="1.1.10.546"; DEBARCH="ge08ef575-19_amd64"; ARCH=x86_64 ;;
-		 *) echo "Package for $(uname -m) architecture is not available." ; exit 1 ;;
-esac
-
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=http://ponce.cc/slackware/sources/repo/spotify/spotify-client_${VERSION}.${DEBARCH}.deb
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=http://repository.spotify.com/pool/non-free/s/spotify-client/spotify-client_1.1.56.595.g2d2da0de_amd64.deb
 
 set -e
 wget -c $LINK
+rm -rf $PKG
 mkdir -p $PKG/{install,usr/{share/{applications,$PRGNAM/lib},doc/$PRGNAM-$VERSION}}
 cd $PKG; ar -p $CWD/${SRCNAM}_${VERSION}.${DEBARCH}.deb data.tar.gz | tar zxv
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 rm $PKG/usr/bin/$PRGNAM
 
-cat <<EOT > $PKG/usr/bin/$PRGNAM
-#!/bin/sh
+echo "#!/bin/sh
 export LD_LIBRARY_PATH=\$LD_LIBRARY_PATH:/usr/share/$PRGNAM/lib
-/usr/share/$PRGNAM/$PRGNAM "\$@"
-EOT
+/usr/share/$PRGNAM/$PRGNAM \"\$@\"" > $PKG/usr/bin/$PRGNAM
 
 chmod 755 $PKG/usr/bin/$PRGNAM
 
@@ -63,7 +60,7 @@ spotify:
 spotify:
 spotify:
 spotify:
-spotify:" | tee $PKG/install/slack-desc
+spotify:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -85,8 +82,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	fi
 fi
 
-ln -s /usr/lib64/libcurl.so.4.7.0 /usr/share/spotify/lib/libcurl-gnutls.so.4" | tee $PKG/install/doinst.sh
+ln -s /usr/lib64/libcurl.so.4.7.0 /usr/share/spotify/lib/libcurl-gnutls.so.4" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -5,43 +5,33 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=telegram
-SRCNAM=tsetup
-URLNAM=tlinux
 SRCDIR=Telegram
+SRC=tsetup
+VERSION=2.7.5
+ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-case "$( uname -m )" in
-	i?86) ARCH=i586 ;;
-	arm*) ARCH=arm ;;
-	   *) ARCH=$( uname -m ) ;;
-esac
-
-case "$ARCH" in
-	x86_64) SRC="${SRCNAM}"  ; URL="${URLNAM}"  ; VERSION="2.6.1" ;;
-	  i586) SRC="${SRCNAM}32"; URL="${URLNAM}32"; VERSION="2.4.4" ;;
-		 *) echo -e "\nArquitetura $ARCH sem Suporte !\n"; exit 1 ;;
-esac
-
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://updates.tdesktop.com/$URL/$SRC.$VERSION.tar.xz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://updates.tdesktop.com/tlinux/tsetup.2.7.5.beta.tar.xz
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$SRCDIR
 mkdir -p $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,pixmaps}}}
-cd $TMP; tar xvf $CWD/$SRC.$VERSION.tar.?z
+cd $TMP; tar xvf $CWD/$SRC.$VERSION.*tar.?z
 cd $SRCDIR; chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
 cp -a * $PKG/opt/$PRGNAM
-find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 ln -sf /opt/$PRGNAM/Telegram $PKG/usr/bin
 wget -c -O $PKG/usr/share/pixmaps/$PRGNAM.png https://github.com/telegramdesktop/tdesktop/raw/dev/Telegram/Resources/art/icon256.png
 
@@ -54,7 +44,7 @@ Exec=Telegram -- %u
 TryExec=Telegram
 Terminal=false
 Type=Application
-Categories=Network;" | tee $PKG/usr/share/applications/$PRGNAM.desktop
+Categories=Network;" > $PKG/usr/share/applications/$PRGNAM.desktop
 
 echo "        |-----handy-ruler------------------------------------------------------|
 telegram: telegram (messaging app)
@@ -67,7 +57,7 @@ telegram:
 telegram:
 telegram:
 telegram:
-telegram:" | tee $PKG/install/slack-desc
+telegram:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -87,8 +77,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$SRCDIR
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

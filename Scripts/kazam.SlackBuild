@@ -5,9 +5,9 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/python-distutils-extra* 2>&-`" ] && echo -e "\nDependência Faltante: python-distutils-extra !\n" && ERRO=1
-[ ! "`ls /var/log/packages/python3-xlib*           2>&-`" ] && echo -e "\nDependência Faltante: python3-xlib !          \n" && ERRO=1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/python3-distutils-extra* 2>&-)" ] && { echo -e "\nDependência Faltante: python3-distutils-extra !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/python3-xlib*            2>&-)" ] && { echo -e "\nDependência Faltante: python3-xlib !           \n"; ERRO=1; }
 [ "$ERRO" = 1 ] && exit 1
 
 PRGNAM=kazam

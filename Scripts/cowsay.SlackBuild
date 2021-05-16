@@ -5,7 +5,7 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=cowsay
 VERSION=3.04
@@ -13,7 +13,7 @@ ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
 TMP=${TMP:-/tmp}
@@ -23,6 +23,7 @@ LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-R
 
 set -e
 wget -c $LINK1 $LINK2
+rm -rf $PKG $TMP/*-$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd *-$PRGNAM-$VERSION
@@ -30,8 +31,7 @@ chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
 patch -p1 < $CWD/Fix-local.patch
-DESTDIR=$PKG \
-sh ./install.sh /usr
+DESTDIR=$PKG sh ./install.sh /usr
 
 find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find $PKG/usr/man -type f -exec gzip -9 {} \;
@@ -49,8 +49,19 @@ cowsay:         \   ^__^
 cowsay:          \  (oo)\_______
 cowsay:             (__)\       )\/\\
 cowsay:                 ||----w |
-cowsay:                 ||     ||" | tee $PKG/install/slack-desc
+cowsay:                 ||     ||" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG $TMP/$PRGNAM-$VERSION
+rm -rf $PKG $TMP/*-$PRGNAM-$VERSION
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -5,26 +5,27 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ "`uname -m`" != x86_64 ] && echo -e "\n Not Support !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=frostwire
-VERSION=6.9.2
+VERSION=6.9.3
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-PKG=${PKG:-/tmp/package-$PRGNAM}
-LINK1=https://wc1.frostwire.com/frostwire/6.9.2/frostwire-6.9.2.amd64.tar.gz
+PKG=/tmp/package-$PRGNAM
+LINK1=https://wc1.frostwire.com/frostwire/6.9.3/frostwire-6.9.3.amd64.tar.gz
 LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Frostwire_6.9.2_FIX/Fix-Launcher.patch
 LINK3=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/FrostWire_EXTRA/frostwire-icons.tar.gz
 LINK4=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/FrostWire_EXTRA/frostwire-pixmaps.tar.gz
 
 set -e
 wget -c $LINK1 $LINK2 $LINK3 $LINK4
+rm -rf $PKG
 mkdir -p $PKG/{opt,install,usr/{bin,share/{applications,pixmaps}}}
 tar xvf $CWD/$PRGNAM-$VERSION.amd64.tar.?z* -C $PKG/opt
 tar xvf $CWD/$PRGNAM-icons.tar.?z -C $PKG/usr/share
@@ -42,7 +43,7 @@ frostwire: This is essentially a repackaging of the official binary from
 frostwire: https://www.frostwire.com/
 frostwire:
 frostwire:
-frostwire:" | tee $PKG/install/slack-desc
+frostwire:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -62,7 +63,7 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
@@ -76,3 +77,14 @@ install -D -m 0644 $PKG/opt/$PRGNAM-$VERSION/$PRGNAM.desktop $PKG/usr/share/appl
 /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
+
+cd $CWD
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
