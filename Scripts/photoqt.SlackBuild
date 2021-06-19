@@ -5,14 +5,14 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/graphicsmagick* 2> /dev/null`" ] && echo -e "\nDependência Faltante: graphicsmagick !\n" && ERRO=1
-[ ! "`ls /var/log/packages/libqpsd*        2> /dev/null`" ] && echo -e "\nDependência Faltante: libqpsd !       \n" && ERRO=1
-[ ! "`ls /var/log/packages/pugixml*        2> /dev/null`" ] && echo -e "\nDependência Faltante: pugixml !       \n" && ERRO=1
-[ $ERRO = 1 ] && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/graphicsmagick* 2>&-)" ] && { echo -e "\nDependência Faltante: graphicsmagick !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/libqpsd*        2>&-)" ] && { echo -e "\nDependência Faltante: libqpsd !       \n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/pugixml*        2>&-)" ] && { echo -e "\nDependência Faltante: pugixml !       \n"; ERRO=1; }
+[ "$ERRO" = 1 ] && exit 1
 
 PRGNAM=photoqt
-VERSION=2.1.1
+VERSION=2.3
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -22,12 +22,12 @@ case "$( uname -m )" in
 	   *) export ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://photoqt.org/downloads/source/photoqt-2.1.1.tar.gz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://photoqt.org/downloads/source/photoqt-2.3.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -48,6 +48,7 @@ fi
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar --warning=no-unknown-keyword -xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
@@ -71,7 +72,7 @@ cp -a CHANGELOG COPYING* INSTALL README $PKG/usr/doc/$PRGNAM-$VERSION
 
 mkdir -p $PKG/install
 
-echo "       |-----handy-ruler------------------------------------------------------|
+echo '       |-----handy-ruler------------------------------------------------------|
 photoqt: photoqt (Qt image viewer)
 photoqt:
 photoqt: Photoqt is a fast, simple, good looking, yet powerful and highly
@@ -82,7 +83,7 @@ photoqt:
 photoqt:
 photoqt:
 photoqt:
-photoqt:" | tee $PKG/install/slack-desc
+photoqt:' > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -102,8 +103,20 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

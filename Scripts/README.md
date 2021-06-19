@@ -6,21 +6,128 @@
 Esses scripts foram baseados em sua maioria, nos scripts do repositório do Slackbuilds do Slackware.
 O objetivo é tentar manter os pacotes sempre com as últimas atualizações e os mantendo funcionais para a última versão do Slackware.
 
+### Instalação AscIIQuarium
+
+O *AscIIQuarium* é uma animação marítima feito para rodar no Terminal.
+Ele foi feito em *perl* e por isso ele precisa instalar as dependências a seguir:
+```
+- perl-Term-Animation.SlackBuild
+- perl-Curses.SlackBuild
+```
+
+### Instalação CodeBlocks
+
+O *CodeBlocks* é uma IDE de desenvolvimento em C/C++ e tem como dependência o *wxGTK3*.
+Portanto, use esse script:
+```
+- wxGTK3.SlackBuild
+```
+
+### Instalação Fortune-Mod
+
+Se você não instalou o *bsd-games*, você não terá o *fortune*. Portanto, use o *fortune-mod* como anternativa.
+Mas, é necessário instalar sua dependência, o *recode*. Use esse script:
+```
+- recode.SlackBuild
+```
+
 ### Instalação do FrostWire
 
 O cliente P2P *FrostWire* possui como dependência mínima para ser executado o *JDK11*.
 Portanto, para ele poder funcionar é necessário instalar o *JDK11* ou superior. Use esse script:
 ```
-- jdk15.SlackBuild
+- jdk16.SlackBuild
 ```
 
-### Instalação UGet
+### Instalação Hypnotix
 
-O *UGet* é um gerenciador de downloads com suporte a torrent.
-Mas para ter suporte ao torrent, é necessário a dependência opcional *aria2*. Use esses scripts:
+O *Hypnotix* é um aplicativo de IPTV feito pelo Linux Mint e para o Cinnamon.
+Possui as dependências a seguir:
 ```
-- aria2.SlackBuild
-- c-ares.SlackBuild (dependência do aria2)
+- dconf              : Já Instalado.
+- hicolor-icon-theme : Já Instalado.
+
+- python-cairo --> pycairo : Já Instalado.
+- python-requests          : Já Instalado.
+- python-imdbpy            : Não Instalado. ( python3-imdbpy ).
+- python-setproctitle      : Não Instalado. ( python3-setproctitle ).
+
+- libxapp --> xapp : Não Instalado.
+- libmpv  --> mpv  : Não Instalado.
+```
+
+Use as instruções para a Instalação do *MPV* e, use esses script:
+```
+- python3-imdbpy.SlackBuild
+- python3-setproctitle.SlackBuild
+- xapp.SlackBuild
+- libgnomekbd.SlackBuild (dependência do xapp)
+```
+
+### Instalação do JDownloader2
+
+O *JDownloader2* é um Gerenciador de Download criado para ser executado no Java.
+Portanto, para ele poder funcionar é necessário instalar uma versão do JDK. Use esse script:
+```
+- jdk16.SlackBuild
+```
+
+### Instalação Kazam
+
+O programa de screencast e screenshot *Kazam* é outra novidade no Slackware.
+Feito também com base no *python3*, possui as dependências a seguir:
+```
+- gstreamer        : Já Instalado.
+- gst-libav        : Já Instalado.
+- gst-plugins-base : Já Instalado.
+
+- libcanberra : Já Instalado.
+- libwnck3    : Já Instalado.
+- libkeybinder3 >-->> keybinder3 : Já Instalado.
+
+- python-distutils-extra : Não Instalado.
+- python-cairo   >-->> pycairo     : Já Instalado.
+- python-dbus    >-->> dbus-python : Já Instalado.
+- python-gobject >-->> pygobject3  : Já Instalado.
+- python-xdg     >-->> pyxdg       : Já Instalado.
+```
+
+Ele só precisa da ferramenta a seguir para ser compilado:
+```
+- python-distutils-extra.SlackBuild
+```
+
+### Instalação MPV
+
+O reprodutor multimídia *MPV* é muito leve para se usar e não requer muitas dependências essenciais.
+Essas são algumas de suas principais dependências, sendo algumas opcionais:
+```
+- libasound  : Já disponível em ALSA.
+- pulseaudio : Já instalado.
+- ffmpeg     : Já Instalado.
+
+- libass     : Não Instalado.
+- libplacebo : Não Instalado.
+- lua        : Não Instalado.
+- mujs       : Não Instalado.
+
+- jack               : Opcional.
+- libjpeg            : Opcional.
+- nvdec              : Opcional.
+- rubberband         : Opcional.
+- uchardet           : Opcional.
+- vaapi              : Opcional.
+- vapoursynth        : Opcional.
+- vapoursynth-script : Opcional.
+- zlib               : Opcional.
+```
+
+Vamos instalar da forma mais simplificada possível:
+```
+- libass.SlackBuild
+- libplacebo.SlackBuild
+- lua.SlackBuild
+- mujs.SlackBuild
 ```
 
 ### Instalação Nulloy
@@ -45,6 +152,32 @@ Mas, você pode instalar as dependências opcionais, o *gst-plugins-ugly* e o *g
 ```
 - gst-plugins-ugly.SlackBuild
 - gst-plugins-bad.SlackBuild
+```
+
+### Instalação PhotoQT
+
+O *PhotoQT* é um visualizador de imagem que lembra o Visualizador de Photos do Picasa para Windows.
+Ele possui algumas dependências que devem ser instaladas usando esses scripts:
+```
+- graphicsmagick.SlackBuild
+- libqpsd.SlackBuild
+- pugixml.SlackBuild
+```
+
+### instalação ProtonVPN
+
+O *ProtonVPN* é um serviço de VPN que usa o *Python3*.
+É um utilitário em linha de comando, mas possui uma interface gráfica.
+Para o seu funcionamento, é necessário as seguintes dependências:
+```
+Para o cli:
+- python3-docopt.SlackBuild
+- python3-Jinja2.SlackBuild
+- python3-MarkupSafe.SlackBuild (dependência do python3-Jinja2)
+- python3-pythondialog.SlackBuild
+
+Para o gui:
+- python3-ConfigParser.SlackBuild
 ```
 
 ### Instalação QMPlay2
@@ -108,136 +241,11 @@ O *gst-plugins-ugly* e o *gst-plugins-bad* são dependências opcionais. Caso qu
 - lsdvd.SlackBuild
 ```
 
-### Instalação Kazam
+### Instalação UGet
 
-O programa de screencast e screenshot *Kazam* é outra novidade no Slackware.
-Feito também com base no *python3*, possui as dependências a seguir:
+O *UGet* é um gerenciador de downloads com suporte a torrent.
+Mas para ter suporte ao torrent, é necessário a dependência opcional *aria2*. Use esses scripts:
 ```
-- gstreamer        : Já Instalado.
-- gst-libav        : Já Instalado.
-- gst-plugins-base : Já Instalado.
-
-- libcanberra : Já Instalado.
-- libwnck3    : Já Instalado.
-- libkeybinder3 >-->> keybinder3 : Já Instalado.
-
-- python-distutils-extra : Não Instalado.
-- python-cairo   >-->> pycairo     : Já Instalado.
-- python-dbus    >-->> dbus-python : Já Instalado.
-- python-gobject >-->> pygobject3  : Já Instalado.
-- python-xdg     >-->> pyxdg       : Já Instalado.
-```
-
-Ele só precisa da ferramenta a seguir para ser compilado:
-```
-- python-distutils-extra.SlackBuild
-```
-
-### Instalação Fortune-Mod
-
-Se você não instalou o *bsd-games*, você não terá o *fortune*. Portanto, use o *fortune-mod* como anternativa.
-Mas, é necessário instalar sua dependência, o *recode*. Use esse script:
-```
-- recode.SlackBuild
-```
-
-### Instalação MPV
-
-O reprodutor multimídia *MPV* é muito leve para se usar e não requer muitas dependências essenciais.
-Essas são algumas de suas principais dependências, sendo algumas opcionais:
-```
-- libasound  : Já disponível em ALSA.
-- pulseaudio : Já instalado.
-- ffmpeg     : Já Instalado.
-
-- libass     : Não Instalado.
-- libplacebo : Não Instalado.
-- lua        : Não Instalado.
-- mujs       : Não Instalado.
-
-- jack               : Opcional.
-- libjpeg            : Opcional.
-- nvdec              : Opcional.
-- rubberband         : Opcional.
-- uchardet           : Opcional.
-- vaapi              : Opcional.
-- vapoursynth        : Opcional.
-- vapoursynth-script : Opcional.
-- zlib               : Opcional.
-```
-
-Vamos instalar da forma mais simplificada possível:
-```
-- libass.SlackBuild
-- libplacebo.SlackBuild
-- lua.SlackBuild
-- mujs.SlackBuild
-```
-
-### Instalação Hypnotix
-
-O *Hypnotix* é um aplicativo de IPTV feito pelo Linux Mint e para o Cinnamon.
-Possui as dependências a seguir:
-```
-- dconf              : Já Instalado.
-- hicolor-icon-theme : Já Instalado.
-
-- python-cairo --> pycairo : Já Instalado.
-- python-requests          : Já Instalado.
-- python-imdbpy            : Não Instalado. ( python3-imdbpy ).
-- python-setproctitle      : Não Instalado. ( python3-setproctitle ).
-
-- libxapp --> xapp : Não Instalado.
-- libmpv  --> mpv  : Não Instalado.
-```
-
-Use as instruções para a Instalação do *MPV* e, use esses script:
-```
-- python3-imdbpy.SlackBuild
-- python3-setproctitle.SlackBuild
-- xapp.SlackBuild
-- libgnomekbd.SlackBuild (dependência do xapp)
-```
-
-### Instalação AscIIQuarium
-
-O *AscIIQuarium* é uma animação marítima feito para rodar no Terminal.
-Ele foi feito em *perl* e por isso ele precisa instalar as dependências a seguir:
-```
-- perl-Term-Animation.SlackBuild
-- perl-Curses.SlackBuild
-```
-
-### Instalação CodeBlocks
-
-O *CodeBlocks* é uma IDE de desenvolvimento em C/C++ e tem como dependência o *wxGTK3*.
-Portanto, use esse script:
-```
-- wxGTK3.SlackBuild
-```
-
-### Instalação PhotoQT
-
-O *PhotoQT* é um visualizador de imagem que lembra o Visualizador de Photos do Picasa para Windows.
-Ele possui algumas dependências que devem ser instaladas usando esses scripts:
-```
-- graphicsmagick.SlackBuild
-- libqpsd.SlackBuild
-- pugixml.SlackBuild
-```
-
-### instalação ProtonVPN
-
-O *ProtonVPN* é um serviço de VPN que usa o *Python3*.
-É um utilitário em linha de comando, mas possui uma interface gráfica.
-Para o seu funcionamento, é necessário as seguintes dependências:
-```
-Para o cli:
-- python3-docopt.SlackBuild
-- python3-Jinja2.SlackBuild
-- python3-MarkupSafe.SlackBuild (dependência do python3-Jinja2)
-- python3-pythondialog.SlackBuild
-
-Para o gui:
-- python3-ConfigParser.SlackBuild
+- aria2.SlackBuild
+- c-ares.SlackBuild (dependência do aria2)
 ```

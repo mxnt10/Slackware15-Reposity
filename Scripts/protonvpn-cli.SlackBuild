@@ -1,14 +1,14 @@
 #!/bin/sh
 
-# Slackware build script for protonvpn
+# Slackware build script for protonvpn-cli
 
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/python3-docopt*       2>&-`" ] && echo -e "\nDependência Faltante: python3-docopt !      \n" && ERRO=1
-[ ! "`ls /var/log/packages/python3-Jinja2*       2>&-`" ] && echo -e "\nDependência Faltante: python3-Jinja2 !      \n" && ERRO=1
-[ ! "`ls /var/log/packages/python3-pythondialog* 2>&-`" ] && echo -e "\nDependência Faltante: python3-pythondialog !\n" && ERRO=1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/python3-docopt*       2>&-)" ] && { echo -e "\nDependência Faltante: python3-docopt !      \n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/python3-Jinja2*       2>&-)" ] && { echo -e "\nDependência Faltante: python3-Jinja2 !      \n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/python3-pythondialog* 2>&-)" ] && { echo -e "\nDependência Faltante: python3-pythondialog !\n"; ERRO=1; }
 [ "$ERRO" = 1 ] && exit 1
 
 PRGNAM=protonvpn-cli
@@ -23,7 +23,7 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
 TMP=/tmp
@@ -60,8 +60,14 @@ cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$SRCNAM-community-$VERSION
 
-cd $CWD; [ -e "../Exclamation.mp3" ] && mplayer ../Exclamation.mp3 > /dev/null
-read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
 case "$OPTION" in
 	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
 esac; exit 0

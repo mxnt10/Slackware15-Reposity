@@ -5,9 +5,9 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/python3-ConfigParser* 2>&-`" ] && echo -e "\nDependência Faltante: python3-ConfigParser !\n" && ERRO=1
-[ ! "`ls /var/log/packages/protonvpn-cli*        2>&-`" ] && echo -e "\nDependência Faltante: protonvpn-cli !       \n" && ERRO=1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/python3-ConfigParser* 2>&-)" ] && { echo -e "\nDependência Faltante: python3-ConfigParser !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/protonvpn-cli*        2>&-)" ] && { echo -e "\nDependência Faltante: protonvpn-cli !       \n"; ERRO=1; }
 [ "$ERRO" = 1 ] && exit 1
 
 PRGNAM=protonvpn-gui
@@ -92,18 +92,19 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$SRCNAM-$VERSION
 
 cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
 if [ "${INST:-no}" = "yes" ]; then
 	OPTION=y
 else
 	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
-	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
 fi
 case "$OPTION" in
 	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;

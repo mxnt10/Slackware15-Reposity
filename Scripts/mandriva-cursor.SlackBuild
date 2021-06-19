@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# Slackware build script for mandriva-cursor
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=mandriva-cursor
+VERSION=2.0
+ARCH=noarch
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+
+CWD=$PWD
+PKG=/tmp/package-$PRGNAM
+LINK=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/releases/download/Release/mandriva-cursor-2.0.tar.xz
+
+set -e
+wget -c $LINK
+rm -rf $PKG /tmp/$PRGNAM-$VERSION
+mkdir -p $PKG/install
+tar xvf $CWD/$PRGNAM-$VERSION.tar.?z -C /tmp
+cd $PKG; cp -a /tmp/$PRGNAM-$VERSION/usr $PKG
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+echo "               |-----handy-ruler------------------------------------------------------|
+mandriva-cursor: mandriva-cursor (cursor theme Wonderland)
+mandriva-cursor:
+mandriva-cursor: Cursors used in Mandriva.
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:
+mandriva-cursor:" > $PKG/install/slack-desc
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG /tmp/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

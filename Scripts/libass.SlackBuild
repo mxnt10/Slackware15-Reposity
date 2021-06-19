@@ -5,10 +5,10 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=libass
-VERSION=0.15.0
+VERSION=0.15.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -18,12 +18,12 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
-LINK=https://github.com/libass/libass/releases/download/0.15.0/libass-0.15.0.tar.xz
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/libass/libass/releases/download/0.15.1/libass-0.15.1.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -44,6 +44,7 @@ fi
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
@@ -58,9 +59,8 @@ CXXFLAGS="$SLKCFLAGS" \
   --enable-static=no \
   --disable-silent-rules \
   --build=$ARCH-slackware-linux
-make; make install DESTDIR=$PKG
+make; make install-strip DESTDIR=$PKG
 
-find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 cp -a Changelog COPYING $PKG/usr/doc/$PRGNAM-$VERSION
 
 echo "      |-----handy-ruler------------------------------------------------------|
@@ -74,8 +74,20 @@ libass: Homepage: http://code.google.com/p/libass/
 libass:
 libass:
 libass:
-libass:" | tee $PKG/install/slack-desc
+libass:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

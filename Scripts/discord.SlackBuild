@@ -9,7 +9,7 @@
 [ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=discord
-VERSION=0.0.14
+VERSION=0.0.15
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -19,7 +19,7 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://dl.discordapp.net/apps/linux/0.0.14/discord-0.0.14.tar.gz
+LINK=https://dl.discordapp.net/apps/linux/0.0.15/discord-0.0.15.tar.gz
 
 set -e
 wget -c $LINK
@@ -73,11 +73,12 @@ chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
 
 cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
 if [ "${INST:-no}" = "yes" ]; then
 	OPTION=y
 else
 	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
-	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
 fi
 case "$OPTION" in
 	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;

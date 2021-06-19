@@ -7,7 +7,8 @@
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
-PRGNAM=python-distutils-extra
+PRGNAM=python3-distutils-extra
+SRCNAM=python-distutils-extra
 VERSION=2.39
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -18,7 +19,7 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-WD=$PWD; mkdir -p ${PRGNAM/-/3-}; chown -R 1000:users ${PRGNAM/-/3-}; cd ${PRGNAM/-/3-}
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
 TMP=/tmp
@@ -29,8 +30,8 @@ set -e
 wget -c $LINK
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
-cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
-cd $PRGNAM-$VERSION
+cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
+cd $SRCNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
@@ -51,17 +52,18 @@ python3-distutils-extra:
 python3-distutils-extra:
 python3-distutils-extra:" > $PKG/install/slack-desc
 
-cd $PKG; /sbin/makepkg -l y -c n $CWD/${PRGNAM/-/3-}-$VERSION-$ARCH-$BUILD$TAG.txz
-chown -R 1000:users $CWD/${PRGNAM/-/3-}-$VERSION-$ARCH-$BUILD$TAG.txz
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
 
 cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
 if [ "${INST:-no}" = "yes" ]; then
 	OPTION=y
 else
 	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
-	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
 fi
 case "$OPTION" in
-	y|Y) /sbin/upgradepkg --install-new --reinstall ${PRGNAM/-/3-}-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
 esac; exit 0

@@ -74,11 +74,12 @@ chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG
 
 cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
 if [ "${INST:-no}" = "yes" ]; then
 	OPTION=y
 else
 	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
-	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
 fi
 case "$OPTION" in
 	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;

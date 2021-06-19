@@ -5,10 +5,10 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=mujs
-VERSION=1.1.1
+VERSION=1.1.3
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://mujs.com/downloads/mujs-1.1.1.tar.xz
+LINK=https://mujs.com/downloads/mujs-1.1.3.tar.xz
 
 if [ "$ARCH" = "i486" ]; then
 	SLKCFLAGS="-O2 -march=i486 -mtune=i686"
@@ -78,11 +78,12 @@ chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
 
 cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
 if [ "${INST:-no}" = "yes" ]; then
 	OPTION=y
 else
 	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
-	read -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
 fi
 case "$OPTION" in
 	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;

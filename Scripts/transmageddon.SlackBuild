@@ -5,8 +5,8 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
-[ ! "`ls /var/log/packages/lsdvd* 2> /dev/null`" ] && echo -e "\nDependência Faltante: lsdvd !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/lsdvd* 2>&-)" ] && { echo -e "\nDependência Faltante: lsdvd !\n"; exit 1; }
 
 PRGNAM=transmageddon
 VERSION=1.5
@@ -14,11 +14,11 @@ ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
 LINK1=http://www.linuxrising.org/files/transmageddon-1.5.tar.xz
 LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0001-Fix-AppStream-metadata-validation.patch
 LINK3=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/Fix-Bug-getchildren-Python39.patch
@@ -26,6 +26,7 @@ LINK4=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-R
 
 set -e
 wget -c $LINK1 $LINK2 $LINK3 $LINK4
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
@@ -54,7 +55,7 @@ transmageddon: people not hugely experienced with multimedia to generate a
 transmageddon: for multimedia file without having to resort to command line
 transmageddon: tools with ungainly syntaxes.
 transmageddon:
-transmageddon: Provides support for the GStreamer's plugins auto-search." | tee $PKG/install/slack-desc
+transmageddon: Provides support for the GStreamer's plugins auto-search." > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -74,8 +75,20 @@ if [ -e usr/share/glib-2.0/schemas ]; then
 	if [ -x /usr/bin/glib-compile-schemas ]; then
 		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
 	fi
-fi" | tee $PKG/install/doinst.sh
+fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

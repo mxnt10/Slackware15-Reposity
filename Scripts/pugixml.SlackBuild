@@ -5,7 +5,7 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=pugixml
 VERSION=1.11.4
@@ -18,11 +18,11 @@ case "$( uname -m )" in
 	   *) export ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
 LINK=https://github.com/zeux/pugixml/releases/download/v1.11.4/pugixml-1.11.4.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
@@ -44,6 +44,7 @@ fi
 
 set -e
 wget -c $LINK
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
@@ -62,7 +63,7 @@ find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cu
 find $PKG | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip -g 2> /dev/null || true
 cp -a readme* docs/* $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "       |-----handy-ruler------------------------------------------------------|
+echo '       |-----handy-ruler------------------------------------------------------|
 pugixml: pugixml (XML parser for C)
 pugixml:
 pugixml: pugixml is a C++ XML processing library, which consists of a DOM-like
@@ -73,8 +74,20 @@ pugixml: Full Unicode support is also available, with Unicode interface
 pugixml: variants and conversions between different Unicode encodings.
 pugixml:
 pugixml:
-pugixml:" | tee $PKG/install/slack-desc
+pugixml:' > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

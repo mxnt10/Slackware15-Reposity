@@ -3,6 +3,62 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2021-06-19 #############################################
+
+### Added / Adicionado
+ - Script:
+	- JDownloader2.SlackBuild
+	- mandriva-cursor.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- discord.SlackBuild
+	- libass.SlackBuild
+	- libsidplayfp.SlackBuild
+	- mujs.SlackBuild
+	- photoqt.SlackBuild
+	- portaudio.SlackBuild
+	- python3-imdbpy.SlackBuild
+	- python3-Jinja2.SlackBuild
+	- python3-MarkupSafe.SlackBuild
+	- python3-setproctitle.SlackBuild
+	- python3-xlib.SlackBuild
+	- qmplay2.SlackBuild
+	- xapp.SlackBuild
+###
+
+### Changed / Modificado
+ - Script:
+	- graphicsmagick.SlackBuild
+	- gst-plugins-bad.SlackBuild
+	- gst-plugins-ugly.SlackBuild
+	- hypnotix.SlackBuild
+	- libgme.SlackBuild
+	- libgnomekbd.SlackBuild
+	- libplacebo.SlackBuild
+	- libqpsd.SlackBuild
+	- lsdvd.SlackBuild
+	- lua.SlackBuild
+	- mpv.SlackBuild
+	- protonvpn-cli.SlackBuild
+	- protonvpn-gui.SlackBuild
+	- pugixml.SlackBuild
+	- python3-ConfigParser.SlackBuild
+	- python3-docopt.SlackBuild
+	- python3-pythondialog.SlackBuild
+	- transmageddon.SlackBuild
+	- xa.SlackBuild
+###
+
+### Removed / Removido
+ - Extra:
+	- python3-imdbpy_6.8_FIX
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2021-05-15 #############################################
 
 ### Added / Adicionado

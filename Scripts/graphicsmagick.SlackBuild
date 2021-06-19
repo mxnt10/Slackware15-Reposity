@@ -5,7 +5,7 @@
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
-[ $UID != 0 ] && echo -e "\nExecute como Root !\n" && exit 1
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=graphicsmagick
 SRCNAM=GraphicsMagick
@@ -19,11 +19,11 @@ case "$( uname -m )" in
 	   *) export ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
 LINK=http://ftp.icm.edu.pl/pub/unix/graphics/GraphicsMagick/1.3/GraphicsMagick-1.3.36.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
@@ -69,11 +69,9 @@ CXXFLAGS="$SLKCFLAGS" \
   --with-perl \
   --host=$ARCH-slackware-linux \
   --build=$ARCH-slackware-linux
-make; make DESTDIR=$PKG install
+make; make install-strip DESTDIR=$PKG
 
 rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
-find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs -r strip --strip-unneeded 2> /dev/null || true
-find $PKG | xargs file | grep "current ar archive" | cut -f 1 -d : | xargs -r strip -g 2> /dev/null || true
 find $PKG/usr/man -type f -exec chmod 644 {} \; -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
 cp -a *.txt ChangeLog $PKG/usr/doc/$PRGNAM-$VERSION
@@ -89,8 +87,20 @@ graphicsmagick: JPEG-2000, PNG, PDF, PNM, and TIFF.
 graphicsmagick:
 graphicsmagick:
 graphicsmagick:
-graphicsmagick:" | tee $PKG/install/slack-desc
+graphicsmagick:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 rm -rf $PKG $TMP/$SRCNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
