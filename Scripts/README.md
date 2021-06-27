@@ -103,7 +103,7 @@ O reprodutor multimídia *MPV* é muito leve para se usar e não requer muitas d
 Essas são algumas de suas principais dependências, sendo algumas opcionais:
 ```
 - libasound  : Já disponível em ALSA.
-- pulseaudio : Já instalado.
+- pulseaudio : Já Instalado.
 - ffmpeg     : Já Instalado.
 
 - libass     : Não Instalado.
@@ -135,16 +135,16 @@ Vamos instalar da forma mais simplificada possível:
 O *Nulloy* é um reprodutor de áudio que usa a interface QT, que não versão atual do Slackware é o *QT5*.
 Possui as dependências a seguir:
 ```
-qt5    : Já instalado.
+qt5    : Já Instalado.
 zip    : Já disponível no zlib.
-taglib : Já instalado.
-libX11 : Já disponível no X11.
+taglib : Já Instalado.
+libX11 : Já Instalado.
 
-gstreamer        : Já instalado.
-gst-plugins-base : Já instalado.
-gst-plugins-good : Já instalado.
-gst-plugins-bad  : Não instalado.
-gst-plugins-ugly : Não instalado.
+gstreamer        : Já Instalado.
+gst-plugins-base : Já Instalado.
+gst-plugins-good : Já Instalado.
+gst-plugins-bad  : Não Instalado.
+gst-plugins-ugly : Não Instalado.
 ```
 
 Considerando uma Instalação completa do Slackware, não será necessário dependências adicionais.
@@ -152,6 +152,14 @@ Mas, você pode instalar as dependências opcionais, o *gst-plugins-ugly* e o *g
 ```
 - gst-plugins-ugly.SlackBuild
 - gst-plugins-bad.SlackBuild
+```
+
+### Instalação do Ocenaudio
+
+O *Ocenaudio* é um editor de áudio como o Audacity, só que bem mais simples.
+Mas para funcionar, será necessário instalar uma dependência no sistema, o *jack*. Use esse script:
+```
+- jack.SlackBuild
 ```
 
 ### Instalação PhotoQT
@@ -180,6 +188,14 @@ Para o gui:
 - python3-ConfigParser.SlackBuild
 ```
 
+### Instalação qBittorrent
+
+O *qBittorrent* é um cliente torrent que não requer muitas dependências no Slackware.
+Você precisará apenas do *libtorrent-rasterbar*. Use esse script:
+```
+- libtorrent-rasterbar.SlackBuild
+```
+
 ### Instalação QMPlay2
 
 O reprodutor de multimídia *QMPlay2* também usa o *QT5*.
@@ -195,7 +211,7 @@ Mas, possui uma série de dependências, sendo algumas opcionais. Serão listado
 - libpulse     : Já Disponível no PulseAudio.
 - libsidplayfp : Não Instalado.
 - libva        : Já Instalado.
-- libxv        : Já Disponível no X11.
+- libxv        : Já Instalado.
 - qt5          : Já Instalado.
 - taglib       : Já Instalado.
 - pulseaudio   : Já Instalado.

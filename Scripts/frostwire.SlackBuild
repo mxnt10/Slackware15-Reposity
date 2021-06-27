@@ -9,7 +9,7 @@
 [ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=frostwire
-VERSION=6.9.3
+VERSION=6.9.4
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -18,8 +18,8 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
 PKG=/tmp/package-$PRGNAM
-LINK1=https://wc1.frostwire.com/frostwire/6.9.3/frostwire-6.9.3.amd64.tar.gz
-LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Frostwire_6.9.2_FIX/Fix-Launcher.patch
+LINK1=https://phoenixnap.dl.sourceforge.net/project/frostwire/frostwire-desktop-6.9.4-build-307/frostwire-6.9.4.amd64.tar.gz
+LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Frostwire_6.9.4_FIX/Fix-Launcher.patch
 LINK3=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/FrostWire_EXTRA/frostwire-icons.tar.gz
 LINK4=https://github.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/raw/master/Extra/FrostWire_EXTRA/frostwire-pixmaps.tar.gz
 

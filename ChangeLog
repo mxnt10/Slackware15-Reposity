@@ -3,6 +3,41 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2021-06-27 #############################################
+
+### Added / Adicionado
+ - Script:
+	- cmatrix.SlackBuild
+	- jack.SlackBuild
+	- libtorrent-rasterbar.SlackBuild
+	- ocenaudio.SlackBuild
+	- qbittorrent.SlackBuild
+	- sl.SlackBuild
+	- zenity.SlackBuild
+###
+
+### Upgraded / Atualizado
+ - Script:
+	- frostwire.SlackBuild
+	- telegram.SlackBuild
+	- protonvpn-cli.SlackBuild
+	- python3-pythondialog.SlackBuild
+	- vscodium.SlackBuild
+###
+
+### Changed / Modificado
+ - Extra:
+	- Frostwire_6.9.2_FIX --> Frostwire_6.2.4_FIX: Fix-Launcher.patch
+###
+
+### Fixed / Corrigido
+ - Script:
+	- kazam.SlackBuild: Fix Link.
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2021-06-19 #############################################
 
 ### Added / Adicionado

@@ -9,7 +9,7 @@
 
 PRGNAM=python3-pythondialog
 SRCNAM=pythondialog
-VERSION=3.5.1
+VERSION=3.5.2
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -24,7 +24,7 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://files.pythonhosted.org/packages/72/3c/26ed0db035f97196704d0197d8b2254b8a6ca93a2d132430b0b0d597aa79/pythondialog-3.5.1.tar.gz
+LINK=https://files.pythonhosted.org/packages/78/00/1556fa223ceb177d0ae92579812e195be5598ca3abe60f89c63ac23c472b/pythondialog-3.5.2.tar.gz
 
 set -e
 wget -c $LINK

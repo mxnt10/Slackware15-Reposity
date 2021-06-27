@@ -17,12 +17,13 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 
 CWD=$PWD
 PKG=/tmp/package-$PRGNAM
-LINK=https://github.com/biglinux/nosync-browser/archive/refs/tags/1.0.tar.gz
+LINK1=https://github.com/biglinux/nosync-browser/archive/refs/tags/1.0.tar.gz
+LINK2=https://raw.githubusercontent.com/biglinux/nosync-browser/main/autoenable-manjaro/chrome/usr/share/nosync-browser/chrome
 
 set -e
-wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
+wget -c -O $PRGNAM-$VERSION.tar.gz $LINK1
 rm -rf $PKG
-mkdir -p $PKG/{install,usr/{bin,lib,doc/$PRGNAM-$VERSION}}
+mkdir -p $PKG/{install,usr/{bin,lib,doc/$PRGNAM-$VERSION,share/nosync-browser}}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 chown -R root:root .
@@ -32,6 +33,9 @@ cd src; rm nosync-browser.so; make
 install -Dpm755 nosync-browser "$PKG/usr/bin/nosync-browser"
 install -Dpm644 nosync-browser.so "$PKG/usr/lib/nosync-browser.so"
 cp -a LICENSE $PKG/usr/doc/$PRGNAM-$VERSION
+cd $PKG/usr/share/nosync-browser
+wget $LINK2
+chmod +x chrome
 
 echo "              |-----handy-ruler------------------------------------------------------|
 nosync-browser: nosync-browser (Make your browser faster than ever)

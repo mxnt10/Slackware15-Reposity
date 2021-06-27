@@ -1,0 +1,130 @@
+#!/bin/sh
+
+# Slackware build script for qbittorrent
+
+# Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/libtorrent-rasterbar* 2>&-)" ] && { echo -e "\nDependência Faltante: libtorrent-rasterbar !\n"; exit 1; }
+
+PRGNAM=qbittorrent
+VERSION=4.3.6
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+NUMJOBS=${NUMJOBS:-" -j$(nproc) "}
+
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
+
+CWD=$PWD
+TMP=/tmp
+PKG=$TMP/package-$PRGNAM
+LINK=https://ufpr.dl.sourceforge.net/project/qbittorrent/qbittorrent/qbittorrent-4.3.6/qbittorrent-4.3.6.tar.xz
+
+case "$(uname -m)" in
+	i?86) ARCH=i586 ;;
+	arm*) readelf /usr/bin/file -A | egrep -q "Tag_CPU.*[4,5]" && ARCH=arm || ARCH=armv7hl ;;
+	   *) ARCH=$(uname -m) ;;
+esac
+
+case "$ARCH" in
+  i?86)     SLKCFLAGS="-O2 -march=${ARCH} -mtune=i686"
+            SLKLDFLAGS=""; LIBDIRSUFFIX="" ;;
+  x86_64)   SLKCFLAGS="-O2 -fPIC"
+            SLKLDFLAGS="-Wl,--rpath -Wl,/usr/lib64 -L/usr/lib64"; LIBDIRSUFFIX="64" ;;
+  armv7hl)  SLKCFLAGS="-O2 -march=armv7-a -mfpu=vfpv3-d16"
+            SLKLDFLAGS=""; LIBDIRSUFFIX="" ;;
+  *)        SLKCFLAGS="-O2"
+            SLKLDFLAGS=""; LIBDIRSUFFIX="" ;;
+esac
+
+case "$ARCH" in
+	arm*) TARGET=$ARCH-slackware-linux-gnueabi ;;
+	   *) TARGET=$ARCH-slackware-linux ;;
+esac
+
+set -e
+wget -c $LINK
+rm -rf $PKG $TMP/$SRCNAM-$VERSION
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+function qconf() {
+  LDFLAGS="$SLKLDFLAGS" \
+  CFLAGS="$SLKCFLAGS" \
+  CXXFLAGS="$SLKCFLAGS" \
+  ./configure \
+    --prefix=/usr \
+    --libdir=/usr/lib${LIBDIRSUFFIX} \
+    --mandir=/usr/man \
+    --docdir=/usr/doc/$PRGNAM-$VERSION \
+    --localstatedir=/var \
+    --sysconfdir=/etc \
+    --program-prefix= \
+    --program-suffix= \
+    --build=$TARGET $*
+}
+
+qconf; make $NUMJOBS
+make INSTALL_ROOT=$PKG install
+
+make clean; qconf --disable-gui
+make $NUMJOBS; make INSTALL_ROOT=$PKG install
+
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+mv $PKG/usr/share/man $PKG/usr/man || true
+find $PKG/usr/man -type f -name "*.?" -exec gzip -9f {} \;
+for i in $(find $PKG/usr/man -type l -name "*.?") ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+cp -a AUTHORS CODING_GUIDELINES.md COPYING Changelog INSTALL NEWS README* TODO $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo '           |-----handy-ruler------------------------------------------------------|
+qbittorrent: qBittorrent (a C++ / Qt4 Bittorrent Client)
+qbittorrent:
+qbittorrent: The qBittorrent project was created in March 2006 with the idea
+qbittorrent: of developing a new Bittorrent client for Linux (and possibly
+qbittorrent: other systems) that would be easy to use, good looking, featureful
+qbittorrent: but lightweight.
+qbittorrent: qBittorrent is a Free Software released under the GNU GPL license.
+qbittorrent: Original author is Christophe Dumez.  Currently, qBittorrent is
+qbittorrent: being developed by volunteers on their spare time.
+qbittorrent:
+qbittorrent: Homepage: http://qbittorrent.sourceforge.net/' > $PKG/install/slack-desc
+
+echo 'if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi' > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG $TMP/$PRGNAM-$VERSION
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	[ -e "../Exclamation.mp3" ] && pkexec env DISPLAY=$DISPLAY XAUTHORITY=$XAUTHORITY mplayer $WD/Exclamation.mp3 > /dev/null
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

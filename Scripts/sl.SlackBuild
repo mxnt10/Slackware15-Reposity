@@ -1,30 +1,29 @@
 #!/bin/sh
 
-# Slackware build script for aria2
+# Slackware build script for sl.
 
 # Copyright 2021 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
-[ ! "$(ls /var/log/packages/c-ares* 2>&-)" ] && { echo -e "\nDependência Faltante: c-ares !\n"; exit 1; }
 
-PRGNAM=aria2
-VERSION=1.35.0
+PRGNAM=sl
+VERSION=5.02
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
 case "$( uname -m )" in
-	i?86) ARCH=i586 ;;
-	arm*) ARCH=arm ;;
-	   *) ARCH=$( uname -m ) ;;
+	i?86) export ARCH=i586 ;;
+	arm*) export ARCH=arm ;;
+	   *) export ARCH=$( uname -m ) ;;
 esac
 
-WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
+WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM 
 
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/aria2/aria2/releases/download/release-1.35.0/aria2-1.35.0.tar.xz
+LINK=https://github.com/mtoyoda/sl/archive/refs/tags/5.02.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -44,42 +43,38 @@ else
 fi
 
 set -e
-wget -c $LINK
+wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
 rm -rf $PKG $TMP/$PRGNAM-$VERSION
-mkdir -p $PKG/install
-cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
+mkdir -p $PKG/{install,usr/{doc/$PRGNAM-$VERSION,games,man/{,ja.UTF-8/}man1}}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
 CFLAGS="$SLKCFLAGS" \
 CXXFLAGS="$SLKCFLAGS" \
-./configure \
-  --prefix=/usr \
-  --sysconfdir=/etc \
-  --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --libdir=/usr/lib${LIBDIRSUFFIX} \
-  --build=$ARCH-slackware-linux
-make; make install-strip DESTDIR=$PKG
+make
 
+cp -p sl $PKG/usr/games; ( cd $PKG/usr/games; ln -s sl LS; )
+cp -p sl.1 $PKG/usr/man/man1
+cp -p sl.1.ja $PKG/usr/man/ja.UTF-8/man1
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find $PKG/usr/man -type f -exec gzip -9 {} \;
 for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
-cp -a AUTHORS COPYING ChangeLog INSTALL LICENSE.OpenSSL NEWS README* $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a README* LICENSE $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "     |-----handy-ruler------------------------------------------------------|
-aria2: aria2 (CLI Metalink/BiTorrent client)
-aria2:
-aria2: aria2 is a lightweight multi-protocol & multi-source, cross platform
-aria2: download utility operated in command-line.
-aria2: It supports HTTP/HTTPS, FTP, SFTP, BitTorrent and Metalink.
-aria2:
-aria2:
-aria2: Homepage: https://aria2.github.io/
-aria2:
-aria2:
-aria2:" > $PKG/install/slack-desc
+echo "  |-----handy-ruler------------------------------------------------------|
+sl: sl (Steam Locomotive)
+sl:
+sl: sl is a program that displays animations aimed to correct you if
+sl: you type sl instead of ls by mistake.
+sl: 'sl' stands for Steam Locomotive.
+sl:
+sl:
+sl: Homepage: http://www.tkl.iis.u-tokyo.ac.jp/~toyoda/index_e.html
+sl:
+sl:
+sl:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz

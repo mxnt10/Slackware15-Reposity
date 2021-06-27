@@ -21,7 +21,7 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam/+sourcefiles/kazam/1.5.4-0ubuntu6/kazam_1.5.4.orig.tar.gz
+LINK=https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam/+sourcefiles/kazam/1.5.4-0ubuntu7/kazam_1.5.4.orig.tar.gz
 
 set -e
 wget -c $LINK

@@ -13,7 +13,7 @@
 
 PRGNAM=protonvpn-cli
 SRCNAM=linux-cli
-VERSION=2.2.6
+VERSION=2.2.11
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -28,10 +28,10 @@ WD=$PWD; mkdir -p $PRGNAM; chown -R 1000:users $PRGNAM; cd $PRGNAM
 CWD=$PWD
 TMP=/tmp
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/ProtonVPN/linux-cli/archive/v2.2.6/linux-cli-2.2.6.tar.gz
+LINK=https://github.com/ProtonVPN/linux-cli-community/archive/refs/tags/v2.2.11.tar.gz
 
 set -e
-wget -c $LINK
+wget -c -O $SRCNAM-$VERSION.tar.gz $LINK
 rm -rf $PKG $TMP/$SRCNAM-community-$VERSION
 mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z*
