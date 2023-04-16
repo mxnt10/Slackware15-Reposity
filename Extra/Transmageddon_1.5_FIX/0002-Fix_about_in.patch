@@ -1,0 +1,17 @@
+--- a/src/about.py.in	2014-10-12 11:55:39.000000000 -0300
++++ b/src/about.py.in	2021-10-24 15:22:33.628337920 -0300
+@@ -1,7 +1,6 @@
+ # -*- coding: utf-8 -*-
+ 
+ from gi.repository import Gtk
+-import os
+ from gettext import gettext as _
+ 
+ Authors = ["Christian Schaller <uraeus@gnome.org>",
+@@ -58,6 +57,3 @@
+        x.set_license(LGPL)   
+        x.connect("response", lambda d, r: d.destroy())
+        x.show()
+-
+-   def close(self,widget):
+-        sys.exit(0)

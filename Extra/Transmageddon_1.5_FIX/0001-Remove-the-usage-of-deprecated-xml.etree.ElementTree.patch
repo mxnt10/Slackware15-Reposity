@@ -1,0 +1,97 @@
+--- a/src/presets.py	2014-07-03 06:54:00.000000000 -0300
++++ b/src/presets.py	2021-10-24 14:59:39.835984197 -0300
+@@ -37,19 +37,16 @@
+     <http://www.gnu.org/licenses/>.
+ """
+ 
+-# import gettext
++import gettext
+ import logging
+ import os
+-import sys
+ import urllib.request, urllib.error, urllib.parse
+ import xml.etree.ElementTree
+-import gstfraction
+-
+-from gi.repository import Gst
+ 
++import gstfraction
+ import utils
+ 
+-# _ = gettext.gettext
++_ = gettext.gettext
+ _presets = {}
+ _log = logging.getLogger("transmageddon.presets")
+ 
+@@ -256,7 +253,7 @@
+     elif len(parts) == 2:
+         return (type(parts[0]), type(parts[1]))
+     else:
+-        raise ValueError(ngettext("Value may only contain one comma; got %(value)s") % {
++        raise ValueError(gettext.ngettext("Value may only contain one comma; got %(value)s") % {
+             "value": value
+         })
+ 
+@@ -271,7 +268,7 @@
+     """
+     author = Author()
+     
+-    for child in root.getchildren():
++    for child in list(root):
+         if child.tag == "name":
+             author.name = child.text.strip()
+         elif child.tag == "email":
+@@ -290,7 +287,7 @@
+     """
+     codec = AudioCodec()
+     
+-    for child in root.getchildren():
++    for child in list(root):
+         if child.tag == "name":
+             codec.name = child.text.strip()
+         elif child.tag == "container":
+@@ -304,7 +301,7 @@
+         elif child.tag == "samplerate":
+             codec.samplerate = child.text.strip()
+         elif child.tag == "presets":
+-            for command in child.getchildren():
++            for command in list(child):
+                 codec.presets.append(command.text.strip())
+     
+     return codec
+@@ -320,7 +317,7 @@
+     """
+     codec = VideoCodec()
+     
+-    for child in root.getchildren():
++    for child in list(root):
+         if child.tag == "name":
+             codec.name = child.text.strip()
+         elif child.tag == "container":
+@@ -340,7 +337,7 @@
+         elif child.tag == "passes":
+             codec.passes = child.text.strip()
+         elif child.tag == "presets":
+-            for command in child.getchildren():
++            for command in list(child):
+                 codec.presets.append(command.text.strip())
+     
+     return codec
+@@ -356,7 +353,7 @@
+     """
+     preset = Preset()
+     
+-    for child in root.getchildren():
++    for child in list(root):
+         if child.tag == "name":
+             preset.name = child.text.strip()
+         elif child.tag == "container":
+@@ -391,7 +388,7 @@
+     
+     device.filename = filename
+     
+-    for child in tree.getroot().getchildren():
++    for child in list(tree.getroot()):
+         if child.tag == "make":
+             device.make = child.text.strip()
+         elif child.tag == "model":
