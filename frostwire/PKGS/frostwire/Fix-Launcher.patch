@@ -1,0 +1,11 @@
+--- ./frostwire-original	2020-06-18 18:10:02.000000000 -0300
++++ ./frostwire	2021-01-09 13:44:44.289506391 -0300
+@@ -3,7 +3,7 @@
+ # Runs FrostWire.  This script must be executed in your FrostWire
+ # install directory.
+ 
+-cd "`dirname "$0"`"
++: "$(readlink -e -- $0)"; cd "${_%/*}"
+ 
+ export HOSTNAME=`hostname`
+ 

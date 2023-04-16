@@ -1,0 +1,30 @@
+--- mx-conky-21.7-orig/main.cpp	2021-07-20 17:19:28.000000000 -0300
++++ mx-conky-21.7/main.cpp	2021-09-10 19:59:12.055503015 -0300
+@@ -100,12 +100,12 @@
+     if (appTran.load(app.applicationName() + "_" + QLocale::system().name(), "/usr/share/" + app.applicationName() + "/locale"))
+         app.installTranslator(&appTran);
+ 
+-    if (system("dpkg -s conky-manager | grep -q 'Status: install ok installed'") != 0 &&
+-               system("dpkg -s conky-manager2 | grep -q 'Status: install ok installed'" ) != 0) {
+-        QMessageBox::critical(nullptr, QObject::tr("Error"),
+-                              QObject::tr("Could not find conky-manager, please install it before running mx-conky"));
+-        return EXIT_FAILURE;
+-    }
++//     if (system("dpkg -s conky-manager | grep -q 'Status: install ok installed'") != 0 &&
++//                system("dpkg -s conky-manager2 | grep -q 'Status: install ok installed'" ) != 0) {
++//         QMessageBox::critical(nullptr, QObject::tr("Error"),
++//                               QObject::tr("Could not find conky-manager, please install it before running mx-conky"));
++//         return EXIT_FAILURE;
++//     }
+ 
+     if (getuid() != 0) {
+ 
+@@ -113,7 +113,7 @@
+         if (not QFile::exists(dir))
+             QDir().mkdir(dir);
+ 
+-        messageUpdate();
++//         messageUpdate();
+ 
+         // copy the mx-conky-data themes to the default folder
+         system("cp -rn /usr/share/mx-conky-data/themes/* " + dir.toUtf8());
