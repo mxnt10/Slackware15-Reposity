@@ -1,0 +1,84 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=upscayl
+VERSION=2.0.1
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=/tmp/package-$PRGNAM
+LINK=https://github.com/upscayl/upscayl/releases/download/v2.0.1/upscayl-2.0.1-linux.AppImage
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $TMP $PKG/{install,usr/{bin,share/{applications,pixmaps}}}
+cd $TMP
+
+chmod 755 $CWD/upscayl-$VERSION-linux.AppImage
+$CWD/upscayl-$VERSION-linux.AppImage --appimage-extract upscayl.desktop
+$CWD/upscayl-$VERSION-linux.AppImage --appimage-extract usr/share/icons/hicolor/0x0/apps/upscayl.png
+
+sed -i 's|^Exec=.*|Exec=upscayl|' squashfs-root/upscayl.desktop
+
+install -Dm644 squashfs-root/usr/share/icons/hicolor/0x0/apps/upscayl.png "$PKG/usr/share/pixmaps/upscayl.png"
+install -Dm644 squashfs-root/upscayl.desktop "$PKG/usr/share/applications/upscayl.desktop"
+install -Dm755 $CWD/upscayl-$VERSION-linux.AppImage "$PKG/usr/bin/$PRGNAM"
+
+echo "       |-----handy-ruler------------------------------------------------------|
+upscayl: upscayl (Free and Open Source AI Image Upscaler)
+upscayl:
+upscayl: Upscayl is a cross-platform application built with the
+upscayl: Linux-first philosophy.
+upscayl:
+upscayl: This means that we prioritize Linux builds over others but that
+upscayl: doesn't mean we'll break things for other OS.
+upscayl:
+upscayl: https://github.com/upscayl/upscayl
+upscayl:
+upscayl:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

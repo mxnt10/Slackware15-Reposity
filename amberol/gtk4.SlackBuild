@@ -1,0 +1,135 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=gtk4
+VERSION=4.6.7
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) export ARCH=i586 ;;
+	arm*) export ARCH=arm ;;
+	   *) export ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://download.gnome.org/sources/gtk/4.6/gtk-4.6.7.tar.xz
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/gtk-$VERSION.tar.?z*
+cd gtk-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+export CFLAGS="$SLKCFLAGS -DG_ENABLE_DEBUG"
+export CXXFLAGS="$SLKCFLAGS -DG_ENABLE_DEBUG"
+mkdir meson-build
+cd meson-build
+unshare -n meson setup \
+  --prefix=/usr \
+  --libdir=lib${LIBDIRSUFFIX} \
+  --libexecdir=/usr/libexec \
+  --bindir=/usr/bin \
+  --sbindir=/usr/sbin \
+  --includedir=/usr/include \
+  --datadir=/usr/share \
+  --mandir=/usr/man \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --buildtype=release \
+  -Dman-pages=true \
+  -Ddemos=true \
+  -Dgtk_doc=false \
+  -Dbroadway-backend=true \
+  -Dbuild-examples=false \
+  -Dbuild-tests=false \
+  -Dinstall-tests=false \
+  -Dwayland-backend=true ..
+  "${NINJA:=ninja}" $NUMJOBS
+  DESTDIR=$PKG $NINJA install
+cd ..
+
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null
+find $PKG/usr/man -type f -exec gzip -9 {} \+
+for i in $( find $PKG/usr/man -type l ) ; do
+  ln -s $( readlink $i ).gz $i.gz
+  rm $i
+done
+
+cp -a AUTHORS COPYING NEWS README* $PKG/usr/doc/gtk4-$VERSION
+find $PKG/usr/doc/gtk4-$VERSION/ -type f -exec chmod 644 {} \+
+chown -R root:root $PKG/usr/doc/gtk4-$VERSION
+
+echo "    |-----handy-ruler------------------------------------------------------|
+gtk4: gtk4 (multi-platform GUI toolkit v4)
+gtk4:
+gtk4: This is GTK, a multi-platform toolkit for creating graphical user
+gtk4: interfaces. Offering a complete set of widgets, GTK+ is suitable for
+gtk4: projects ranging from small one-off projects to complete application
+gtk4: suites.
+gtk4:
+gtk4:
+gtk4:
+gtk4:
+gtk4:" > $PKG/install/slack-desc
+
+echo "config() {
+  NEW=\"\$1\"
+  OLD=\"\$(dirname \$NEW)/\$(basename \$NEW .new)\"
+  # If there's no config file by that name, mv it over:
+  if [ ! -r \$OLD ]; then
+    mv \$NEW \$OLD
+  elif [ \"\$(cat \$OLD | md5sum)\" = \"\$(cat \$NEW | md5sum)\" ]; then # toss the redundant copy
+    rm \$NEW
+  fi
+  # Otherwise, we leave the .new copy for the admin to consider...
+}
+
+chroot . rm -f /usr/share/icons/*/icon-theme.cache 1> /dev/null 2> /dev/null
+chroot . /usr/bin/glib-compile-schemas /usr/share/glib-2.0/schemas/ 1> /dev/null 2> /dev/null
+chroot . /usr/bin/gio-querymodules /usr/lib64/gtk-4.0/4.0.0/media 1> /dev/null 2> /dev/null
+chroot . /usr/bin/gio-querymodules /usr/lib64/gtk-4.0/4.0.0/printbackends 1> /dev/null 2> /dev/null" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

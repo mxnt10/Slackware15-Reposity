@@ -1,0 +1,94 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=umplayer
+VERSION=0.98.2
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://github.com/mxnt10/Slackware15-Reposity/releases/download/Release/umplayer-0.98.2-5.1.x86_64.rpm
+LINK2=https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/qt-4.8.7-x86_64-4.txz
+
+set -e
+wget -c $LINK1 $LINK2
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/lib/$PRGNAM}
+cd $PKG; rpm2cpio $CWD/$PRGNAM-$VERSION*rpm | cpio -di
+cd $TMP; tar xvf $CWD/qt-4.8.7-x86_64-4.txz
+
+cp -T usr/lib64/qt/lib/libQtXml.so.4.8.7 $PKG/usr/lib/umplayer/libQtXml.so.4
+cp -T usr/lib64/qt/lib/libQtGui.so.4.8.7 $PKG/usr/lib/umplayer/libQtGui.so.4
+cp -T usr/lib64/qt/lib/libQtNetwork.so.4.8.7 $PKG/usr/lib/umplayer/libQtNetwork.so.4
+cp -T usr/lib64/qt/lib/libQtCore.so.4.8.7 $PKG/usr/lib/umplayer/libQtCore.so.4
+mv -T $PKG/usr/bin/umplayer $PKG/usr/lib/umplayer/umplayer-bin
+
+echo '#! /bin/sh
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/umplayer
+"/usr/lib/umplayer/umplayer-bin" "$@"' > $PKG/usr/bin/umplayer
+chmod +x $PKG/usr/bin/umplayer
+
+rm -r $PKG/usr/lib/.build-id
+mv $PKG/usr/share/doc $PKG/usr
+mv $PKG/usr/share/man $PKG/usr
+
+cd $PKG; chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+echo '        |-----handy-ruler------------------------------------------------------|
+umplayer: UMPlayer (Universal Media Player)
+umplayer:
+umplayer: UMPlayer is the media player that fills all your needs.  With
+umplayer: dozens of advanced features and built-in codecs, it can handle
+umplayer: any media format, and can play Audio CDs, DVDs, (S)VCDs, TV and
+umplayer: Radio cards, YouTube and SHOUTcast streams and even incomplete
+umplayer: or damaged media files.
+umplayer:
+umplayer:
+umplayer:
+umplayer:' > $PKG/install/slack-desc
+
+echo 'if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi' > $PKG/install/doinst.sh
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -1,0 +1,81 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "$(uname -m)" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=jdk18
+VERSION=18.0.2.1
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+PKG=/tmp/package-$PRGNAM
+LIBDIRSUFFIX=64
+LINK=https://download.oracle.com/java/18/archive/jdk-18.0.2.1_linux-x64_bin.tar.gz
+
+set -e
+wget -c --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" $LINK
+rm -rf $PKG
+mkdir -p $PKG/{install,etc/profile.d,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION,man/man1}}
+cd $PKG/usr/lib${LIBDIRSUFFIX}
+tar -xvf $CWD/jdk-${VERSION}_linux*.tar.?z
+mv $(tar -tf $CWD/jdk-${VERSION}_linux*.tar.?z | head -1 | cut -d/ -f1) $PRGNAM-$VERSION
+chown -R root:root $PRGNAM-$VERSION
+chmod -R u+w,go+r-w,a+X-s .
+find $PRGNAM-$VERSION -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find $PRGNAM-$VERSION/man -type f -exec gzip -9q {} \; 2> /dev/null || true
+for i in $(find $PRGNAM-$VERSION/man -type l 2> /dev/null); do ln -s $(readlink $i).gz $i.gz ; rm $i ; done
+(cd ../man/man1; find ../../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/man/man1 -type f -exec ln -s {} \;)
+(cd ../bin; find ../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/bin -type f -exec ln -s {} \;)
+ln -sf $PRGNAM-$VERSION/lib/libjawt.so
+ln -sf $PRGNAM-$VERSION/lib/server/libjvm.so
+ln -sf $PRGNAM-$VERSION/lib/libjava.so
+ln -sf $PRGNAM-$VERSION/lib/libawt.so
+ln -sf $PRGNAM-$VERSION/lib/libawt_xawt.so
+ln -sf $PRGNAM-$VERSION/lib/libjli.so
+cd ../doc/$PRGNAM-$VERSION
+ln -s ../../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/legal
+ln -s ../../lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION/release
+
+cd $PKG
+echo "#!/bin/sh
+export JAVA_HOME=/usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION" > etc/profile.d/$PRGNAM.sh
+
+echo "#!/bin/csh
+setenv JAVA_HOME /usr/lib${LIBDIRSUFFIX}/$PRGNAM-$VERSION" > etc/profile.d/$PRGNAM.csh
+
+chmod 755 etc/profile.d/*
+
+echo "     |-----handy-ruler------------------------------------------------------|
+jdk18: jdk18 (Java Platform Standard Edition Development Kit)
+jdk18:
+jdk18: The Java Platform Standard Edition Development Kit (JDK) includes
+jdk18: both the runtime environment (Java virtual machine,
+jdk18: the Java platform classes and supporting files) and development tools
+jdk18: (compilers, debuggers, tool libraries and other tools).
+jdk18: The JDK is a development environment for building applications,
+jdk18: applets and components that can be deployed with the
+jdk18: Java Platform Standard Edition Runtime Environment.
+jdk18:
+jdk18: https://developer.oracle.com/java/" > install/slack-desc
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

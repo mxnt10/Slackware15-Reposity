@@ -1,0 +1,70 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=yt-dlp
+VERSION=2023.01.06
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) export ARCH=i586 ;;
+	arm*) export ARCH=arm ;;
+	   *) export ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/yt-dlp/yt-dlp/releases/download/2023.01.06/yt-dlp.tar.gz
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM.tar.?z*
+cd $PRGNAM
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+sed -i -e "s,share/doc/yt_dlp,doc/$PRGNAM-$VERSION," \
+       -e "s,share/man,man," \
+       setup.py
+
+python3 setup.py install --root=$PKG
+
+gzip -9 $PKG/usr/man/man1/*
+cp -a CONTRIBUTORS LICENSE *.md $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "      |-----handy-ruler------------------------------------------------------|
+yt-dlp: yt-dlp (download videos from youtube)
+yt-dlp:
+yt-dlp: yt-dlp is a youtube-dl fork based on the now inactive youtube-dlc. The
+yt-dlp: main focus of this project is adding new features and patches while
+yt-dlp: also keeping up to date with the original project.
+yt-dlp:
+yt-dlp:
+yt-dlp:
+yt-dlp:
+yt-dlp:
+yt-dlp:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

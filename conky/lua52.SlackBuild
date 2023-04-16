@@ -1,0 +1,143 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PKGNAM=lua52
+PRGNAM=lua
+VERSION=5.2.4
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PKGNAM; chown -R 1000:users PKGS; cd PKGS/$PKGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=http://www.lua.org/ftp/lua-5.2.4.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/conky/PKGS/lua52/liblua.so.patch
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK1 $LINK2
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/{lib${LIBDIRSUFFIX}/pkgconfig,doc/$PKGNAM-$VERSION/html}}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+patch -p1 -i $CWD/liblua.so.patch
+sed -r -e '/^LUA_(SO|A|T)=/ s/lua/lua5.2/' -e '/^LUAC_T=/ s/luac/luac5.2/' -i src/Makefile
+
+make $NUMJOBS linux \
+    MYCFLAGS="$SLKCFLAGS" \
+    INSTALL_TOP=/usr \
+    INSTALL_INC=/usr/include/lua5.2 \
+    INSTALL_MAN=/usr/man/man1 \
+    INSTALL_LIB=/usr/lib${LIBDIRSUFFIX} \
+    INSTALL_LMOD=/usr/share/lua/5.2 \
+    INSTALL_CMOD=/usr/lib${LIBDIRSUFFIX}/lua/5.2
+make linux \
+    TO_BIN='lua5.2 luac5.2' \
+    TO_LIB="liblua5.2.a liblua5.2.so liblua5.2.so.5.2 liblua5.2.so.$VERSION" \
+    INSTALL_DATA='cp -d' \
+    INSTALL_TOP=$PKG/usr \
+    INSTALL_INC=$PKG/usr/include/lua5.2 \
+    INSTALL_MAN=$PKG/usr/man/man1 \
+    INSTALL_LIB=$PKG/usr/lib${LIBDIRSUFFIX} \
+    INSTALL_LMOD=$PKG/usr/share/lua/5.2 \
+    INSTALL_CMOD=$PKG/usr/lib${LIBDIRSUFFIX}/lua/5.2 \
+    install
+
+echo "V=$VERSION
+R=$VERSION
+
+prefix=/usr
+INSTALL_BIN=\${prefix}/bin
+INSTALL_INC=\${prefix}/include/lua5.2
+INSTALL_LIB=\${prefix}/lib${LIBDIRSUFFIX}
+INSTALL_MAN=\${prefix}/man/man1
+INSTALL_LMOD=\${prefix}/share/lua/\${V}
+INSTALL_CMOD=\${prefix}/lib${LIBDIRSUFFIX}/lua/\${V}
+exec_prefix=\${prefix}
+libdir=\${exec_prefix}/lib${LIBDIRSUFFIX}
+includedir=\${prefix}/include/lua5.2
+
+Name: Lua
+Description: An Extensible Extension Language
+Version: \${R}
+Requires:
+Libs: -L\${libdir} -llua5.2 -lm
+Cflags: -I\${includedir}" > $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua52.pc
+
+ln -sf lua52.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua5.2.pc
+ln -sf lua52.pc $PKG/usr/lib${LIBDIRSUFFIX}/pkgconfig/lua-5.2.pc
+
+cd $PKG/usr/man/man1
+mv lua.1 lua5.2.1
+mv luac.1 luac5.2.1
+cd -
+
+find $PKG | xargs file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+
+cp -a README $PKG/usr/doc/$PKGNAM-$VERSION
+cp -a doc/*.{gif,png,css,html} $PKG/usr/doc/$PKGNAM-$VERSION/html
+
+ln -s liblua5.2.so $PKG/usr/lib${LIBDIRSUFFIX}/liblua.so.5.2
+ln -s liblua5.2.so $PKG/usr/lib${LIBDIRSUFFIX}/liblua.so.$VERSION
+
+echo "     |-----handy-ruler------------------------------------------------------|
+lua52: lua52 (a powerful, fast, light-weight, embeddable scripting language)
+lua52:
+lua52: Lua combines simple procedural syntax with powerful data description
+lua52: constructs based on associative arrays and extensible semantics.
+lua52: Lua is dynamically typed, runs by interpreting bytecode for a
+lua52: register-based virtual machine, and has automatic memory management
+lua52: with incremental garbage collection, making it ideal for
+lua52: configuration, scripting, and rapid prototyping.
+lua52:
+lua52:
+lua52:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PKGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PKGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

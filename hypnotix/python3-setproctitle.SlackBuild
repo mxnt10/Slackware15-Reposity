@@ -1,0 +1,65 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=python3-setproctitle
+SRCNAM=setproctitle
+VERSION=1.3.2
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/dvarrazzo/py-setproctitle/archive/refs/tags/version-1.3.2.tar.gz
+
+set -e
+wget -c -O $SRCNAM-$VERSION.tar.gz $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
+cd py-setproctitle-version-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+python3 setup.py install --root=$PKG
+cp -a COPYRIGHT* HISTORY* README* $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "                    |-----handy-ruler------------------------------------------------------|
+python3-setproctitle: python3-setproctitle (python library)
+python3-setproctitle:
+python3-setproctitle: The setproctitle module allows a process to change its title (as
+python3-setproctitle: displayed by system tools such as ps and top).
+python3-setproctitle:
+python3-setproctitle: Changing the title is mostly useful in multi-process systems, for
+python3-setproctitle: example when a master process is forked: changing the children’s
+python3-setproctitle: title allows to identify the task each process is busy with.
+python3-setproctitle:
+python3-setproctitle:
+python3-setproctitle:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

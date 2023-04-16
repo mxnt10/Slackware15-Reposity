@@ -1,0 +1,95 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=imlib2
+VERSION=1.10.0
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://ufpr.dl.sourceforge.net/project/enlightenment/imlib2-src/1.10.0/imlib2-1.10.0.tar.gz
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  --disable-static \
+  --build=$ARCH-slackware-linux
+make $NUMJOBS; make install-strip DESTDIR=$PKG
+
+rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/*.la
+rm -rf $PKG/usr/lib${LIBDIRSUFFIX}/*/*/*.la
+cp -a AUTHORS COPYING* ChangeLog INSTALL README TODO $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "      |-----handy-ruler------------------------------------------------------|
+imlib2: imlib2 (successor to Imlib)
+imlib2:
+imlib2: Imlib2 can load image files from disk in one of many formats, save
+imlib2: images to disk in one of many formats, render image data onto other
+imlib2: images, render images to an X-Windows drawable, produce pixmaps and
+imlib2: pixmap masks of images, apply filters to images, rotate images,
+imlib2: accept RGBA data for images, scale images, and more.
+imlib2:
+imlib2:
+imlib2:
+imlib2:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

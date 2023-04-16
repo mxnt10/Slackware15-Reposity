@@ -1,0 +1,153 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/wxGTK3* 2>&-)" ] && { echo -e "\nDependência Faltante: wxGTK3 !\n"; exit 1; }
+
+PRGNAM=codeblocks
+VERSION=20.03
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+case "$( uname -m )" in
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
+esac
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://ufpr.dl.sourceforge.net/project/codeblocks/Sources/20.03/codeblocks-20.03.tar.xz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/codeblocks-gcc11.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/sc_wxtypes-normalize.patch
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/40eb88e3f2b933f19f9933e06c8d0899c54f5e25.patch
+LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/56ac0396fad7a5b4bbb40bb8c4b5fe1755078aef.patch
+LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/a4aacc92640b587ad049cd6aa68c637e536e9ab5.patch
+LINK7=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/f2f127cf5cd97c7da6a957a3f7764cb25cc9017e.patch
+LINK8=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/04b7c50fb8c6a29b2d84579ee448d2498414d855.patch
+LINK9=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/2345b020b862ec855038dd32a51ebb072647f28d.patch
+LINK10=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/dbdf5c5ea9e3161233f0588a7616b7e4fedc7870.patch
+LINK11=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/8035dfdff321754819f79e3165401aa59bd8c7f7.patch
+LINK12=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/9a9c6a9d5e3e0f6eff5594ecd61a2222f073be9c.patch
+LINK13=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/c28746f4887f10e6f9f10eeafae0fb22ecdbf9c7.patch
+LINK14=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/b2e4f1279804e1d11b71bc75eeb37072c3589296.patch
+LINK15=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/29315df024251850832583f73e67e515dae10830.patch
+LINK16=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/46720043319758cb0e798eb23520063583c40eaa.patch
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK1 $LINK2 $LINK3 $LINK4 $LINK5 $LINK6 $LINK7 $LINK8 $LINK9 $LINK10 $LINK11 $LINK12 $LINK13 $LINK14 $LINK15 $LINK16
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xJf $CWD/$PRGNAM\-$VERSION.tar.xz
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+  patch -p1 < $CWD/codeblocks-gcc11.patch
+  patch -p1 < $CWD/2345b020b862ec855038dd32a51ebb072647f28d.patch
+  patch -p1 < $CWD/40eb88e3f2b933f19f9933e06c8d0899c54f5e25.patch
+  patch -p1 -F3 < $CWD/56ac0396fad7a5b4bbb40bb8c4b5fe1755078aef.patch
+  patch -p1 < $CWD/a4aacc92640b587ad049cd6aa68c637e536e9ab5.patch
+  patch -p1 < $CWD/f2f127cf5cd97c7da6a957a3f7764cb25cc9017e.patch
+  patch -p1 < $CWD/dbdf5c5ea9e3161233f0588a7616b7e4fedc7870.patch
+  patch -p1 < $CWD/04b7c50fb8c6a29b2d84579ee448d2498414d855.patch
+  patch -p1 < $CWD/8035dfdff321754819f79e3165401aa59bd8c7f7.patch
+  patch -p1 < $CWD/9a9c6a9d5e3e0f6eff5594ecd61a2222f073be9c.patch
+  patch -p1 < $CWD/c28746f4887f10e6f9f10eeafae0fb22ecdbf9c7.patch
+  patch -p1 < $CWD/b2e4f1279804e1d11b71bc75eeb37072c3589296.patch
+  patch -p1 < $CWD/29315df024251850832583f73e67e515dae10830.patch
+  patch -p1 < $CWD/46720043319758cb0e798eb23520063583c40eaa.patch
+  patch -p1 < $CWD/sc_wxtypes-normalize.patch
+
+WITHPLUGINS=''
+if [ "${PLUGINS:-no}" = 'yes' ]; then
+	WITHPLUGINS='--with-contrib-plugins=all'
+fi
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  $WITHPLUGINS \
+  --build=$ARCH-slackware-linux
+make $NUMJOBS; make install-strip DESTDIR=$PKG
+
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ); do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+cp -a AUTHORS BUGS BUILD COMPILERS COPYING ChangeLog NEWS README TODO $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "          |-----handy-ruler------------------------------------------------------|
+codeblocks: codeblocks (a free C++ and Fortran IDE)
+codeblocks:
+codeblocks: Code::Blocks is a free C++ and Fortran IDE built to meet the most
+codeblocks: demanding needs of its users. It is designed to be very extensible
+codeblocks: and fully configurable.
+codeblocks:
+codeblocks: Homepage: http://www.codeblocks.org/
+codeblocks:
+codeblocks:
+codeblocks:
+codeblocks:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

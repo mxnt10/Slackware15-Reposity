@@ -1,0 +1,98 @@
+#!/bin/sh
+# Software
+
+# Slackware build script for google-chrome
+
+# Copyright 2022 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=google-chrome
+RELEASE=stable
+ARCH=x86_64
+BUILD=${BUILD:-1chromedriver}
+TAG=${TAG:-_mxnt}
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+PKG=/tmp/package-$PRGNAM
+LINK=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+set -e
+wget -c $LINK
+rm -rf $PKG
+VERSION=$(ar p google-chrome-${RELEASE}_current_amd64.deb control.tar.xz 2> /dev/null | tar xJO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
+CHROMEDRIVER=https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
+wget -c $CHROMEDRIVER
+mkdir -p $PKG/{install,usr/bin}
+cd $PKG; ar p $CWD/google-chrome-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
+chmod 4711 opt/google/chrome/chrome-sandbox
+
+sed -i 's,libnss3.so.1d,libnss3.so\x00\x00\x00,g;
+		s,libnssutil3.so.1d,libnssutil3.so\x00\x00\x00,g;
+		s,libsmime3.so.1d,libsmime3.so\x00\x00\x00,g;
+		s,libssl3.so.1d,libssl3.so\x00\x00\x00,g;
+		s,libplds4.so.0d,libplds4.so\x00\x00\x00,g;
+		s,libplc4.so.0d,libplc4.so\x00\x00\x00,g;
+		s,libnspr4.so.0d,libnspr4.so\x00\x00\x00,g;' opt/google/chrome/chrome
+
+mv $PKG/usr/share/man $PKG/usr/man
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz; rm $i; done
+sed -i -e "s|Icon=google-chrome|Icon=/opt/google/chrome/product_logo_256.png|" $PKG/usr/share/applications/google-chrome.desktop
+
+cd usr/bin
+unzip $CWD/chromedriver_linux64.zip
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+echo "             |-----handy-ruler----------------------------------------------------|
+google-chrome: google-chrome (Google Chrome web browser)
+google-chrome:
+google-chrome: Google Chrome is a web browser that combines a minimal design with
+google-chrome: sophisticated technology to make the web faster, safer, and easier.
+google-chrome:
+google-chrome: Include chromedriver.
+google-chrome:
+google-chrome:
+google-chrome:
+google-chrome: Homepage:  http://www.google.com/chrome
+google-chrome:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

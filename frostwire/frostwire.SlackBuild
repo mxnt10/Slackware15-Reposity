@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+# Require: jdk18 !
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "$(uname -m)" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=frostwire
+VERSION=6.9.10
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+
+CWD=$PWD
+PKG=/tmp/package-$PRGNAM
+LINK1=http://dl.frostwire.com/frostwire/6.9.10/frostwire-6.9.10.amd64.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/Fix-Launcher.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/frostwire-icons.tar.gz
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/frostwire-pixmaps.tar.gz
+
+set -e
+wget -c $LINK1 $LINK2 $LINK3 $LINK4
+rm -rf $PKG
+mkdir -p $PKG/{opt,install,usr/{bin,share/{applications,pixmaps}}}
+tar xvf $CWD/$PRGNAM-$VERSION.amd64.tar.?z* -C $PKG/opt
+tar xvf $CWD/$PRGNAM-icons.tar.?z -C $PKG/usr/share
+tar xvf $CWD/$PRGNAM-pixmaps.tar.?z -C $PKG/usr/share/pixmaps
+mv $PKG/opt/$PRGNAM-$VERSION.amd64 $PKG/opt/$PRGNAM-$VERSION
+
+echo "         |-----handy-ruler------------------------------------------------------|
+frostwire: frostwire (P2P File sharing Client)
+frostwire:
+frostwire: Frostwire is a cross-platform, open-source peer-to-peer file sharing
+frostwire: client for BitTorrent protocols.  It is written in Java and was a
+frostwire: fork of Limewire. Frostwire now includes many new features.
+frostwire:
+frostwire: This is essentially a repackaging of the official binary from
+frostwire: https://www.frostwire.com/
+frostwire:
+frostwire:
+frostwire:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+cd opt/$PRGNAM-$VERSION
+patch -Np1 -i $CWD/Fix-Launcher.patch
+cd $PKG; ln -sf /opt/$PRGNAM-$VERSION/frostwire $PKG/usr/bin 
+find . -type d -name '.svn' | xargs rm -rf
+install -D -m 0644 $PKG/opt/$PRGNAM-$VERSION/$PRGNAM.desktop $PKG/usr/share/applications/$PRGNAM.desktop
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
