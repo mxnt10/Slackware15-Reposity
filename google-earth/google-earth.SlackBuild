@@ -1,9 +1,6 @@
 #!/bin/sh
-# Software
 
-# Slackware build script for google-earth
-
-# Copyright 2022 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }

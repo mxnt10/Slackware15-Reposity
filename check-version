@@ -115,11 +115,11 @@ for L in $(sort -u <(fmt -1 <<< $PARM))
 		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] : [$R 1$T /$R 2 $T] $msg1 $R%.2f%% $T " " " "${SP/./,}"
 	}
 
-	[[ "$METD" =~ [MET][0-2] ]] && page="$(links -dump $VLINK 2>/dev/null)"
-	[ "$CVER" == ":"    ] && CVER=$(grep -Eo "[0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <(echo {./,PKGS/}$PKG/*txz))
-	[ "$METD" == "MET0" ] && NVER=$(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+$" <<< $page)
+	[[ "$METD" =~ [MET][0-3] ]] && page="$(links -dump $VLINK 2>/dev/null)"
+	[ "$CVER" == ":"    ] && CVER=$(grep -Eo "([[:digit:]]+[.])+[[:digit:]]+" <(echo {./,PKGS/}$PKG/*txz))
+	[ "$METD" == "MET0" ] && NVER=$(head -1 <(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+$" <<< $page))
 	[ "$METD" == "MET1" ] && NVER=$(sed "s/^[-,_,v,(]//;s/[.]$//" <(head -1 <(grep -Eom1 "[-,_,v,(][0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <<< ${page/.../})))
-	[ "$METD" == "MET2" ] && NVER=$(head -1 <(grep -Eom1 "[0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <<< $page))
+	[ "$METD" == "MET2" ] && NVER=$(head -1 <(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+" <<< $page))
 
 	[ "$METD" == "MANUAL" ] && {
 		NVER='MANUAL'

@@ -21,7 +21,7 @@ esac
 mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
 
 CWD=$PWD
-TMP=/tmp/MXNT
+TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=https://ufpr.dl.sourceforge.net/project/codeblocks/Sources/20.03/codeblocks-20.03.tar.xz
 LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/codeblocks-gcc11.patch

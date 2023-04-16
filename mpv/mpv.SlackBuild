@@ -24,7 +24,7 @@ esac
 mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
 
 CWD=$PWD
-TMP=/tmp/MXNT
+TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=https://github.com/mpv-player/mpv/archive/v0.34.1/mpv-0.34.1.tar.gz
 LINK2=https://waf.io/waf-2.0.22
