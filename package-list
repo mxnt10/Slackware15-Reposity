@@ -1,0 +1,206 @@
+
+AMBEROL
+-------
+amberol     https://gitlab.gnome.org/World/amberol/-/tags    | MET0
+gtk4        N                                                | NONE
+libadwaita  https://gitlab.gnome.org/GNOME/libadwaita/-/tags | MET0
+pango       N                                                | NONE
+
+
+CODEBLOCKS
+----------
+codeblocks  https://www.codeblocks.org/downloads/source/ | MET0
+wxGTK3      N                                            | NONE
+
+
+CONKY
+-----
+conky          https://github.com/brndnmtthws/conky/tags                         | MET0
+conky-manager  N                                                                 | MANUAL
+mx-conky       N                                                                 | MANUAL
+imlib2         https://sourceforge.net/projects/enlightenment/files/imlib2-src/  | MET1
+lua            https://github.com/lua/lua/tags                                   | NONE
+
+
+DISCORD
+-------
+discord  https://archlinux.org/packages/community/x86_64/discord/ | MET2
+
+
+FROSTWIRE
+---------
+frostwire  https://sourceforge.net/projects/frostwire/files/                            | MET1
+jdk18      https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html | MET1
+
+
+HYPNOTIX
+--------
+hypnotix              https://aur.archlinux.org/packages/hypnotix/                        | MET2
+libgnomekbd           https://github.com/GNOME/libgnomekbd/tags                           | MET2
+python3-imdbpy        https://pypi.org/project/IMDbPY/                                    | NONE
+python3-setproctitle  https://github.com/dvarrazzo/py-setproctitle/tags                   | MET1
+python3-Unidecode     https://pypi.org/project/Unidecode/                                 | MET2
+xapp                  N                                                                   | MANUAL
+yt-dlp                https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/Changelog.md | MET2
+
+
+IPTVNATOR
+---------
+iptvnator  https://github.com/4gray/iptvnator/tags | MET1
+
+
+MPV
+---
+mpv     https://github.com/mpv-player/mpv/tags                           | NONE
+libass  https://raw.githubusercontent.com/libass/libass/master/Changelog | MET1
+LUA     -
+
+
+NOTABLE
+-------
+notable  https://github.com/notable/notable/tags | MET1
+
+
+OCENAUDIO
+---------
+ocenaudio  https://www.ocenaudio.com/en/download   | MET2
+jack       https://github.com/jackaudio/jack2/tags | MET1
+
+
+P7ZIP
+-----
+p7zip   https://github.com/jinfeihan57/p7zip/tags | MET1
+WXGTK3  -
+
+
+UMPLAYER
+--------
+umplayer  N | MANUAL
+
+
+UPSCAYL
+-------
+upscayl  https://github.com/upscayl/upscayl/tags | MET1
+
+
+VSCODIUM
+--------
+vscodium  https://github.com/VSCodium/vscodium/releases | MET1
+
+
+VSCODE
+------
+vscode  https://github.com/microsoft/vscode/tags | MET0
+
+
+
+
+
+GAMES:
+----------------------------------------------------------------------------------------------------|
+allegro4                 N                                                                          | NONE
+flare-game               https://github.com/flareteam/flare-engine/tags                             | MET1
+opensonic                http://opensnc.sourceforge.net/home/download2.php                          | MET1
+quake2                   N                                                                          | MANUAL
+smc                      N                                                                          | MAIN
+----------------------------------------------------------------------------------------------------|
+
+
+JAVA:
+------------------------------------------------------------------------------------------------------|
+clion                    https://aur.archlinux.org/packages/clion                                     | MET1
+JDownloader2             N                                                                            | MAIN
+pycharm                  https://archlinux.org/packages/community/x86_64/pycharm-community-edition/   | MET2
+------------------------------------------------------------------------------------------------------|
+
+
+PYTHON:
+----------------------------------------------------------------------------------------------------|
+BeautifulSoup4           https://pypi.org/project/beautifulsoup4/                                   | MET2
+face                     N                                                                          | MAIN
+gnotifier                N                                                                          | MAIN
+insta                    N                                                                          | MAIN
+kazam                    https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam                | MET2
+protonvpn-cli            https://github.com/ProtonVPN/linux-cli-community/tags                      | MET1
+protonvpn-gui            https://github.com/ProtonVPN/linux-gui/tags                                | MET1
+python3-ConfigParser     https://pypi.org/project/configparser/                                     | MET2
+python3-docopt           https://pypi.org/project/docopt/                                           | MET2
+python3-Jinja2           https://pypi.org/project/Jinja2/                                           | MET2
+python3-lxml             https://pypi.org/project/lxml/                                             | MET2
+python3-MarkupSafe       https://pypi.org/project/MarkupSafe/                                       | MET2
+python3-PyQtWebEngine    N                                                                          | NONE
+python3-pythondialog     https://github.com/frougon/pythondialog/tags                               | MET1
+python3-xlib             https://github.com/python-xlib/python-xlib/releases                        | MET2
+python3-soupsieve        https://pypi.org/project/soupsieve/                                        | NONE
+python3-distutils-extra  N                                                                          | MANUAL
+swapfile                 https://github.com/mxnt10/swapfile/tags                                    | MET1
+transmageddon            N                                                                          | MANUAL
+whats                    N                                                                          | MAIN
+----------------------------------------------------------------------------------------------------|
+
+
+SPECIFIC:
+----------------------------------------------------------------------------------------------------|
+fortune-mod-br           N                                                                          | MANUAL
+fortune-mod              https://github.com/shlomif/fortune-mod/tags                                | NONE
+recode                   https://github.com/rrthomas/recode/tags                                    | MET1
+----------------------------------------------------------------------------------------------------|
+
+
+PACOTES:
+----------------------------------------------------------------------------------------------------|
+acetoneiso               N                                                                          | MANUAL
+aria2                    https://github.com/aria2/aria2/releases                                    | MET1
+asciiquarium             https://robobunny.com/projects/asciiquarium/html/                          | MET2
+cabextract               https://www.cabextract.org.uk/                                             | MET2
+ccat                     https://github.com/owenthereal/ccat/tags                                   | MET1
+cdrkit                   https://github.com/Distrotech/cdrkit/tags                                  | MET1
+ckdeps                   N                                                                          | MAIN
+cmatrix                  https://github.com/abishekvashok/cmatrix/tags                              | MET1
+cpu-limit                N                                                                          | MAIN
+CPU-X                    https://github.com/X0rg/CPU-X/releases                                     | MET1
+cowsay                   N                                                                          | NONE
+dpkg                     https://github.com/guillemj/dpkg/tags                                      | MET2
+flareget                 https://flareget.com/download                                              | MET2
+freeoffice2021           N                                                                          | MANUAL
+fuseiso                  N                                                                          | MANUAL
+google-chrome            N                                                                          | NONE
+google-earth             N                                                                          | NONE
+graphicsmagick           https://sourceforge.net/projects/graphicsmagick/files/                     | MET1
+grc                      https://github.com/garabik/grc/tags                                        | MET1
+gst-plugins-bad          https://gstreamer.freedesktop.org/download/                                | NONE
+gst-plugins-ugly         https://gstreamer.freedesktop.org/download/                                | NONE
+gtkdialog                N                                                                          | MANUAL
+lcab                     N                                                                          | MANUAL
+lib64openssl1.0.0        N                                                                          | NONE
+libcpuid                 https://github.com/anrieff/libcpuid/releases                               | MET1
+libgme                   https://bitbucket.org/mpyne/game-music-emu/downloads/                      | MET1
+libplacebo               https://github.com/haasn/libplacebo/tags                                   | NONE
+libsidplayfp             https://sourceforge.net/projects/sidplay-residfp/files/                    | MET1
+libtorrent-rasterbar     https://github.com/arvidn/libtorrent/tags                                  | NONE
+luna-wallpapers          N                                                                          | MANUAL
+molotov                  https://github.com/cizordj/molotov/tags                                    | MET1
+mandriva-cursor          N                                                                          | MAIN
+mujs                     http://git.ghostscript.com/?p=mujs.git;a=tags                              | MET2
+nosync-browser           N                                                                          | MANUAL
+nulloy                   N                                                                          | MANUAL
+perl-Curses              https://metacpan.org/pod/Curses                                            | MET1
+perl-Term-Animation      https://metacpan.org/pod/Term::Animation                                   | MET1
+photoqt                  https://photoqt.org/                                                       | MET2
+portaudio                https://github.com/PortAudio/portaudio/tags                                | MET1
+pugixml                  https://github.com/zeux/pugixml/tags                                       | MET1
+qbittorrent              https://www.qbittorrent.org/news.php                                       | MET1
+QMPlay2                  https://github.com/zaps166/QMPlay2/releases                                | MET1
+rar                      https://www.win-rar.com/download.html?&L=0                                 | MET2
+refine                   https://github.com/MauricioFerrari-NovaTrento/refine/tags                  | MAIN
+sl                       N                                                                          | MANUAL
+spotify                  N                                                                          | MANUAL
+telegram                 https://github.com/telegramdesktop/tdesktop/tags                           | MET1
+tolua++                  N                                                                          | MANUAL
+uget                     https://sourceforge.net/projects/urlget/files/                             | MET1
+w3m                      N                                                                          | MANUAL
+xa                       https://www.floodgap.com/retrotech/xa/                                     | MET2
+xnconvert                https://www.xnview.com/en/xnconvert/                                       | MET2
+yad                      https://github.com/v1cont/yad/tags                                         | MET1
+zenity                   N                                                                          | MANUAL
+----------------------------------------------------------------------------------------------------|

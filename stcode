@@ -1,0 +1,19 @@
+#!/usr/bin/python3
+# -*- coding=utf-8 -*-
+#
+# ### STCode v1.1 - Retorna o Status Code de um Link da Web - By Mauricio Ferrari - 25/07/2021 ###
+#
+#####################################################################################################
+
+import sys
+import os
+import requests
+
+try:
+    st = requests.head(sys.argv[1])
+    print(st.status_code)
+
+except:
+    sys.stderr.write("\nSTCode v1.0 - Return Status Code for Web Links\n\nUse:\n")
+    sys.stderr.write("    " + os.path.basename(__file__) + " https://www.google.com.br \n\n")
+    sys.exit(1)

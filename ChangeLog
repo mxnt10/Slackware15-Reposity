@@ -1,0 +1,85 @@
+# ChangeLog
+All notable changes to this project will be documented in this file.
+Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+
+
+## [ Released ] - 2023-02-15 #############################################
+
+### Added / Adicionado
+ - Added script check-version, stcode and package-list file.
+###
+
+### Upgraded / Atualizado
+ -
+###
+
+### Changed / Modificado
+ -
+###
+
+### Removed / Removido
+ -
+###
+
+### Fixed / Corrigido
+ -
+###
+
+##########################################################################
+
+
+## [ Released ] - 2023-02-15 #############################################
+
+### Added / Adicionado
+ - Adicionado patchs de correção aos diretórios dos projetos:
+    - Code::Blocks.
+    - Conky.
+ - Adicionado os diretórios de Slackbuilds:
+    - FrostWire.
+    - Hypnotix.
+    - MPV.
+    - Ocenaudio.
+    - P7Zip.
+###
+
+### Upgraded / Atualizado
+ - Discord 0.0.24 -> 0.0.25
+###
+
+
+### Changed / Modificado
+ - Modificações a ajustes nos Slackbuilds que precisam de patch.
+###
+
+### Removed / Removido
+ -
+###
+
+### Fixed / Corrigido
+ -
+###
+
+##########################################################################
+
+
+## [ Released ] - 2023-02-12 #############################################
+
+### Added / Adicionado
+ - Adicionado os diretórios de Slackbuilds:
+    - Amberol.
+    - Code::Blocks.
+    - Conky.
+    - Discord.
+    - IPTVnator.
+    - Notable.
+    - UMPlayer.
+    - Upscayl.
+    - VSCodium.
+###
+
+### Removed / Removido
+ - Diretório Electron.    
+###
+
+
+##########################################################################

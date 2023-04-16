@@ -1,0 +1,179 @@
+#!/bin/bash
+#
+# ### Check Package Version v8.5 - Verificação de Atualização dos Programas - By Mauricio Ferrari - 16/04/2023 ###
+#
+#####################################################################################################################
+
+
+# ### Definições de Variáveis ###
+
+R='\e[31m'
+G='\e[32m'
+Y='\e[33m'
+B='\e[34m'
+C='\e[36m'
+T='\e[m'
+
+msg1="Checking Package Version ..."
+msg2="Checking Source Link ..."
+
+: "${0##*/}"; file="${0/$_/package-list}"
+
+status='DISABLE -d'
+SCR='\e[43;30m'
+
+NOT_ST="FALSE"
+SL_PKG="FALSE"
+NM=1
+PG=2
+SP=0
+
+
+# ### Checkar SlackBuilds ###
+
+VAR=(*SlackBuild)
+
+[ ! -e $VAR ] && VAR=(*/*SlackBuild) || VAR=($VAR */*SlackBuild)
+
+[ ! -e $VAR ] && {
+	printf "\n${R}No SlackBuild Found!$T\n\n" >&2
+	exit 1
+}
+
+TOT=${#VAR[@]}
+PARM=${VAR[@]}
+
+
+# ### Seleção se Parâmetros ###
+
+while getopts :pd OPTION; do
+	case $OPTION in
+		p)  SL_PKG=TRUE
+			;;
+		d)  NOT_ST=TRUE
+			PG=1
+			;;
+	esac
+done
+
+[ "$SL_PKG" == "TRUE" ] && {
+	[ "$2" ] && {
+		shift $((--OPTIND))
+		PARM="$@"
+		TOT=$(wc -w <<< $PARM)
+	}
+}
+
+PROG=$(bc -l <<< "100/($TOT*$PG)")
+
+
+# ### Gerador de Linha e Redefinidor de Linhas do Terminal ###
+
+line()
+{
+	for ((i=0; i<$1; i++))
+	{
+		printf '─'
+	}
+}
+
+clean()
+{
+	printf "\r%$1s\r" " "
+}
+
+
+# ### Gerar Cabeçalho da Tabela ###
+
+printf "\n$B┌$(line 5)┬$(line 3)┬$(line 28)┬$(line 17)┬$(line 17)┬$(line 13)┐$T
+$B│ QTD │ R │ Packages %18s│ Current Version │ New Version %4s│ ST SRC Link │$T
+$B├$(line 5)┼$(line 3)┼$(line 28)┼$(line 17)┼$(line 17)┼$(line 13)┤$T\n"
+
+
+# ### Loop para Verificação ###
+
+for L in $(sort -u <(fmt -1 <<< $PARM))
+{
+	AMR=$Y; CLR=$R
+	NVER='NOT FOUND'
+
+	: $(grep "^PRGNAM=" $L); PKG=${_/*=/}
+	: $(grep "^VERSION=[0-9]" $L); CVER=${_/*=/}
+	: $(grep "^LINK[1]*=" $L); SLINK=${_/*=/}
+	: $(grep -w "^$PKG " $file); METD=${_#*|}
+	: "$(grep -w "^$PKG " $file)"; : "${_#* }"; VLINK="${_%| *}"
+
+
+	# ### Controle de Versão ###
+
+	[ "$NOT_ST" == "TRUE" ] && {
+		clean 91
+		printf "\e]0;($PKG) - [ $NM / $TOT ] $msg1 %.2f%% \a" "${SP/./,}"
+		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] $msg1 $R%.2f%% $T " " " "${SP/./,}"
+	} || {
+		printf "\e]0;($PKG) - [ $NM / $TOT ] : [ 1 / 2 ] $msg1 %.2f%% \a" "${SP/./,}"
+		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] : [$R 1$T /$R 2 $T] $msg1 $R%.2f%% $T " " " "${SP/./,}"
+	}
+
+	[[ "$METD" =~ [MET][0-2] ]] && page="$(links -dump $VLINK 2>/dev/null)"
+	[ "$CVER" == ":"    ] && CVER=$(grep -Eo "[0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <(echo {./,PKGS/}$PKG/*txz))
+	[ "$METD" == "MET0" ] && NVER=$(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+$" <<< $page)
+	[ "$METD" == "MET1" ] && NVER=$(sed "s/^[-,_,v,(]//;s/[.]$//" <(head -1 <(grep -Eom1 "[-,_,v,(][0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <<< ${page/.../})))
+	[ "$METD" == "MET2" ] && NVER=$(head -1 <(grep -Eom1 "[0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <<< $page))
+
+	[ "$METD" == "MANUAL" ] && {
+		NVER='MANUAL'
+		CLR=$Y
+	}
+
+	[[ "$METD" =~ NONE|MAIN ]] && {
+		NVER='DEFINED'
+		CLR=$C; AMR=$C
+	}
+
+	[ "$CVER" == "$NVER" ] && CLR=$G
+
+	[ "$CVER" == "" ] && {
+		CVER='NOT FOUND'
+		AMR=$R
+	}
+
+
+	# ### Status do Link ###
+
+	[ "$NOT_ST" == "FALSE" ] && {
+		SP=$(bc -l <<< "$SP+$PROG")
+		clean 105
+		printf "\e]0;($PKG) - [ $NM / $TOT ] : [ 2 / 2 ] $msg2 %.2f%% \a" "${SP/./,}"
+		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] : [$R 2$T /$R 2 $T] $msg2     $R%.2f%% $T " " " "${SP/./,}"
+		[ "$METD" == "MAIN" ] && status="MAIN" || status=$(./stcode $SLINK 2>&-)
+		SCR=$Y
+		[ "$status" == "200"  ] && SCR=$G
+		[ "$status" == "404"  ] && SCR=$R
+		[ "$status" == "MAIN" ] && SCR=$B
+
+		[ "$status" == "" ] && {
+			status='NOT FOUND'
+			SCR=$R
+		}
+	}
+
+
+	# ### Verificação de Versões Obsoletas ###
+
+	DP=(PKGS/$PKG/$PKG*txz)
+	[ "${#DP[@]}" -gt 1 ] && X='X' || X=' '
+
+
+	# ### Resultado Final ###
+
+	clean 110
+	printf "$B│$T $Y%3d $B│$T ${R}$X $B│$T $CLR$PKG %$((26-${#PKG}))s$B│$T $AMR$CVER %$((15-${#CVER}))s$B│$T \
+$CLR$NVER %$((15-${#NVER}))s$B│$T%$((11-${#status}))s $SCR$status$T $B│$T\n" "$NM"
+
+SP=$(bc -l <<< "$SP+$PROG")
+let NM++; status=""
+}
+
+printf "$B└$(line 5)┴$(line 3)┴$(line 28)┴$(line 17)┴$(line 17)┴$(line 13)┘$T\n"
+exit 0
