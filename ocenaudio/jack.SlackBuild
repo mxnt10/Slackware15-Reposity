@@ -20,7 +20,7 @@ esac
 mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
 
 CWD=$PWD
-TMP=/tmp/MXNT
+TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK=https://github.com/jackaudio/jack2/archive/v1.9.22/jack2-1.9.22.tar.gz
 
