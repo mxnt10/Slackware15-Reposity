@@ -4,18 +4,17 @@
 # All rights reserved.
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/libcpuid* 2>&-)" ] && { echo -e "\nDependência Faltante: libcpuid !\n"; exit 1; }
 
-PRGNAM=mx-conky
-DATANAM=mx-conky-data
-VERSION=23.4
-DATAVER=20230105
+PRGNAM=CPU-X
+VERSION=4.5.3
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
 case "$( uname -m )" in
-	i?86) export ARCH=i586 ;;
-	arm*) export ARCH=arm ;;
-	   *) export ARCH=$( uname -m ) ;;
+	i?86) ARCH=i586 ;;
+	arm*) ARCH=arm ;;
+	   *) ARCH=$( uname -m ) ;;
 esac
 
 mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
@@ -23,9 +22,7 @@ mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK1=https://mxrepo.com/mx/repo/pool/main/m/mx-conky/mx-conky_23.4.tar.xz
-LINK2=https://mxrepo.com/mx/repo/pool/main/m/mx-conky-data/mx-conky-data_20230105.tar.xz
-LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/conky/PKGS/mx-conky/fix_check_messages.patch
+LINK=https://github.com/X0rg/CPU-X/archive/v4.5.3/CPU-X-4.5.3.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -45,46 +42,38 @@ else
 fi
 
 set -e
-wget -c $LINK1 $LINK2 $LINK3
+wget -c $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION,share/{applications,icons/hicolor/256x256/apps,mx-conky/locale,mx-conky-data/themes}}}
-cd $TMP; tar xvf $CWD/${PRGNAM}_${VERSION}.tar.?z*
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
-patch -Np1 -i $CWD/fix_check_messages.patch
 NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+cmake \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DLIB_SUFFIX=${LIBDIRSUFFIX} \
+    -DCMAKE_BUILD_TYPE=Release .
+make $NUMJOBS; make install DESTDIR=$PKG
 
-qmake-qt5 -o Makefile mx-conky.pro
-make $NUMJOBS
-
-cp -a help/* $PKG/usr/doc/$PRGNAM-$VERSION
-cp -a icons/mx-conky.png $PKG/usr/share/icons/hicolor/256x256/apps
-install -Dm 755 mx-conky -t $PKG/usr/bin
-cp -a mx-conky.desktop $PKG/usr/share/applications
-
-( cd translations; for tr in *.ts; { lrelease-qt5 "$tr"; } )
-cp -a translations/*.qm $PKG/usr/share/mx-conky/locale
-
-cd $TMP; tar xvf $CWD/${DATANAM}_${DATAVER}.tar.?z*
-cd $DATANAM
-
-cp -a MX* $PKG/usr/share/mx-conky-data/themes
 find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+cp -a ChangeLog.md COPYING README.md $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "        |-----handy-ruler------------------------------------------------------|
-mx-conky: mx-conky (conky in the MX Linux)
-mx-conky:
-mx-conky: MX Conky is a tool used for manipulating detailed
-mx-conky: attributes such as color or formats.
-mx-conky:
-mx-conky:
-mx-conky:
-mx-conky:
-mx-conky:
-mx-conky:
-mx-conky:" > $PKG/install/slack-desc
+echo "     |-----handy-ruler------------------------------------------------------|
+CPU-X: CPU-X (System information tool)
+CPU-X:
+CPU-X: Free software that gathers information on CPU, motherboard and more.
+CPU-X: CPU-X is similar to CPU-Z (Windows), but CPU-X is a Free and 
+CPU-X: Open Source software designed for GNU/Linux and FreeBSD.
+CPU-X:
+CPU-X: Homepage: https://x0rg.github.io/CPU-X/
+CPU-X:
+CPU-X:
+CPU-X:
+CPU-X:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1

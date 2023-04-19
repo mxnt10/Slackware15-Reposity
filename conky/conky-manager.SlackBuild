@@ -22,7 +22,7 @@ esac
 mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
 
 CWD=$PWD
-TMP=/tmp/MXNT
+TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK=http://mxrepo.com/mx/repo/pool/main/c/conky-manager/conky-manager_2.7+dfsg1.orig.tar.xz
 

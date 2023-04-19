@@ -21,7 +21,7 @@ esac
 mkdir -p PKGS/$PKGNAM; chown -R 1000:users PKGS; cd PKGS/$PKGNAM
 
 CWD=$PWD
-TMP=/tmp/MXNT
+TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=http://www.lua.org/ftp/lua-5.2.4.tar.gz
 LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/conky/PKGS/lua52/liblua.so.patch
