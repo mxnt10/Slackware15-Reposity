@@ -1,0 +1,442 @@
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/acetoneiso.pro acetoneiso-2.4-svn20131025/acetoneiso/acetoneiso.pro
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/acetoneiso.pro	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/acetoneiso.pro	2016-02-25 22:27:04.000000000 +0300
+@@ -1,6 +1,6 @@
+ CONFIG += qt
+ TEMPLATE = app
+-TARGET = 
++TARGET = acetoneiso
+ DEPENDPATH += .
+ INCLUDEPATH += .
+ 
+@@ -60,7 +60,7 @@
+ #QT += phonon
+ QT += dbus
+ #QT += svg
+-QT += webkit
++QT += webkit core widgets webkitwidgets
+ 
+ #install#
+     target.path = /usr/bin
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/about.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/about.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/about.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/about.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -15,8 +15,8 @@
+ #include "about.h"
+ 
+ //
+-aboutDiag::aboutDiag( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++aboutDiag::aboutDiag(QWidget * parent)
++	: QDialog(parent)
+ {
+ 	setupUi(this);
+ }
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/about.h acetoneiso-2.4-svn20131025/acetoneiso/sources/about.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/about.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/about.h	2016-02-25 22:27:04.000000000 +0300
+@@ -22,7 +22,7 @@
+ {
+ Q_OBJECT
+ public:
+-	aboutDiag( QWidget * parent = 0, Qt::WFlags f = 0 );
++	aboutDiag( QWidget * parent = 0);
+ };
+ #endif
+ 
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/acetoneiso.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/acetoneiso.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/acetoneiso.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/acetoneiso.cpp	2016-02-25 22:53:19.000000000 +0300
+@@ -15,6 +15,7 @@
+ //    along with AcetoneISO.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <QtGui>
++#include <QtWidgets>
+ #include <QTabWidget>
+ #include <QThread>
+ #include <QWebView>
+@@ -243,7 +244,7 @@
+ prog.close();
+ }
+ 
+-void acetoneiso::on_options_nda_activated()
++void acetoneiso::on_options_nda_triggered()
+ {
+ QMainWindow::showNormal();
+ optionsDiag *opt=new optionsDiag;
+@@ -260,7 +261,7 @@
+       QTextStream out_adv(&advanced);
+       out_adv << ( "must call option directly in database settings\n" );
+       advanced.close();
+-on_options_nda_activated();  
++on_options_nda_triggered();
+ }
+ 
+ 
+@@ -295,20 +296,20 @@
+    file.close();
+  advanced.remove();
+ QMessageBox::warning(this, "AcetoneISO::First Launch",tr("This is the first time you launch AcetoneISO software.\nIn the next dialog you can set your default file manager, set database and some other things.\nHappy AcetoneISO usage from the team:)"));
+-on_options_nda_activated();
++on_options_nda_triggered();
+    }
+ 
+ }
+ 
+ 
+-void acetoneiso::on_actionAbout_activated()
++void acetoneiso::on_actionAbout_triggered()
+ {
+ QMainWindow::showNormal();
+ aboutDiag *abt=new aboutDiag;
+ abt->exec();
+ }
+ 
+-void acetoneiso::on_actionManual_activated()
++void acetoneiso::on_actionManual_triggered()
+ {
+ manualDiag *man=new manualDiag;
+ man->exec();
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/acetoneiso.h acetoneiso-2.4-svn20131025/acetoneiso/sources/acetoneiso.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/acetoneiso.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/acetoneiso.h	2016-02-25 22:54:46.000000000 +0300
+@@ -141,10 +141,10 @@
+     void mergeMSG(int, QProcess::ExitStatus);
+     void Monta( QString &image, QString &destination );
+     void openBrowser( QString &destination, QString onlyfile, float divide, QString &temporary, QString image_with_path );
+-    void on_options_nda_activated();
++    void on_options_nda_triggered();
+     void createOption();
+-    void on_actionAbout_activated();
+-    void on_actionManual_activated();
++    void on_actionAbout_triggered();
++    void on_actionManual_triggered();
+     void printOutvidgen(int, QProcess::ExitStatus);
+     void printOutflv(int, QProcess::ExitStatus);
+     void printOututube(int, QProcess::ExitStatus);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/a_options.h acetoneiso-2.4-svn20131025/acetoneiso/sources/a_options.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/a_options.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/a_options.h	2016-02-25 22:36:46.000000000 +0300
+@@ -17,6 +17,7 @@
+ #include"acetoneiso.h"
+ //#include"../acetoneiso.h"
+ #include <QtGui> 
++#include <QtWidgets>
+ void optionsDiag::optionss()
+ {
+   
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_cd.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_cd.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_cd.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_cd.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -14,6 +14,7 @@
+ //    You should have received a copy of the GNU General Public License
+ //    along with AcetoneISO.  If not, see <http://www.gnu.org/licenses/>.
+ #include <QtGui>
++#include <QtWidgets>
+ #include <QFileDialog>
+ #include <QCoreApplication>
+ #include <QByteArray>
+@@ -38,8 +39,8 @@
+ */
+ 
+ //
+-burniso2cd::burniso2cd( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++burniso2cd::burniso2cd(QWidget * parent)
++	: QDialog(parent)
+ {
+ 
+     setupUi(this);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_cd.h acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_cd.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_cd.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_cd.h	2016-02-25 22:27:04.000000000 +0300
+@@ -29,7 +29,7 @@
+ {
+ Q_OBJECT
+ public:
+-	burniso2cd( QWidget * parent = 0, Qt::WFlags f = 0 );
++	burniso2cd( QWidget * parent = 0);
+ 	QStringList device_path;
+ 	QStringList id_device;
+ 	QByteArray erase_output;
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_dvd.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_dvd.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_dvd.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_dvd.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -14,6 +14,7 @@
+ //    You should have received a copy of the GNU General Public License
+ //    along with AcetoneISO.  If not, see <http://www.gnu.org/licenses/>.
+ #include <QtGui>
++#include <QtWidgets>
+ #include <QByteArray>
+ #include <QProcess>
+ #include <QDBusConnection>
+@@ -29,8 +30,8 @@
+ 
+ 
+ //
+-burniso2dvd::burniso2dvd( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++burniso2dvd::burniso2dvd(QWidget * parent)
++	: QDialog(parent)
+ {
+ 
+     setupUi(this);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_dvd.h acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_dvd.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/burn_iso_2_dvd.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/burn_iso_2_dvd.h	2016-02-25 22:27:04.000000000 +0300
+@@ -28,7 +28,7 @@
+ {
+ Q_OBJECT
+ public:
+-	burniso2dvd( QWidget * parent = 0, Qt::WFlags f = 0 );
++	burniso2dvd( QWidget * parent = 0);
+ 	QStringList device_path;
+ 	QStringList id_device;
+ 	QByteArray erase_output;
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_cd.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_cd.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_cd.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_cd.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -15,6 +15,7 @@
+ //    along with AcetoneISO.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <QtGui>
++#include <QtWidgets>
+ #include <QCoreApplication>
+ #include <QByteArray>
+ #include <QProcess>
+@@ -31,8 +32,8 @@
+ */
+ 
+ //
+-erasecd::erasecd( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++erasecd::erasecd(QWidget * parent)
++	: QDialog(parent)
+ {
+ 
+     setupUi(this);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_cd.h acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_cd.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_cd.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_cd.h	2016-02-25 22:27:04.000000000 +0300
+@@ -28,7 +28,7 @@
+ {
+ Q_OBJECT
+ public:
+-	erasecd( QWidget * parent = 0, Qt::WFlags f = 0 );
++	erasecd( QWidget * parent = 0);
+ 	QStringList device_path;
+ 	QStringList id_device;
+ 	QByteArray erase_output;
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_dvd.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_dvd.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_dvd.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_dvd.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -14,6 +14,7 @@
+ //    You should have received a copy of the GNU General Public License
+ //    along with AcetoneISO.  If not, see <http://www.gnu.org/licenses/>.
+ #include <QtGui>
++#include <QtWidgets>
+ #include <QByteArray>
+ #include <QProcess>
+ #include <QDBusConnection>
+@@ -33,8 +34,8 @@
+ */
+ 
+ //
+-erasedvd::erasedvd( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++erasedvd::erasedvd( QWidget * parent)
++	: QDialog(parent)
+ {
+ 
+     setupUi(this);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_dvd.h acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_dvd.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/erase_dvd.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/erase_dvd.h	2016-02-25 22:27:04.000000000 +0300
+@@ -27,7 +27,7 @@
+ {
+ Q_OBJECT
+ public:
+-	erasedvd( QWidget * parent = 0, Qt::WFlags f = 0 );
++	erasedvd( QWidget * parent = 0);
+ 	QStringList device_path;
+ 	QStringList id_device;
+ 	QByteArray erase_output;
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/global_functions.h acetoneiso-2.4-svn20131025/acetoneiso/sources/global_functions.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/global_functions.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/global_functions.h	2016-02-25 22:30:36.000000000 +0300
+@@ -216,9 +216,7 @@
+ //carico tray icon
+ void acetoneiso::load_trayicon() {
+     AboutAction = new QAction(tr("About AcetoneISO"), this);
+-    connect(AboutAction, SIGNAL(triggered()), this, SLOT(on_actionAbout_activated() ));
+     OptionsAction = new QAction(tr("Options"), this);
+-    connect(OptionsAction, SIGNAL(triggered()), this, SLOT(on_options_nda_activated() ));
+     
+     MountAction = new QAction(tr("Mount Image"), this);
+     connect(MountAction, SIGNAL(triggered()), this, SLOT(mount()));
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/isocd.h acetoneiso-2.4-svn20131025/acetoneiso/sources/isocd.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/isocd.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/isocd.h	2016-02-25 22:27:04.000000000 +0300
+@@ -20,7 +20,7 @@
+                                           "/dev/cdrom", &ok);
+ if (ok && !text.isEmpty()) {
+    bool ok2;
+-   int i = QInputDialog::getInteger(this, tr("AcetoneISO::Byte Size"),tr("Please insert the Byte Size.\nLeaving default is the best solution!"), 1024, 0, 100000, 2, &ok2);
++   int i = QInputDialog::getInt(this, tr("AcetoneISO::Byte Size"),tr("Please insert the Byte Size.\nLeaving default is the best solution!"), 1024, 0, 100000, 2, &ok2);
+    if (!ok2) {
+       return;
+      }
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/manual.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/manual.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/manual.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/manual.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -15,8 +15,8 @@
+ #include "manual.h"
+ 
+ //
+-manualDiag::manualDiag( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++manualDiag::manualDiag(QWidget * parent)
++	: QDialog(parent)
+ {
+ 	setupUi(this);
+ 
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/manual.h acetoneiso-2.4-svn20131025/acetoneiso/sources/manual.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/manual.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/manual.h	2016-02-25 22:27:04.000000000 +0300
+@@ -23,7 +23,7 @@
+ {
+ Q_OBJECT
+ public:
+-	manualDiag( QWidget * parent = 0, Qt::WFlags f = 0 );
++	manualDiag( QWidget * parent = 0);
+ 
+ };
+ #endif
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/options.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/options.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/options.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/options.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -15,8 +15,8 @@
+ #include "options.h"
+ #include"a_options.h"
+ //
+-optionsDiag::optionsDiag( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++optionsDiag::optionsDiag(QWidget * parent)
++	: QDialog(parent)
+ {
+ 
+     setupUi(this);
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/options.h acetoneiso-2.4-svn20131025/acetoneiso/sources/options.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/options.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/options.h	2016-02-25 22:27:04.000000000 +0300
+@@ -22,7 +22,7 @@
+ {
+ Q_OBJECT
+ public:
+-	optionsDiag( QWidget * parent = 0, Qt::WFlags f = 0 );
++	optionsDiag( QWidget * parent = 0 );
+ private slots:
+    void optionss();
+    void update_options();
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/progress.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/progress.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/progress.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/progress.cpp	2016-02-25 22:27:04.000000000 +0300
+@@ -15,8 +15,8 @@
+ #include "progress.h"
+ 
+ //
+-progressDiag::progressDiag( QWidget * parent, Qt::WFlags f) 
+-	: QDialog(parent, f)
++progressDiag::progressDiag(QWidget * parent)
++	: QDialog(parent)
+ {
+ 	setupUi(this);
+ }
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/progress.h acetoneiso-2.4-svn20131025/acetoneiso/sources/progress.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/progress.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/progress.h	2016-02-25 22:27:04.000000000 +0300
+@@ -23,7 +23,7 @@
+ {
+ Q_OBJECT
+ public:
+-	progressDiag( QWidget * parent = 0, Qt::WFlags f = 0 );
++	progressDiag( QWidget * parent = 0);
+ 
+ };
+ #endif
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/split.h acetoneiso-2.4-svn20131025/acetoneiso/sources/split.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/split.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/split.h	2016-02-25 22:27:04.000000000 +0300
+@@ -33,7 +33,7 @@
+   }
+ 
+   bool ok;
+-  int i = QInputDialog::getInteger(this, tr("AcetoneISO::Split number"),tr("Please insert the volume number in MegaByte:"), 99, 1, 100000, 1, &ok);
++  int i = QInputDialog::getInt(this, tr("AcetoneISO::Split number"),tr("Please insert the volume number in MegaByte:"), 99, 1, 100000, 1, &ok);
+   if (!ok) {
+     return;
+   }
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/vidgen.h acetoneiso-2.4-svn20131025/acetoneiso/sources/vidgen.h
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/vidgen.h	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/vidgen.h	2016-02-25 22:27:04.000000000 +0300
+@@ -32,7 +32,7 @@
+ 								       tr("Video (*.avi)"));
+    if ( !fileName.isNull() ) {
+       bool ok;
+-      int i = QInputDialog::getInteger(this, tr("AcetoneISO::Fixed Quant"),tr("Please insert the Fixed Quant number.\nLowering the number will result in a higher quality video."), 7, 2, 13, 1, &ok);
++      int i = QInputDialog::getInt(this, tr("AcetoneISO::Fixed Quant"),tr("Please insert the Fixed Quant number.\nLowering the number will result in a higher quality video."), 7, 2, 13, 1, &ok);
+       if (!ok) {
+          return;
+         }
+@@ -145,7 +145,7 @@
+ if(valore_uscita == 0) {
+    QMessageBox::information(this, "AcetoneISO",tr("Encoding Pass 1 has successfully finished.\nPass 2 will be done now. Please choose the bitrate in the next dialog and then choose where to save the video."));
+    bool ok;
+-   int i = QInputDialog::getInteger(this, tr("AcetoneISO::Bitrate"),tr("Please insert Bitrate. Higher bitrate means more quality but will generate a bigger file."), 896, 384, 4096, 128, &ok);
++   int i = QInputDialog::getInt(this, tr("AcetoneISO::Bitrate"),tr("Please insert Bitrate. Higher bitrate means more quality but will generate a bigger file."), 896, 384, 4096, 128, &ok);
+    if (!ok) {
+       return;
+      }
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/ui/acetoneiso.ui acetoneiso-2.4-svn20131025/acetoneiso/ui/acetoneiso.ui
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/ui/acetoneiso.ui	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/ui/acetoneiso.ui	2016-02-25 22:33:56.000000000 +0300
+@@ -708,7 +708,7 @@
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout_4">
+         <item row="0" column="0">
+-         <widget class="QWebView" name="webView" native="true">
++         <widget class="QWebView" name="webView">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+@@ -733,9 +733,9 @@
+           <property name="toolTip">
+            <string>Real time updates from the net</string>
+           </property>
+-          <property name="url" stdset="0">
++          <property name="url">
+            <url>
+-            <string/>
++            <string>about:blank</string>
+            </url>
+           </property>
+          </widget>
+@@ -1584,6 +1584,9 @@
+    </property>
+   </action>
+   <action name="options_nda">
++   <property name="enabled">
++    <bool>true</bool>
++   </property>
+    <property name="icon">
+     <iconset resource="../acetoneiso.qrc">
+      <normaloff>:/images/aoptions.png</normaloff>:/images/aoptions.png</iconset>
+@@ -2072,7 +2075,7 @@
+   <customwidget>
+    <class>QWebView</class>
+    <extends>QWidget</extends>
+-   <header>QtWebKit/QWebView</header>
++   <header>QtWebKitWidgets/QWebView</header>
+   </customwidget>
+  </customwidgets>
+  <tabstops>

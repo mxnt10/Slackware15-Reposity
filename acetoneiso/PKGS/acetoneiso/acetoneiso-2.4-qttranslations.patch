@@ -1,0 +1,22 @@
+diff -ur acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/main.cpp acetoneiso-2.4-svn20131025/acetoneiso/sources/main.cpp
+--- acetoneiso-2.4-svn20131025.orig/acetoneiso/sources/main.cpp	2016-02-24 20:44:40.000000000 +0300
++++ acetoneiso-2.4-svn20131025/acetoneiso/sources/main.cpp	2016-02-25 00:23:47.000000000 +0300
+@@ -16,6 +16,7 @@
+ #include <QApplication>
+ #include "acetoneiso.h"
+ #include <QTranslator>
++#include <QLibraryInfo>
+  
+ int main(int argc, char *argv[])
+ {
+@@ -34,6 +35,10 @@
+       translator.load(QString(":/locale/acetoneiso_") + locale);
+       app.installTranslator(&translator);
+ 
++      QTranslator qtTranslator;
++      qtTranslator.load("qt_" + locale, QLibraryInfo::location(QLibraryInfo::TranslationsPath));
++      app.installTranslator(&qtTranslator);
++
+       acetoneiso *dialog = new acetoneiso();
+       dialog->show();
+       return app.exec();
