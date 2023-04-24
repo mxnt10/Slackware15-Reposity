@@ -12,10 +12,12 @@ ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
 
 CWD=$PWD
-PKG=/tmp/package-$PRGNAM
+PKG=/var/tmp/package-$PRGNAM
 LINK=https://github.com/4gray/iptvnator/releases/download/v0.11.1/iptvnator_0.11.1_amd64.deb
 
 set -e

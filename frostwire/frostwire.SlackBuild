@@ -20,9 +20,9 @@ TAG=${TAG:-_mxnt}
 CWD=$PWD
 PKG=/var/tmp/package-$PRGNAM
 LINK1=http://dl.frostwire.com/frostwire/6.9.10/frostwire-6.9.10.amd64.tar.gz
-LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/Fix-Launcher.patch
-LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/frostwire-icons.tar.gz
-LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/frostwire/PKGS/frostwire/frostwire-pixmaps.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/frostwire/Fix-Launcher.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/frostwire/frostwire-icons.tar.gz
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/frostwire/frostwire-pixmaps.tar.gz
 
 set -e
 wget -c $LINK1 $LINK2 $LINK3 $LINK4
