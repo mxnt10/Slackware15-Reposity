@@ -12,10 +12,12 @@ ARCH=x86_64
 BUILD=${BUILD:-1chromedriver}
 TAG=${TAG:-_mxnt}
 
-mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
 
 CWD=$PWD
-PKG=/tmp/package-$PRGNAM
+PKG=/var/tmp/package-$PRGNAM
 LINK=https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 
 set -e
@@ -23,7 +25,7 @@ wget -c $LINK
 rm -rf $PKG
 VERSION=$(ar p google-chrome-${RELEASE}_current_amd64.deb control.tar.xz 2> /dev/null | tar xJO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
 CHROMEDRIVER=https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
-wget -c $CHROMEDRIVER
+wget -c $CHROMEDRIVER || true
 mkdir -p $PKG/{install,usr/bin}
 cd $PKG; ar p $CWD/google-chrome-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
 chmod 4711 opt/google/chrome/chrome-sandbox
@@ -42,7 +44,7 @@ for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz; rm
 sed -i -e "s|Icon=google-chrome|Icon=/opt/google/chrome/product_logo_256.png|" $PKG/usr/share/applications/google-chrome.desktop
 
 cd usr/bin
-unzip $CWD/chromedriver_linux64.zip
+unzip $CWD/chromedriver_linux64.zip || true
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 

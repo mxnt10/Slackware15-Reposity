@@ -18,27 +18,29 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
 
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=https://ufpr.dl.sourceforge.net/project/codeblocks/Sources/20.03/codeblocks-20.03.tar.xz
-LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/codeblocks-gcc11.patch
-LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/sc_wxtypes-normalize.patch
-LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/40eb88e3f2b933f19f9933e06c8d0899c54f5e25.patch
-LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/56ac0396fad7a5b4bbb40bb8c4b5fe1755078aef.patch
-LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/a4aacc92640b587ad049cd6aa68c637e536e9ab5.patch
-LINK7=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/f2f127cf5cd97c7da6a957a3f7764cb25cc9017e.patch
-LINK8=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/04b7c50fb8c6a29b2d84579ee448d2498414d855.patch
-LINK9=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/2345b020b862ec855038dd32a51ebb072647f28d.patch
-LINK10=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/dbdf5c5ea9e3161233f0588a7616b7e4fedc7870.patch
-LINK11=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/8035dfdff321754819f79e3165401aa59bd8c7f7.patch
-LINK12=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/9a9c6a9d5e3e0f6eff5594ecd61a2222f073be9c.patch
-LINK13=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/c28746f4887f10e6f9f10eeafae0fb22ecdbf9c7.patch
-LINK14=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/b2e4f1279804e1d11b71bc75eeb37072c3589296.patch
-LINK15=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/29315df024251850832583f73e67e515dae10830.patch
-LINK16=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/codeblocks/PKGS/codeblocks/46720043319758cb0e798eb23520063583c40eaa.patch
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/codeblocks-gcc11.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/sc_wxtypes-normalize.patch
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/40eb88e3f2b933f19f9933e06c8d0899c54f5e25.patch
+LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/56ac0396fad7a5b4bbb40bb8c4b5fe1755078aef.patch
+LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/a4aacc92640b587ad049cd6aa68c637e536e9ab5.patch
+LINK7=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/f2f127cf5cd97c7da6a957a3f7764cb25cc9017e.patch
+LINK8=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/04b7c50fb8c6a29b2d84579ee448d2498414d855.patch
+LINK9=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/2345b020b862ec855038dd32a51ebb072647f28d.patch
+LINK10=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/dbdf5c5ea9e3161233f0588a7616b7e4fedc7870.patch
+LINK11=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/8035dfdff321754819f79e3165401aa59bd8c7f7.patch
+LINK12=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/9a9c6a9d5e3e0f6eff5594ecd61a2222f073be9c.patch
+LINK13=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/c28746f4887f10e6f9f10eeafae0fb22ecdbf9c7.patch
+LINK14=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/b2e4f1279804e1d11b71bc75eeb37072c3589296.patch
+LINK15=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/29315df024251850832583f73e67e515dae10830.patch
+LINK16=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/codeblocks/46720043319758cb0e798eb23520063583c40eaa.patch
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
