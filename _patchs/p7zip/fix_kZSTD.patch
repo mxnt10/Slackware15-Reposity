@@ -1,0 +1,13 @@
+--- p7zip-17.04-orig/CPP/7zip/UI/GUI/CompressDialog.cpp	2021-04-04 00:11:06.000000000 -0300
++++ p7zip-17.04/CPP/7zip/UI/GUI/CompressDialog.cpp	2021-08-08 22:18:54.049409527 -0300
+@@ -143,8 +143,8 @@
+   kDeflate64,
+   kBZip2,
+   kLZMA,
+-  kPPMdZip,
+-  kZSTD
++  kPPMdZip //,
++  //kZSTD
+ };
+ 
+ static const EMethodID g_GZipMethods[] =
