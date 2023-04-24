@@ -16,34 +16,36 @@ case "$( uname -m )" in
 	   *) export ARCH=$( uname -m ) ;;
 esac
 
-mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM 
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
 
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=http://ponce.cc/slackware/sources/repo/cdrkit-1.1.11.tar.gz
-LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.10-build-fix.patch
-LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-cmakewarn.patch
-LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-devname.patch
-LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-dvdman.patch
-LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-format.patch
-LINK7=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-gcc10.patch
-LINK8=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-handler.patch
-LINK9=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-manpagefix.patch
-LINK10=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-memset.patch
-LINK11=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-paranoiacdda.patch
-LINK12=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-ppc64le_elfheader.patch
-LINK13=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-readsegfault.patch
-LINK14=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-rootstat.patch
-LINK15=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-sysmacros.patch
-LINK16=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-usalinst.patch
-LINK17=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-utf8.patch
-LINK18=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.11-werror_gcc5.patch
-LINK19=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.8-werror.patch
-LINK20=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.9-buffer_overflow.patch
-LINK21=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.9-efi-boot.patch
-LINK22=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.9-no_mp3.patch
-LINK23=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/acetoneiso/PKGS/cdrkit/cdrkit-1.1.9-wformat-error.patch
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.10-build-fix.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-cmakewarn.patch
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-devname.patch
+LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-dvdman.patch
+LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-format.patch
+LINK7=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-gcc10.patch
+LINK8=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-handler.patch
+LINK9=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-manpagefix.patch
+LINK10=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-memset.patch
+LINK11=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-paranoiacdda.patch
+LINK12=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-ppc64le_elfheader.patch
+LINK13=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-readsegfault.patch
+LINK14=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-rootstat.patch
+LINK15=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-sysmacros.patch
+LINK16=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-usalinst.patch
+LINK17=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-utf8.patch
+LINK18=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.11-werror_gcc5.patch
+LINK19=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.8-werror.patch
+LINK20=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.9-buffer_overflow.patch
+LINK21=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.9-efi-boot.patch
+LINK22=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.9-no_mp3.patch
+LINK23=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cdrkit/cdrkit-1.1.9-wformat-error.patch
 
 if [ "$ARCH" = "i486" ]; then
   SLKCFLAGS="-O2 -march=i486 -mtune=i686"
