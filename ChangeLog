@@ -3,26 +3,10 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
-## [ Released ] - 2023-02-15 #############################################
-
-### Added / Adicionado
- - Added script check-version, stcode and package-list file.
-###
-
-### Upgraded / Atualizado
- -
-###
+## [ Released ] - 2023-05-05 #############################################
 
 ### Changed / Modificado
- -
-###
-
-### Removed / Removido
- -
-###
-
-### Fixed / Corrigido
- -
+ - Pequenas Modificações nos scripts.
 ###
 
 ##########################################################################
@@ -31,6 +15,7 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 ## [ Released ] - 2023-02-15 #############################################
 
 ### Added / Adicionado
+ - Adicionado script check-version, stcode e package-list file.
  - Adicionado patchs de correção aos diretórios dos projetos:
     - Code::Blocks.
     - Conky.
@@ -46,17 +31,8 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
  - Discord 0.0.24 -> 0.0.25
 ###
 
-
 ### Changed / Modificado
  - Modificações a ajustes nos Slackbuilds que precisam de patch.
-###
-
-### Removed / Removido
- -
-###
-
-### Fixed / Corrigido
- -
 ###
 
 ##########################################################################

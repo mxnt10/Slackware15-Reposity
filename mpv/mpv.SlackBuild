@@ -21,7 +21,7 @@ case "$( uname -m )" in
 	   *) ARCH=$( uname -m ) ;;
 esac
 
-[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; cd ../../_PKGS/$PRGNAM; } || {
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
     mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
 }
 
