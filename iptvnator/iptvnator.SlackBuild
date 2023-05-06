@@ -23,7 +23,7 @@ LINK=https://github.com/4gray/iptvnator/releases/download/v0.11.1/iptvnator_0.11
 set -e
 wget -c $LINK
 rm -rf $PKG
-mkdir -p $PKG/{install,usr/bin}
+mkdir -p $TMP $PKG/{install,usr/bin}
 cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}_amd64.deb data.tar.xz | tar xJv
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .

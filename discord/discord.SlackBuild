@@ -23,7 +23,7 @@ LINK=https://dl.discordapp.net/apps/linux/0.0.26/discord-0.0.26.tar.gz
 set -e
 wget -c $LINK
 rm -rf $PKG
-mkdir -p $PKG/{install,opt/Discord,usr/{bin,share/{applications,pixmaps}}}
+mkdir -p $TMP $PKG/{install,opt/Discord,usr/{bin,share/{applications,pixmaps}}}
 cd $PKG/opt; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 
 cd Discord

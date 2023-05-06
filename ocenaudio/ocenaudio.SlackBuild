@@ -30,7 +30,7 @@ PKG=/var/tmp/package-$PRGNAM
 set -e
 wget -c $LINK
 rm -rf $PKG
-mkdir -p $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION}}
+mkdir -p $TMP $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION}}
 cd $PKG; ar p $CWD/${PRGNAM}_*.deb data.tar.xz | tar xJv
 
 chown -R root:root .

@@ -26,7 +26,7 @@ rm -rf $PKG
 VERSION=$(ar p google-chrome-${RELEASE}_current_amd64.deb control.tar.xz 2> /dev/null | tar xJO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
 CHROMEDRIVER=https://chromedriver.storage.googleapis.com/$VERSION/chromedriver_linux64.zip
 wget -c $CHROMEDRIVER || true
-mkdir -p $PKG/{install,usr/bin}
+mkdir -p $TMP $PKG/{install,usr/bin}
 cd $PKG; ar p $CWD/google-chrome-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
 chmod 4711 opt/google/chrome/chrome-sandbox
 

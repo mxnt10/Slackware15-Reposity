@@ -52,7 +52,7 @@ fi
 set -e
 wget -c $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION,etc/conky}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION,etc/conky}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
 cd $PRGNAM-$VERSION
 chown -R root:root .

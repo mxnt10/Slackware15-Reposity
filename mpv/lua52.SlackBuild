@@ -48,7 +48,7 @@ fi
 set -e
 wget -c $LINK1 $LINK2
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{lib${LIBDIRSUFFIX}/pkgconfig,doc/$PKGNAM-$VERSION/html}}
+mkdir -p $TMP $PKG/{install,usr/{lib${LIBDIRSUFFIX}/pkgconfig,doc/$PKGNAM-$VERSION/html}}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 chown -R root:root .

@@ -45,7 +45,7 @@ fi
 set -e
 wget -c $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/gtk-$VERSION.tar.?z*
 cd gtk-$VERSION
 chown -R root:root .

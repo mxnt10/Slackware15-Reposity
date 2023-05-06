@@ -49,7 +49,7 @@ fi
 set -e
 wget -c $LINK1 $LINK2 $LINK3
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION,share/{applications,icons/hicolor/256x256/apps,mx-conky/locale,mx-conky-data/themes}}}
+mkdir -p $TMP $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION,share/{applications,icons/hicolor/256x256/apps,mx-conky/locale,mx-conky-data/themes}}}
 cd $TMP; tar xvf $CWD/${PRGNAM}_${VERSION}.tar.?z*
 cd $PRGNAM-$VERSION
 chown -R root:root .

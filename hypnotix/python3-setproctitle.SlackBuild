@@ -29,7 +29,7 @@ LINK=https://github.com/dvarrazzo/py-setproctitle/archive/refs/tags/version-1.3.
 set -e
 wget -c -O $SRCNAM-$VERSION.tar.gz $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z
 cd py-setproctitle-version-$VERSION
 chown -R root:root .

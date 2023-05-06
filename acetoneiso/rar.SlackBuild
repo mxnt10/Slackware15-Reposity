@@ -39,7 +39,7 @@ fi
 set -e
 wget -c $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION},etc}
+mkdir -p $TMP $PKG/{install,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION},etc}
 cd $TMP
 tar xvf $CWD/${PRGNAM}linux-*.tar.gz
 cd $PRGNAM

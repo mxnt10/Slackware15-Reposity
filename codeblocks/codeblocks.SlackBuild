@@ -62,7 +62,7 @@ fi
 set -e
 wget -c $LINK1 $LINK2 $LINK3 $LINK4 $LINK5 $LINK6 $LINK7 $LINK8 $LINK9 $LINK10 $LINK11 $LINK12 $LINK13 $LINK14 $LINK15 $LINK16
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xJf $CWD/$PRGNAM\-$VERSION.tar.xz
 cd $PRGNAM-$VERSION
 chown -R root:root .

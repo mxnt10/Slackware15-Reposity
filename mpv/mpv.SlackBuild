@@ -51,7 +51,7 @@ fi
 set -e
 wget -c $LINK1 $LINK2
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION/manual}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION/manual}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 cp $CWD/waf-$WAF_VERSION ./waf

@@ -29,7 +29,7 @@ LINK=https://files.pythonhosted.org/packages/0b/25/37c77fc07821cd06592df3f18281f
 set -e
 wget -c $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.?z*
 cd $SRCNAM-$VERSION*
 chown -R root:root .

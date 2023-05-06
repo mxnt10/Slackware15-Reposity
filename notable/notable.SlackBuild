@@ -23,7 +23,7 @@ LINK=https://github.com/notable/notable/releases/download/v1.8.4/notable_1.8.4_a
 set -e
 wget -c $LINK
 rm -rf $PKG
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $PKG; ar p $CWD/notable_1.8.4_amd64.deb data.tar.xz | tar xJv
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .

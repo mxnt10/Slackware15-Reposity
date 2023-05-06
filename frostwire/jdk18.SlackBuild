@@ -24,7 +24,7 @@ LINK=https://download.oracle.com/java/18/archive/jdk-18.0.2.1_linux-x64_bin.tar.
 set -e
 wget -c --no-check-certificate --header "Cookie: oraclelicense=accept-securebackup-cookie" $LINK
 rm -rf $PKG
-mkdir -p $PKG/{install,etc/profile.d,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION,man/man1}}
+mkdir -p $TMP $PKG/{install,etc/profile.d,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION,man/man1}}
 cd $PKG/usr/lib${LIBDIRSUFFIX}
 tar -xvf $CWD/jdk-${VERSION}_linux*.tar.?z
 mv $(tar -tf $CWD/jdk-${VERSION}_linux*.tar.?z | head -1 | cut -d/ -f1) $PRGNAM-$VERSION

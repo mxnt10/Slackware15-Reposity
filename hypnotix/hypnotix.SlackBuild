@@ -30,7 +30,7 @@ LINK=https://github.com/linuxmint/hypnotix/archive/3.2.tar.gz
 set -e
 wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{bin,lib/$PRGNAM,share/{applications,glib-2.0/schemas,$PRGNAM/pictures/badges,icons/hicolor/scalable/apps}}}
+mkdir -p $TMP $PKG/{install,usr/{bin,lib/$PRGNAM,share/{applications,glib-2.0/schemas,$PRGNAM/pictures/badges,icons/hicolor/scalable/apps}}}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z
 cd $PRGNAM-$VERSION
 chown -R root:root .

@@ -25,7 +25,7 @@ set -e
 wget -c $LINK
 rm -rf $PKG
 VERSION=$(ar p google-earth-${RELEASE}_current_amd64.deb control.tar.gz 2> /dev/null | tar zxO ./control 2> /dev/null | grep Version | awk '{print $2}' | cut -d- -f1)
-mkdir -p $PKG/{install,usr/share/mime/packages}
+mkdir -p $TMP $PKG/{install,usr/share/mime/packages}
 cd $PKG; ar p $CWD/google-earth-${RELEASE}_current_amd64.deb data.tar.xz | tar xJv
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .

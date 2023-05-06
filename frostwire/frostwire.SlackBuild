@@ -27,7 +27,7 @@ LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patc
 set -e
 wget -c $LINK1 $LINK2 $LINK3 $LINK4
 rm -rf $PKG
-mkdir -p $PKG/{opt,install,usr/{bin,share/{applications,pixmaps}}}
+mkdir -p $TMP $PKG/{opt,install,usr/{bin,share/{applications,pixmaps}}}
 tar xvf $CWD/$PRGNAM-$VERSION.amd64.tar.?z* -C $PKG/opt
 tar xvf $CWD/$PRGNAM-icons.tar.?z -C $PKG/usr/share
 tar xvf $CWD/$PRGNAM-pixmaps.tar.?z -C $PKG/usr/share/pixmaps

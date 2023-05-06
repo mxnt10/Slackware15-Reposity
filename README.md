@@ -65,7 +65,6 @@ Feel at ease to install the packages you need.
 | `discord`                  | `0.0.17`         | `x86_64`                |                         |
 | `iptvnator`                | `0.10.0`         | `x86_64`                |                         |
 | `notable`                  | `1.8.4`          | `x86_64`                |                         |
-| `vscodium`                 | `1.67.2`         | `x86_64`                |                         |
 | `........................` | `..............` | `.....................` | `.....................` |
 
 <br>
@@ -87,10 +86,8 @@ Feel at ease to install the packages you need.
 
 | `Java Packages`            | `Version`        | `Architecture`          | `Required By`           |
 |----------------------------|------------------|-------------------------|-------------------------|
-| `clion`                    | `2022.1.1`       | `noarch`                |                         |
 | `frostwire`                | `6.9.8`          | `x86_64`                |                         |
 | `jdk18`                    | `18.0.1.1`       | `x86_64`                |                         |
-| `JDownloader2`             | `2.0`            | `noarch`                |                         |
 | `pycharm`                  | `2022.1.1`       | `noarch`                |                         |
 | `........................` | `..............` | `.....................` | `.....................` |
 
@@ -166,7 +163,6 @@ Feel at ease to install the packages you need.
 | `fortune-mod-br`           | `20160820`       | `noarch`                |                         |
 | `fortune-mod`              | `2.22.0`         | `i586` `x86_64` `arm`   | `fortune-mod-br`        |
 | `recode`                   | `3.7.12`         | `i586` `x86_64` `arm`   | `fortune-mod`           |
-| `vim`                      | `8.2.4256`       | `i586` `x86_64` `arm`   |                         |
 | `........................` | `..............` | `.....................` | `.....................` |
 
 ### GNU General Public License

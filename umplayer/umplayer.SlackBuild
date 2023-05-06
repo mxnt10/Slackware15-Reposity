@@ -25,7 +25,7 @@ LINK2=https://mirrors.slackware.com/slackware/slackware64-14.2/slackware64/l/qt-
 set -e
 wget -c $LINK1 $LINK2
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/lib/$PRGNAM}
+mkdir -p $TMP $PKG/{install,usr/lib/$PRGNAM}
 cd $PKG; rpm2cpio $CWD/$PRGNAM-$VERSION*rpm | cpio -di
 cd $TMP; tar xvf $CWD/qt-4.8.7-x86_64-4.txz
 

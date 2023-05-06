@@ -52,7 +52,7 @@ fi
 set -e
 wget -c $LINK1 $LINK2 $LINK3
 rm -rf $TMP
-mkdir -p $PKG/{install,usr/{doc/$PRGNAM-$VERSION,bin,share/{acetoneiso,applications,pixmaps}}}
+mkdir -p $TMP $PKG/{install,usr/{doc/$PRGNAM-$VERSION,bin,share/{acetoneiso,applications,pixmaps}}}
 cd $TMP; tar xvf $CWD/${PRGNAM}_${VERSION}.orig.tar.gz
 mv ${PRGNAM}${VERSION} $PRGNAM-$VERSION
 cd $PRGNAM-$VERSION

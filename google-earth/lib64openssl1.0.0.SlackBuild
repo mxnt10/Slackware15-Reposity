@@ -23,7 +23,7 @@ LINK=https://ftp.nluug.nl/pub/os/Linux/distr/pclinuxos/pclinuxos/apt/pclinuxos/6
 set -e
 wget -c $LINK
 rm -rf $PKG
-mkdir -p $PKG/install
+mkdir -p $TMP $PKG/install
 cd $PKG; rpm2cpio $CWD/$PRGNAM-$VERSION*.rpm | cpio -idm
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
