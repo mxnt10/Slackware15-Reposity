@@ -3,10 +3,38 @@ All notable changes to this project will be documented in this file.
 Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 
 
+## [ Released ] - 2023-05-13 #############################################
+
+### Added / Adicionado
+ - Adicionado os diretórios de Slackbuilds:
+   - asciiquarium.
+   - ccat.
+   - cmatrix.
+   - cowsay.
+   - FlareGet.
+   - FreeOffice 2021.
+   - Mandriva Cursor.
+   - molotov.
+   - Nulloy.
+   - PhotoQT.
+   - QBittorrent.
+   - QMPlay2.
+   - Telegram.
+   - Transmageddon.
+   - sl.
+   - Spotify.
+   - uGet.
+   - xnConvert.
+   - yad.
+   - zenity.
+###
+
+##########################################################################
+
+
 ## [ Released ] - 2023-05-05 #############################################
 
 ### Changed / Modificado
- - Add asciiquarium.
  - Pequenas Modificações nos scripts.
 ###
 
@@ -55,7 +83,7 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 ###
 
 ### Removed / Removido
- - Diretório Electron.    
+ - Diretórios não mais necessários.    
 ###
 
 

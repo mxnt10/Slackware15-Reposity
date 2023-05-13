@@ -25,7 +25,7 @@ set -e
 wget -c $LINK
 rm -rf $TMP
 mkdir -p $TMP $PKG/{install,opt/$PRGNAM,usr/{bin,share/{applications,mime/packages},doc/$PRGNAM-$VERSION}}
-cd $TMP; tar xvf $CWD/softmaker-freeoffice-$VERSION-amd64.tgz
+cd $TMP; tar xvf $CWD/softmaker-freeoffice-2021-$VERSION-amd64.tgz
 tar xvf $PRGNAM.tar.lzma -C $PKG/opt/$PRGNAM
 cd $PKG
 
