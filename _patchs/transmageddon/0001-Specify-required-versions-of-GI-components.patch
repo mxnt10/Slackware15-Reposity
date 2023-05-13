@@ -1,0 +1,113 @@
+--- a/src/transmageddon.py	2014-11-03 00:17:05.000000000 -0200
++++ b/src/transmageddon.py	2021-10-24 15:06:13.821085592 -0300
+@@ -21,27 +21,40 @@
+ # These two items are lists that contain python dictionaries. They contain almost all important 
+ # information about the incoming and outgoing media streams.
+ 
++import datetime
++import gettext
++import signal
+ import sys
++import time
++
+ import os
+ 
+ os.environ["GST_DEBUG_DUMP_DOT_DIR"] = "/tmp"
+ 
+-import which
+-import time
++import gi
++
++gi.require_version('Notify', '0.7')
++gi.require_version('Gdk', '3.0')
++gi.require_version('Gtk', '3.0')
++gi.require_version('Gst', '1.0')
++gi.require_version('GstPbutils', '1.0')
++gi.require_version('GstTag', '1.0')
++gi.require_version('GUdev', '1.0')
++
+ from gi.repository import Notify
+-from gi.repository import GdkX11, Gdk, Gio, Gtk, GLib, Gst, GstPbutils, GstTag
++from gi.repository import Gdk, Gio, Gtk, GLib, Gst, GstPbutils, GstTag
+ from gi.repository import GUdev
+ from gi.repository import GObject, GdkPixbuf
+-# GObject.threads_init()
++from gettext import gettext as _
+ 
+-import transcoder_engine
+-from urllib.parse import urlparse
+-import codecfinder
+ import about
+-import presets, udevdisco
+-import utils
+-import datetime
+-import langchooser, dvdtrackchooser
++import codecfinder
++import dvdtrackchooser
++import langchooser
++import presets
++import transcoder_engine
++import udevdisco
++import which
+ 
+ major, minor, patch, micro = Gst.version()
+ if (major == 1) and (patch < 0):
+@@ -106,7 +119,7 @@
+     'FLV':        [ 'H264'],
+     '3GPP':       [ 'H264', 'MPEG2', 'MPEG4', 'H263+' ],
+     'MPEG PS':    [ 'MPEG2', 'MPEG1', 'H264', 'MPEG4', 'xvid' ],
+-    'MPEG TS':    [ 'MPEG2', 'MPEG1', 'H264', 'MPEG4', 'xvid' 'Dirac' ],
++    'MPEG TS':    [ 'MPEG2', 'MPEG1', 'H264', 'MPEG4', 'xvid', 'Dirac' ],
+     'AVCHD/BD':   [ 'H264' ],
+     'ASF':        [ 'Windows Media Video 2' ],
+     'WebM':       [ 'On2 vp8','On2 vp9']
+@@ -289,9 +302,9 @@
+        self.builder.connect_signals(self) # Initialize User Interface
+        self.add(self.box)
+ 
+-       actionbuttonssizegroup= Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
+-       actionbuttonssizegroup.add_widget(self.cancelbutton)
+-       actionbuttonssizegroup.add_widget(self.transcodebutton)
++       # actionbuttonssizegroup= Gtk.SizeGroup(Gtk.SizeGroupMode.HORIZONTAL)
++       # actionbuttonssizegroup.add_widget(self.cancelbutton)
++       # actionbuttonssizegroup.add_widget(self.transcodebutton)
+        
+        def get_file_path_from_dnd_dropped_uri(self, uri):
+            # get the path to file
+@@ -1396,18 +1409,16 @@
+ 
+        if item == 1:
+            self.isdvd=False
+-           dialog = Gtk.FileChooserDialog(title=_("Choose Source File..."),
+-                        buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+-                                 Gtk.STOCK_OPEN, Gtk.ResponseType.ACCEPT),
+-                         transient_for=widget.get_toplevel())
+-           dialog.set_default_response(Gtk.ResponseType.ACCEPT)
++           dialog = Gtk.FileChooserDialog(title=_("Choose Source File..."), transient_for=widget.get_toplevel())
++           dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK)
++           dialog.set_default_response(Gtk.ResponseType.OK)
+            dialog.set_property("local-only", False)
+            dialog.set_current_folder(self.videodirectory)
+    
+            response = dialog.run()
+            dialog.hide()
+            filename = None
+-           if response == Gtk.ResponseType.ACCEPT:
++           if response == Gtk.ResponseType.OK:
+                if self.fileiter:
+                    model.remove(self.fileiter)
+                self.streamdata['filename'] = dialog.get_filename()
+@@ -1456,13 +1467,6 @@
+        self.fileiter = newiter
+        self.combo.set_active(pos)
+        self.on_filechooser_file_set(self,path)
+-
+-
+-# Setup i18n support
+-import locale
+-from gettext import gettext as _
+-import gettext
+-import signal
+   
+ #Set up i18n
+ gettext.bindtextdomain("transmageddon","../../share/locale")

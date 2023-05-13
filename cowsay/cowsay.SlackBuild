@@ -1,8 +1,6 @@
 #!/bin/sh
 
-# Slackware build script for cowsay
-
-# Copyright 2022 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
 # All rights reserved.
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
@@ -13,18 +11,20 @@ ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
 
 CWD=$PWD
-TMP=${TMP:-/tmp}
-PKG=${PKG:-$TMP/package-$PRGNAM}
+TMP=/var/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
 LINK1=https://src.fedoraproject.org/repo/pkgs/cowsay/cowsay-3.04.tar.gz/sha512/99d21ef9a7c7c76056cb7acb2c771fbdabfedde4f6edb5d3035337c59f9e88944690d1b43282c32827ad79339199716366c8be73b0dea09063ec2d52220c1b51/cowsay-3.04.tar.gz
 LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Cowsay_3.04_FIX/Fix-local.patch
 
 set -e
 wget -c $LINK1 $LINK2
-rm -rf $PKG $TMP/*-$PRGNAM-$VERSION
-mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+rm -rf $TMP
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
 cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd *-$PRGNAM-$VERSION
 chown -R root:root .
@@ -53,7 +53,7 @@ cowsay:                 ||     ||" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG $TMP/*-$PRGNAM-$VERSION
+rm -rf $TMP
 
 cd $CWD
 [ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
