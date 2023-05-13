@@ -19,7 +19,7 @@ CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=https://src.fedoraproject.org/repo/pkgs/cowsay/cowsay-3.04.tar.gz/sha512/99d21ef9a7c7c76056cb7acb2c771fbdabfedde4f6edb5d3035337c59f9e88944690d1b43282c32827ad79339199716366c8be73b0dea09063ec2d52220c1b51/cowsay-3.04.tar.gz
-LINK2=https://raw.githubusercontent.com/MauricioFerrari-NovaTrento/Slackware15-Reposity/master/Extra/Cowsay_3.04_FIX/Fix-local.patch
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/cowsay/Fix-local.patch
 
 set -e
 wget -c $LINK1 $LINK2

@@ -21,11 +21,11 @@ CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
 LINK1=http://www.linuxrising.org/files/transmageddon-1.5.tar.xz
-LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0001-Fix-AppStream-metadata-validation.patch
-LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0001-Remove-the-usage-of-deprecated-xml.etree.ElementTree.patch
-LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0001-Specify-required-versions-of-GI-components.patch
-LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0002-Fix_about.patch
-LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/Extra/Transmageddon_1.5_FIX/0002-Fix_about_in.patch
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/transmageddon/0001-Fix-AppStream-metadata-validation.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/transmageddon/0001-Remove-the-usage-of-deprecated-xml.etree.ElementTree.patch
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/transmageddon/0001-Specify-required-versions-of-GI-components.patch
+LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/transmageddon/0002-Fix_about.patch
+LINK6=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/transmageddon/0002-Fix_about_in.patch
 
 set -e
 wget -O $PRGNAM-$VERSION.tar.xz -c $LINK1
