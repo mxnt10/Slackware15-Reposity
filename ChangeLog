@@ -1,12 +1,11 @@
-# ChangeLog
-All notable changes to this project will be documented in this file.
-Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
+# released - 2023-05-28
+- Adicionado os diretórios de Slackbuilds:
+   - ckdeps.
+   - clouddown.
+   - frequencycpu.
 
-
-## [ Released ] - 2023-05-13 #############################################
-
-### Added / Adicionado
- - Adicionado os diretórios de Slackbuilds:
+# released - 2023-05-13
+- Adicionado os diretórios de Slackbuilds:
    - asciiquarium.
    - ccat.
    - cmatrix.
@@ -27,64 +26,33 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
    - xnConvert.
    - yad.
    - zenity.
-###
 
-##########################################################################
+# released - 2023-05-05
+- Pequenas Modificações nos scripts.
 
+# released - 2023-02-15
+- Adicionado script check-version, stcode e package-list file.
+- Adicionado patchs de correção aos diretórios dos projetos:
+   - Code::Blocks.
+   - Conky.
+- Adicionado os diretórios de Slackbuilds:
+   - FrostWire.
+   - Hypnotix.
+   - MPV.
+   - Ocenaudio.
+   - P7Zip.
+- Atualizado Discord 0.0.24 -> 0.0.25.
+- Modificações a ajustes nos Slackbuilds que precisam de patch.
 
-## [ Released ] - 2023-05-05 #############################################
-
-### Changed / Modificado
- - Pequenas Modificações nos scripts.
-###
-
-##########################################################################
-
-
-## [ Released ] - 2023-02-15 #############################################
-
-### Added / Adicionado
- - Adicionado script check-version, stcode e package-list file.
- - Adicionado patchs de correção aos diretórios dos projetos:
-    - Code::Blocks.
-    - Conky.
- - Adicionado os diretórios de Slackbuilds:
-    - FrostWire.
-    - Hypnotix.
-    - MPV.
-    - Ocenaudio.
-    - P7Zip.
-###
-
-### Upgraded / Atualizado
- - Discord 0.0.24 -> 0.0.25
-###
-
-### Changed / Modificado
- - Modificações a ajustes nos Slackbuilds que precisam de patch.
-###
-
-##########################################################################
-
-
-## [ Released ] - 2023-02-12 #############################################
-
-### Added / Adicionado
- - Adicionado os diretórios de Slackbuilds:
-    - Amberol.
-    - Code::Blocks.
-    - Conky.
-    - Discord.
-    - IPTVnator.
-    - Notable.
-    - UMPlayer.
-    - Upscayl.
-    - VSCodium.
-###
-
-### Removed / Removido
- - Diretórios não mais necessários.    
-###
-
-
-##########################################################################
+# released - 2023-02-12
+- Adicionado os diretórios de Slackbuilds:
+   - Amberol.
+   - Code::Blocks.
+   - Conky.
+   - Discord.
+   - IPTVnator.
+   - Notable.
+   - UMPlayer.
+   - Upscayl.
+   - VSCodium.
+- Removido iretórios não mais necessários.    
