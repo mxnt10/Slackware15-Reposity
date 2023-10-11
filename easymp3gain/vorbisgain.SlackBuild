@@ -5,16 +5,18 @@
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
-PRGNAM=libcpuid
-VERSION=0.6.4
+PRGNAM=vorbisgain
+VERSION=0.37
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-case "$( uname -m )" in
-	i?86) ARCH=i586 ;;
-	arm*) ARCH=arm ;;
-	   *) ARCH=$( uname -m ) ;;
-esac
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
 
 [ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
     mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
@@ -23,7 +25,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/anrieff/libcpuid/archive/v0.6.4/libcpuid-0.6.4.tar.gz
+LINK=https://sjeng.org/ftp/vorbis/vorbisgain-0.37.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
@@ -46,44 +48,37 @@ set -e
 wget -c $LINK
 rm -rf $TMP
 mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
-cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.gz
 cd $PRGNAM-$VERSION
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
-libtoolize
-autoreconf --install
-
 NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
 CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
 ./configure \
   --prefix=/usr \
   --libdir=/usr/lib${LIBDIRSUFFIX} \
   --sysconfdir=/etc \
   --localstatedir=/var \
-  --mandir=/usr/man \
-  --docdir=/usr/doc/$PRGNAM-$VERSION \
-  --enable-static=no \
-  --build=$ARCH-slackware-linux
-make $NUMJOBS; make install DESTDIR=$PKG
+  --enable-recursive
+make $NUMJOBS; make install-strip DESTDIR=$PKG
 
-find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
 find $PKG/usr/man -type f -exec gzip -9 {} \;
-for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
-cp -a COPYING README $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a COPYING NEWS README $PKG/usr/doc/$PRGNAM-$VERSION
 
-echo "        |-----handy-ruler------------------------------------------------------|
-libcpuid: libcpuid (C library for x86 CPU detection and feature extraction)
-libcpuid:
-libcpuid: libcpuid is a small C library for x86 CPU detection and feature
-libcpuid: extraction.
-libcpuid:
-libcpuid: Homepage: http://libcpuid.sourceforge.net
-libcpuid:
-libcpuid:
-libcpuid:
-libcpuid:
-libcpuid:" > $PKG/install/slack-desc
+echo "          |-----handy-ruler------------------------------------------------------|
+vorbisgain: vorbisgain (volume gain adjuster for ogg vorbis)
+vorbisgain:
+vorbisgain: Vorbisgain enables you to adjust the volume of your files using the
+vorbisgain: replaygain-algorithm. This way only tags are written to your files;
+vorbisgain: they don't get modified themselves.
+vorbisgain: Via these tags, some audio-players are able to change the volume of
+vorbisgain: each song, so that they're all played at the same volume.
+vorbisgain:
+vorbisgain: Homepage: https://sjeng.org/vorbisgain.html
+vorbisgain:
+vorbisgain:" > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz

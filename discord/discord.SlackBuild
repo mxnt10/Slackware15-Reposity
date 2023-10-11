@@ -7,7 +7,7 @@
 [ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=discord
-VERSION=0.0.26
+VERSION=0.0.31
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -18,7 +18,7 @@ TAG=${TAG:-_mxnt}
 
 CWD=$PWD
 PKG=/var/tmp/package-$PRGNAM
-LINK=https://dl.discordapp.net/apps/linux/0.0.26/discord-0.0.26.tar.gz
+LINK=https://dl.discordapp.net/apps/linux/0.0.31/discord-0.0.31.tar.gz
 
 set -e
 wget -c $LINK

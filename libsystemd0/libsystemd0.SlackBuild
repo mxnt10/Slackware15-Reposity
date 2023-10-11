@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=libsystemd0
+VERSION=252.17-1~deb12u1
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+PKG=/var/tmp/package-$PRGNAM
+LINK1=http://deb.debian.org/debian/pool/main/s/systemd/libsystemd0_252.17-1~deb12u1_amd64.deb
+LINK2=http://deb.debian.org/debian/pool/main/s/systemd/libsystemd-dev_252.17-1~deb12u1_amd64.deb
+
+set -e
+wget -c $LINK1 $LINK2
+rm -rf $PKG
+mkdir -p $PKG/install
+cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}_amd64.deb data.tar.xz | tar xJv
+ar p $CWD/${PRGNAM/0/-dev}_${VERSION}_amd64.deb data.tar.xz | tar xJv
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+mv usr/lib/x86_64-linux-gnu usr/lib64
+rmdir usr/lib
+
+echo "           |-----handy-ruler------------------------------------------------------|
+libsystemd0: libsystemd0 (systemd utility library)
+libsystemd0:
+libsystemd0: This library provides APIs to interface with various system
+libsystemd0: components such as the system journal, the system service manager,
+libsystemd0: D-Bus and more.
+libsystemd0:
+libsystemd0:
+libsystemd0:
+libsystemd0:
+libsystemd0:
+libsystemd0:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -6,7 +6,7 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=libtorrent-rasterbar
-VERSION=2.0.6
+VERSION=2.0.8
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/arvidn/libtorrent/releases/download/v2.0.6/libtorrent-rasterbar-2.0.6.tar.gz
+LINK=https://github.com/arvidn/libtorrent/releases/download/v2.0.8/libtorrent-rasterbar-2.0.8.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"

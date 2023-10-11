@@ -5,5 +5,5 @@
 
 set -e
 
-INST="yes" ./jdk18.SlackBuild
+INST="yes" ./jdk21.SlackBuild
 INST="yes" ./frostwire.SlackBuild

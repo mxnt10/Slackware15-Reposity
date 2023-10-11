@@ -1,3 +1,33 @@
+# released - 3023-10-08
+- Adicionado:
+    - easymp3gain.
+    - kazam.
+    - libsystemd0.
+    - pycharm.
+- Atualizado:
+    - acetoneiso.
+    - asciiquarium.
+    - conky.
+    - CPU-X.
+    - discord.
+    - freeoffice2021.
+    - frostWire.
+    - hypnotix.
+    - iptvnator.
+    - mpv.
+    - nulloy.
+    - ocenaudio.
+    - photoqt.
+    - qbittorrent.
+    - QMPlay2.
+    - spotify.
+    - telegram.
+    - vscode.
+    - xnconvert.
+    - yad.
+- Removido:
+    - upscayl.
+
 # released - 2023-05-28
 - Adicionado os diretórios de Slackbuilds:
    - ckdeps.
@@ -10,20 +40,20 @@
    - ccat.
    - cmatrix.
    - cowsay.
-   - FlareGet.
-   - FreeOffice 2021.
-   - Mandriva Cursor.
+   - flareget.
+   - freeoffice2021.
+   - mandriva-cursor.
    - molotov.
-   - Nulloy.
-   - PhotoQT.
-   - QBittorrent.
+   - nulloy.
+   - photoqt.
+   - qbittorrent.
    - QMPlay2.
-   - Telegram.
-   - Transmageddon.
+   - telegram.
+   - transmageddon.
    - sl.
-   - Spotify.
-   - uGet.
-   - xnConvert.
+   - spotify.
+   - uget.
+   - xnconvert.
    - yad.
    - zenity.
 
@@ -33,26 +63,26 @@
 # released - 2023-02-15
 - Adicionado script check-version, stcode e package-list file.
 - Adicionado patchs de correção aos diretórios dos projetos:
-   - Code::Blocks.
-   - Conky.
+   - codeblocks.
+   - conky.
 - Adicionado os diretórios de Slackbuilds:
-   - FrostWire.
-   - Hypnotix.
-   - MPV.
-   - Ocenaudio.
-   - P7Zip.
-- Atualizado Discord 0.0.24 -> 0.0.25.
+   - frostWire.
+   - hypnotix.
+   - mpv.
+   - ocenaudio.
+   - p7zip.
+- Atualizado discord 0.0.24 -> 0.0.25.
 - Modificações a ajustes nos Slackbuilds que precisam de patch.
 
 # released - 2023-02-12
 - Adicionado os diretórios de Slackbuilds:
-   - Amberol.
-   - Code::Blocks.
-   - Conky.
-   - Discord.
-   - IPTVnator.
-   - Notable.
-   - UMPlayer.
-   - Upscayl.
-   - VSCodium.
-- Removido iretórios não mais necessários.    
+   - amberol.
+   - codeblocks.
+   - conky.
+   - discord.
+   - iptvnator.
+   - notable.
+   - umpayer.
+   - upscayl.
+   - vscodium.
+- Removido diretórios não mais necessários.

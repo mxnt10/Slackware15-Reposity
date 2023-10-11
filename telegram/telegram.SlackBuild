@@ -9,7 +9,7 @@
 PRGNAM=telegram
 SRCDIR=Telegram
 SRC=tsetup
-VERSION=4.8.1
+VERSION=4.10.3
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -21,7 +21,7 @@ TAG=${TAG:-_mxnt}
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://updates.tdesktop.com/tlinux/tsetup.4.8.1.tar.xz
+LINK=https://updates.tdesktop.com/tlinux/tsetup.4.10.3.tar.xz
 
 set -e
 wget -c $LINK

@@ -1,11 +1,11 @@
 #!/bin/bash
 #
-# ### Check Package Version v8.5 - Verificação de Atualização dos Programas - By Mauricio Ferrari - 16/04/2023 ###
+# Check Package Version v9.0 - Verificação de Atualização dos Programas - By Mauricio Ferrari
 #
-#####################################################################################################################
+#############################################################################################
 
 
-# ### Definições de Variáveis ###
+# Definições de Variáveis
 
 R='\e[31m'
 G='\e[32m'
@@ -29,22 +29,22 @@ PG=2
 SP=0
 
 
-# ### Checkar SlackBuilds ###
+# Checkar SlackBuilds
 
-VAR=(*SlackBuild)
+var=(*SlackBuild)
 
-[ ! -e $VAR ] && VAR=(*/*SlackBuild) || VAR=($VAR */*SlackBuild)
+[ ! -e $var ] && var=(*/*SlackBuild) || var=($var */*SlackBuild)
 
-[ ! -e $VAR ] && {
+[ ! -e $var ] && {
 	printf "\n${R}No SlackBuild Found!$T\n\n" >&2
 	exit 1
 }
 
-TOT=${#VAR[@]}
-PARM=${VAR[@]}
+TOT=${#var[@]}
+PARM=${var[@]}
 
 
-# ### Seleção se Parâmetros ###
+# Seleção se Parâmetros
 
 while getopts :pd OPTION; do
 	case $OPTION in
@@ -67,19 +67,19 @@ done
 PROG=$(bc -l <<< "100/($TOT*$PG)")
 
 
-# ### Gerador de Linha e Redefinidor de Linhas do Terminal ###
+# Gerador de Linha e Redefinidor de Linhas do Terminal
 
 line()
 {
-	for ((i=0; i<$1; i++))
-	{
-		printf '─'
-	}
+    for ((i=0; i<$1; i++))
+    {
+        printf '─'
+    }
 }
 
 clean()
 {
-	printf "\r%$1s\r" " "
+    printf "\r%$1s\r" " "
 }
 
 
@@ -115,16 +115,14 @@ for L in $(sort -u <(fmt -1 <<< $PARM))
 		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] : [$R 1$T /$R 2 $T] $msg1 $R%.2f%% $T " " " "${SP/./,}"
 	}
 
-	[[ "$METD" =~ [MET][0-3] ]] && page="$(links -dump $VLINK 2>/dev/null)"
+	[ "$METD" == "MET0" ] && page="$(links -dump $VLINK 2>/dev/null)"
 	[ "$CVER" == ":"    ] && CVER=$(grep -Eo "([[:digit:]]+[.])+[[:digit:]]+" <(echo {./,PKGS/}$PKG/*txz))
-	[ "$METD" == "MET0" ] && NVER=$(head -1 <(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+$" <<< $page))
-	[ "$METD" == "MET1" ] && NVER=$(sed "s/^[-,_,v,(]//;s/[.]$//" <(head -1 <(grep -Eom1 "[-,_,v,(][0-9]*[.]([0-9]*[.])*[0-9]*[0-9]" <<< ${page/.../})))
-	[ "$METD" == "MET2" ] && NVER=$(head -1 <(grep -Eom1 "([[:digit:]]+[.])+[[:digit:]]+" <<< $page))
+	[ "$METD" == "MET0" ] && NVER=$(head -1 <(grep -Eom1 "(([0-9]+)\.)+[0-9]+_*([a-z0-9])*" <(grep -Ev "([0-9]+\.)+[0-9]+k" <<< $page)))
 
 	[ "$METD" == "MANUAL" ] && {
-		NVER='MANUAL'
-		CLR=$Y
-	}
+        NVER='MANUAL'
+        CLR=$Y
+    }
 
 	[[ "$METD" =~ NONE|MAIN ]] && {
 		NVER='DEFINED'
@@ -146,11 +144,16 @@ for L in $(sort -u <(fmt -1 <<< $PARM))
 		clean 105
 		printf "\e]0;($PKG) - [ $NM / $TOT ] : [ 2 / 2 ] $msg2 %.2f%% \a" "${SP/./,}"
 		printf "$B└$(line 5)┴───┤$T $PKG %$((26-${#PKG}))s$B└─> $T [$R $NM $T/$R $TOT $T] : [$R 2$T /$R 2 $T] $msg2     $R%.2f%% $T " " " "${SP/./,}"
-		[ "$METD" == "MAIN" ] && status="MAIN" || status=$(./stcode $SLINK 2>&-)
-		SCR=$Y
-		[ "$status" == "200"  ] && SCR=$G
-		[ "$status" == "404"  ] && SCR=$R
-		[ "$status" == "MAIN" ] && SCR=$B
+
+        SCR=$Y
+        [ "$METD" == "MAIN" ] && {
+            status="MAIN"
+            SCR=$B
+        } || status=$(./stcode $SLINK 2>&-)
+
+
+        [ "$status" == "200" ] && SCR=$G
+        [ "$status" == "404" ] && SCR=$R
 
 		[ "$status" == "" ] && {
 			status='NOT FOUND'
@@ -161,18 +164,22 @@ for L in $(sort -u <(fmt -1 <<< $PARM))
 
 	# ### Verificação de Versões Obsoletas ###
 
-	DP=(PKGS/$PKG/$PKG*txz)
-	[ "${#DP[@]}" -gt 1 ] && X='X' || X=' '
+    DP=(PKGS/$PKG/$PKG*txz)
+    [ ! -e PKGS ] && DP=(../_PKGS/$PKG/$PKG*txz)
 
 
-	# ### Resultado Final ###
+    [ "${#DP[@]}" -gt 1 ] && X='X' || X=' '
 
-	clean 110
-	printf "$B│$T $Y%3d $B│$T ${R}$X $B│$T $CLR$PKG %$((26-${#PKG}))s$B│$T $AMR$CVER %$((15-${#CVER}))s$B│$T \
+
+    # ### Resultado Final ###
+
+    clean 110
+    printf "$B│$T $Y%3d $B│$T ${R}$X $B│$T $CLR$PKG %$((26-${#PKG}))s$B│$T $AMR$CVER %$((15-${#CVER}))s$B│$T \
 $CLR$NVER %$((15-${#NVER}))s$B│$T%$((11-${#status}))s $SCR$status$T $B│$T\n" "$NM"
 
-SP=$(bc -l <<< "$SP+$PROG")
-let NM++; status=""
+    SP=$(bc -l <<< "$SP+$PROG")
+    let NM++
+    status=
 }
 
 printf "$B└$(line 5)┴$(line 3)┴$(line 28)┴$(line 17)┴$(line 17)┴$(line 13)┘$T\n"

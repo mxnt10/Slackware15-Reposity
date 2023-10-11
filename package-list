@@ -1,8 +1,8 @@
 ----------
 acetoneiso  N                                          | MANUAL
-cdrkit      https://github.com/Distrotech/cdrkit/tags  | MET1
+cdrkit      https://github.com/Distrotech/cdrkit/tags  | MET0
 fuseiso     N                                          | MANUAL
-rar         https://www.win-rar.com/download.html?&L=0 | MET2
+rar         N                                          | MANUAL
 P7ZIP       -
 
 -------
@@ -12,12 +12,12 @@ libadwaita  https://gitlab.gnome.org/GNOME/libadwaita/-/tags | NONE
 pango       N                                                | NONE
 
 ------------
-asciiquarium         https://robobunny.com/projects/asciiquarium/html/ | MET2
-perl-Curses          https://metacpan.org/pod/Curses                   | MET1
-perl-Term-Animation  https://metacpan.org/pod/Term::Animation          | MET1
+asciiquarium         https://robobunny.com/projects/asciiquarium/html/ | MET0
+perl-Curses          https://metacpan.org/pod/Curses                   | MET0
+perl-Term-Animation  https://metacpan.org/pod/Term::Animation          | MET0
 
 ----
-ccat  https://github.com/owenthereal/ccat/tags | MET1
+ccat  https://github.com/owenthereal/ccat/tags | MET0
 
 ------
 ckdeps  N | MAIN
@@ -26,33 +26,38 @@ ckdeps  N | MAIN
 clouddown  N | MAIN
 
 -------
-cmatrix  https://github.com/abishekvashok/cmatrix/tags | MET1
+cmatrix  https://github.com/abishekvashok/cmatrix/tags | MET0
 
 ----------
-codeblocks  https://www.codeblocks.org/downloads/source/ | MET2
+codeblocks  https://www.codeblocks.org/downloads/source/ | MET0
 wxGTK3      N                                            | NONE
 
 -----
 conky          https://github.com/brndnmtthws/conky/tags                         | NONE
 conky-manager  N                                                                 | MANUAL
 mx-conky       N                                                                 | MANUAL
-imlib2         https://sourceforge.net/projects/enlightenment/files/imlib2-src/  | MET2
+imlib2         https://sourceforge.net/projects/enlightenment/files/imlib2-src/  | MET0
 lua            https://github.com/lua/lua/tags                                   | NONE
 
 ------
-cowsay  N | NONE
+cowsay  https://archlinux.org/packages/extra/any/cowsay/ | MET0
 
 -----
-CPU-X        https://github.com/X0rg/CPU-X/releases       | MET1
-glfw3
-libcpuid     https://github.com/anrieff/libcpuid/releases | MET1
-libstatgrab
+CPU-X        https://github.com/X0rg/CPU-X/releases              | MET0
+glfw3        https://www.glfw.org/                               | MET0
+libcpuid     https://github.com/anrieff/libcpuid/releases        | MET0
+libstatgrab  https://github.com/libstatgrab/libstatgrab/releases | MET0
 
 -------
-discord  https://archlinux.org/packages/community/x86_64/discord/ | MET2
+discord  https://archlinux.org/packages/?name=discord | MET0
+
+easymp3gain  N                                                                  | MANUAL
+aacgain      N                                                                  | MANUAL
+mp3gain      https://aur.archlinux.org/packages/mp3gain                         | MET0
+vorbisgain   https://pkgs.alpinelinux.org/package/edge/community/x86/vorbisgain | MET0
 
 --------
-flareget  https://flareget.com/download | MET2
+flareget  https://flareget.com/download | MET0
 
 --------------
 freeoffice2021  N | MANUAL
@@ -61,8 +66,8 @@ freeoffice2021  N | MANUAL
 frequencycpu  N | MAIN
 
 ---------
-frostwire  https://sourceforge.net/projects/frostwire/files/                            | MET2
-jdk18      https://www.oracle.com/java/technologies/javase/jdk18-archive-downloads.html | MET2
+frostwire  https://sourceforge.net/projects/frostwire/files/ | MET0
+jdk21      N                                                 | MANUAL
 
 -------------
 google-chrome  N | NONE
@@ -78,16 +83,24 @@ python3-imdbpy        https://pypi.org/project/IMDbPY/                          
 python3-setproctitle  https://github.com/dvarrazzo/py-setproctitle/tags                   | MET0
 python3-Unidecode     https://pypi.org/project/Unidecode/                                 | MET0
 xapp                  N                                                                   | MANUAL
-yt-dlp                https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/Changelog.md | MET2
+yt-dlp                https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/Changelog.md | MET0
 
 ---------
 iptvnator  https://github.com/4gray/iptvnator/tags | MET0
+
+-----
+kazam                    N                                                   | MANUAL
+python3-distutils-extra  N                                                   | MANUAL
+python3-xlib             https://github.com/python-xlib/python-xlib/releases | MET0
+
+-----------
+libsystemd0  N | MANUAL
 
 ---------------
 mandriva-cursor  N | MAIN
 
 -------
-molotov  https://github.com/cizordj/molotov/tags | MET1
+molotov  https://github.com/cizordj/molotov/tags | MET0
 
 ---
 mpv     https://github.com/mpv-player/mpv/tags | NONE
@@ -98,29 +111,35 @@ LUA     -
 notable  https://github.com/notable/notable/tags | MET0
 
 ------
-nulloy            N                                           | MANUAL
+nulloy            https://github.com/nulloy/nulloy/tags       | MET0
 gst-plugins-ugly  https://gstreamer.freedesktop.org/download/ | NONE
 
 ---------
-ocenaudio  https://www.ocenaudio.com/en/download   | MET2
-jack       https://github.com/jackaudio/jack2/tags | MET0
+ocenaudio  https://www.ocenaudio.com/en/download                | MET0
+jack       https://github.com/jackaudio/jack2-releases/releases | MET0
 
 -----
 p7zip   https://github.com/p7zip-project/p7zip/tags | MET0
 WXGTK3  -
 
 -------
-photoqt  https://photoqt.org/                 | MET2
-pugixml  https://github.com/zeux/pugixml/tags | MET1
+photoqt  https://photoqt.org/                 | MET0
+pugixml  https://github.com/zeux/pugixml/tags | MET0
+
+-------
+pycharm  N | MANUAL
 
 -----------
-qbittorrent           https://www.qbittorrent.org/news.php      | MET1
+qbittorrent           https://www.qbittorrent.org/news.php      | MET0
 libtorrent-rasterbar  https://github.com/arvidn/libtorrent/tags | NONE
 
 -------
-QMPlay2       https://github.com/zaps166/QMPlay2/releases             | MET1
-libsidplayfp  https://sourceforge.net/projects/sidplay-residfp/files/ | MET1
+QMPlay2       https://github.com/zaps166/QMPlay2/releases             | MET0
+libsidplayfp  https://sourceforge.net/projects/sidplay-residfp/files/ | MET0
 LIBASS -
+
+------
+refine  N | MAIN
 
 --
 sl  N | MANUAL
@@ -129,30 +148,27 @@ sl  N | MANUAL
 spotify  N | MANUAL
 
 --------
-telegram  https://github.com/telegramdesktop/tdesktop/tags | MET1
+telegram  https://github.com/telegramdesktop/tdesktop/tags | MET0
 
 ------------
 transmageddon     N | MANUAL
 GST-PLUGINS-UGLY  -
 
 ----
-uget   https://sourceforge.net/projects/urlget/files/ | MET1
-aria2  https://github.com/aria2/aria2/releases        | MET1
+uget   https://sourceforge.net/projects/urlget/files/ | MET0
+aria2  https://github.com/aria2/aria2/releases        | MET0
 
 --------
 umplayer  N | MANUAL
-
--------
-upscayl  https://github.com/upscayl/upscayl/tags | MET0
 
 ------
 vscode  https://github.com/microsoft/vscode/tags | MET0
 
 ---------
-xnconvert  https://www.xnview.com/en/xnconvert/ | MET2
+xnconvert  https://www.xnview.com/en/xnconvert/ | MET0
 
 ---
-yad  https://github.com/v1cont/yad/tags | MET1
+yad  https://github.com/v1cont/yad/tags | MET0
 
 ------
 zenity  N | MANUAL
@@ -163,12 +179,13 @@ flare-game               https://github.com/flareteam/flare-engine/tags         
 opensonic                http://opensnc.sourceforge.net/home/download2.php                          | MET1
 quake2                   N                                                                          | MANUAL
 smc                      N                                                                          | MAIN
-pycharm                  https://archlinux.org/packages/community/x86_64/pycharm-community-edition/ | MET2
+libgme                   https://bitbucket.org/mpyne/game-music-emu/downloads/                      | MET1
+
+fortune-mod-br           N                                                                          | MANUAL
+fortune-mod              https://github.com/shlomif/fortune-mod/tags                                | NONE
+recode                   https://github.com/rrthomas/recode/tags                                    | MET1
+
 BeautifulSoup4           https://pypi.org/project/beautifulsoup4/                                   | MET2
-face                     N                                                                          | MAIN
-gnotifier                N                                                                          | MAIN
-insta                    N                                                                          | MAIN
-kazam                    https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam                | MET2
 protonvpn-cli            https://github.com/ProtonVPN/linux-cli-community/tags                      | MET1
 protonvpn-gui            https://github.com/ProtonVPN/linux-gui/tags                                | MET1
 python3-ConfigParser     https://pypi.org/project/configparser/                                     | MET2
@@ -178,23 +195,10 @@ python3-lxml             https://pypi.org/project/lxml/                         
 python3-MarkupSafe       https://pypi.org/project/MarkupSafe/                                       | MET2
 python3-PyQtWebEngine    N                                                                          | NONE
 python3-pythondialog     https://github.com/frougon/pythondialog/tags                               | MET1
-python3-xlib             https://github.com/python-xlib/python-xlib/releases                        | MET2
 python3-soupsieve        https://pypi.org/project/soupsieve/                                        | NONE
-python3-distutils-extra  N                                                                          | MANUAL
-swapfile                 https://github.com/mxnt10/swapfile/tags                                    | MET1
-whats                    N                                                                          | MAIN
-fortune-mod-br           N                                                                          | MANUAL
-fortune-mod              https://github.com/shlomif/fortune-mod/tags                                | NONE
-recode                   https://github.com/rrthomas/recode/tags                                    | MET1
 cabextract               https://www.cabextract.org.uk/                                             | MET2
 dpkg                     https://github.com/guillemj/dpkg/tags                                      | MET2
-grc                      https://github.com/garabik/grc/tags                                        | MET1
 lcab                     N                                                                          | MANUAL
-libgme                   https://bitbucket.org/mpyne/game-music-emu/downloads/                      | MET1
 luna-wallpapers          N                                                                          | MANUAL
-mujs                     http://git.ghostscript.com/?p=mujs.git;a=tags                              | MET2
 portaudio                https://github.com/PortAudio/portaudio/tags                                | MET1
-refine                   https://github.com/MauricioFerrari-NovaTrento/refine/tags                  | MAIN
-tolua++                  N                                                                          | MANUAL
 xa                       https://www.floodgap.com/retrotech/xa/                                     | MET2
-

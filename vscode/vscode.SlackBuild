@@ -9,7 +9,7 @@
 PRGNAM=vscode
 SRCNAM=VSCode
 BINNAM=code
-VERSION=1.77.3
+VERSION=1.83.0
 ARCH=x86_64
 ARCHTAR=x64
 BUILD=${BUILD:-1}
@@ -21,7 +21,7 @@ TAG=${TAG:-_mxnt}
 
 CWD=$PWD
 PKG=/var/tmp/package-$PRGNAM
-LINK=https://update.code.visualstudio.com/1.77.3/linux-x64/stable
+LINK=https://update.code.visualstudio.com/1.83.0/linux-x64/stable
 
 set -e
 wget -O $SRCNAM-linux-$ARCHTAR-$VERSION.tar.gz -c $LINK

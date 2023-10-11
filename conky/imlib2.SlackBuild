@@ -6,7 +6,7 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=imlib2
-VERSION=1.11.0
+VERSION=1.12.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://ufpr.dl.sourceforge.net/project/enlightenment/imlib2-src/1.11.0/imlib2-1.11.0.tar.gz
+LINK=https://ufpr.dl.sourceforge.net/project/enlightenment/imlib2-src/1.12.1/imlib2-1.12.1.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"

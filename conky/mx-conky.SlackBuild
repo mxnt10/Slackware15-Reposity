@@ -7,7 +7,7 @@
 
 PRGNAM=mx-conky
 DATANAM=mx-conky-data
-VERSION=23.4
+VERSION=23.7
 DATAVER=20230105
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -25,8 +25,8 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK1=https://mxrepo.com/mx/repo/pool/main/m/mx-conky/mx-conky_23.4.tar.xz
-LINK2=https://mxrepo.com/mx/repo/pool/main/m/mx-conky-data/mx-conky-data_20230105.tar.xz
+LINK1=https://mxrepo.com/mx/repo/pool/main/m/mx-conky/mx-conky_23.7.tar.xz
+LINK2=https://mxrepo.com/mx/repo/pool/main/m/mx-conky-data/mx-conky-data_20230701.tar.xz
 LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/mx-conky/fix_check_messages.patch
 
 if [ "$ARCH" = "i586" ]; then

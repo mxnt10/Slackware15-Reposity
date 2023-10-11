@@ -7,7 +7,7 @@
 [ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=freeoffice2021
-VERSION=1062
+VERSION=1064
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -19,7 +19,7 @@ TAG=${TAG:-_mxnt}
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://www.softmaker.net/down/softmaker-freeoffice-2021-1062-amd64.tgz
+LINK=https://www.softmaker.net/down/softmaker-freeoffice-2021-1064-amd64.tgz
 
 set -e
 wget -c $LINK

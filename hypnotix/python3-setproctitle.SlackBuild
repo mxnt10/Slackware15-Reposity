@@ -7,7 +7,7 @@
 
 PRGNAM=python3-setproctitle
 SRCNAM=setproctitle
-VERSION=1.3.2
+VERSION=1.3.3
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -24,7 +24,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/dvarrazzo/py-setproctitle/archive/refs/tags/version-1.3.2.tar.gz
+LINK=https://github.com/dvarrazzo/py-setproctitle/archive/refs/tags/version-1.3.3.tar.gz
 
 set -e
 wget -c -O $SRCNAM-$VERSION.tar.gz $LINK

@@ -1,0 +1,160 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=aacgain
+VERSION=1.9
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/var/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=http://ponce.cc/slackware/sources/repo/aacgain/aacgain_1_9.tar.bz2
+LINK2=http://ponce.cc/slackware/sources/repo/aacgain/mp3gain-1_5_2-src.zip
+LINK3=http://ponce.cc/slackware/sources/repo/aacgain/faad2-2.7.tar.bz2
+LINK4=http://ponce.cc/slackware/sources/repo/aacgain/mp4v2-trunk-r355.tar.bz2
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK1 $LINK2 $LINK3 $LINK4
+rm -rf $TMP
+mkdir -p $TMP/$PRGNAM $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION/{faad2,mp3gain,mp4v2}}}
+cd $TMP/$PRGNAM
+
+rm -rf mp3gain
+mkdir -p mp3gain
+cd mp3gain
+  unzip $CWD/mp3gain-1_5_2-src.zip
+  chown -R root:root .
+  chmod -R u+w,go+r-w,a+X-s .
+cd -
+
+rm -rf faad2
+tar xvf $CWD/faad2-2.7.tar.bz2
+mv faad2-2.7 faad2
+cd faad2
+  chown -R root:root .
+  chmod -R u+w,go+r-w,a+X-s .
+cd -
+
+rm -rf mp4v2
+tar xvf $CWD/mp4v2-trunk-r355.tar.bz2
+mv mp4v2-trunk-r355 mp4v2
+cd mp4v2
+  chown -R root:root .
+  chmod -R u+w,go+r-w,a+X-s .
+cd -
+
+rm -rf $PRGNAM
+tar xvf $CWD/${PRGNAM}_1_9.tar.bz2
+cd $PRGNAM
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+cd ../mp3gain
+patch -p3 -i ../$PRGNAM/linux/mp3gain.patch
+cd ../mp4v2
+patch -p2 -i ../$PRGNAM/mp4v2.patch
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS -fpermissive -Wno-narrowing" \
+./configure --build=$ARCH-slackware-linux
+make $NUMJOBS libmp4v2.la
+
+cd ../faad2
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --build=$ARCH-slackware-linux
+
+cd libfaad
+make $NUMJOBS
+
+cd ../../aacgain/linux
+
+sed -i "s|^patch|#patch|" ./prepare.sh
+chmod +x ./prepare.sh
+./prepare.sh
+
+cd ../../
+
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --build=$ARCH-slackware-linux
+make $NUMJOBS
+
+install -m 755 aacgain/aacgain $PKG/usr/bin/
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+cp -a aacgain/COPYING aacgain/README aacgain/linux/README.linux $PKG/usr/doc/$PRGNAM-$VERSION
+cp -a faad2/AUTHORS faad2/ChangeLog faad2/COPYING faad2/NEWS faad2/README* faad2/TODO $PKG/usr/doc/$PRGNAM-$VERSION/faad2
+cp -a mp3gain/lgpl.txt $PKG/usr/doc/$PRGNAM-$VERSION/mp3gain
+cp -a mp4v2/COPYING mp4v2/INSTALL mp4v2/README $PKG/usr/doc/$PRGNAM-$VERSION/mp4v2
+
+echo "       |-----handy-ruler------------------------------------------------------|
+aacgain: aacgain (Adjust volume gain for mp3/aac)
+aacgain:
+aacgain: Aacgain enables you to adjust the volume of your files using the
+aacgain: replaygain-algorithm. This way only tags are written to your files;
+aacgain: they don't get modified themselves.
+aacgain: Via these tags, some audio-players are able to change the volume of
+aacgain: each song, so that they're all played at the same volume.
+aacgain:
+aacgain: Homepage: http://aacgain.altosdesign.com/
+aacgain:
+aacgain:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

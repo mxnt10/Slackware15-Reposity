@@ -4,11 +4,13 @@
 # All rights reserved.
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
-[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/python3-distutils-extra* 2>&-)" ] && { echo -e "\nDependência Faltante: python3-distutils-extra !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/python3-xlib*            2>&-)" ] && { echo -e "\nDependência Faltante: python3-xlib !           \n"; ERRO=1; }
+[ "$ERRO" = 1 ] && exit 1
 
-PRGNAM=iptvnator
-VERSION=0.14.0
-ARCH=x86_64
+PRGNAM=kazam
+VERSION=1.5.4
+ARCH=noarch
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -17,32 +19,36 @@ TAG=${TAG:-_mxnt}
 }
 
 CWD=$PWD
-PKG=/var/tmp/package-$PRGNAM
-LINK=https://github.com/4gray/iptvnator/releases/download/v0.14.0/iptvnator_0.14.0_amd64.deb
+TMP=/var/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://launchpad.net/~sylvain-pineau/+archive/ubuntu/kazam/+sourcefiles/kazam/1.5.4-0ubuntu7/kazam_1.5.4.orig.tar.gz
 
 set -e
 wget -c $LINK
-rm -rf $PKG
-mkdir -p $TMP $PKG/{install,usr/bin}
-cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}_amd64.deb data.tar.xz | tar xJv
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/${PRGNAM}_$VERSION.orig.tar.?z*
+cd $PRGNAM-1.5.3
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .
 
-ln -sf /opt/iptvnator/iptvnator $PKG/usr/bin/iptvnator
-mv $PKG/usr/share/doc $PKG/usr/doc
+sed -i s,"DISTRO='Ubuntu'","DISTRO='Slackware'",g kazam/version.py
 
-echo "         |-----handy-ruler------------------------------------------------------|
-iptvnator: iptvnator (IPTV Player Application)
-iptvnator:
-iptvnator: IPTVnator is a video player application that provides support for
-iptvnator: the playback of IPTV playlists (m3u, m3u8). The application allows
-iptvnator: to import playlists by using remote URLs or per file upload from
-iptvnator: the file system. Additionally there is a support of EPG
-iptvnator: information XMLTV-based which can be provided by URL.
-iptvnator:
-iptvnator: https://www.electronjs.org/apps/iptvnator
-iptvnator:
-iptvnator:" > $PKG/install/slack-desc
+python3 setup.py install --root=$PKG
+cp -a AUTHORS COPYING* PKG-INFO README TODO $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "     |-----handy-ruler------------------------------------------------------|
+kazam: kazam (screencast and screenshot application)
+kazam:
+kazam: Kazam is a simple screen recording program that will capture the
+kazam: content of your screen and record a video file that can be played
+kazam: by any video player that supports VP8/WebM video format.
+kazam:
+kazam: Optionally you can record sound from any sound input device that
+kazam: is supported and visible by PulseAudio.
+kazam: 
+kazam: HOMEPAGE: https://launchpad.net/kazam
+kazam:" > $PKG/install/slack-desc
 
 echo "if [ -x /usr/bin/update-desktop-database ]; then
 	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
@@ -66,7 +72,7 @@ fi" > $PKG/install/doinst.sh
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
-rm -rf $PKG
+rm -rf $TMP
 
 cd $CWD
 [ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=

@@ -6,12 +6,13 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=rar
-VERSION=6.12
+VERSION=6.24
+SCRVER=624
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
-LINK1=https://www.rarlab.com/rar/rarlinux-x32-612.tar.gz
-LINK2=https://www.rarlab.com/rar/rarlinux-x64-612.tar.gz
+LINK1=https://www.rarlab.com/rar/rarlinux-x32-624.tar.gz
+LINK2=https://www.rarlab.com/rar/rarlinux-x64-624.tar.gz
 
 case "$( uname -m )" in
 	i?86) LINK=$LINK1; ARCH=i386 ;;
@@ -30,7 +31,6 @@ PKG=$TMP/package-$PRGNAM
 if [ "$ARCH" = "x86_64" ]; then
    LIBDIRSUFFIX="64"
 elif [ "$ARCH" = "i386" ]; then
-   ARCH=i386
    LIBDIRSUFFIX=""
 else
    echo -e "\n Not Support !\n"; exit 1
@@ -41,7 +41,7 @@ wget -c $LINK
 rm -rf $TMP
 mkdir -p $TMP $PKG/{install,usr/{bin,lib${LIBDIRSUFFIX},doc/$PRGNAM-$VERSION},etc}
 cd $TMP
-tar xvf $CWD/${PRGNAM}linux-*.tar.gz
+tar xvf $CWD/${PRGNAM}linux-x??-$SCRVER.tar.gz
 cd $PRGNAM
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .

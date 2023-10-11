@@ -6,7 +6,7 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=yad
-VERSION=10.1
+VERSION=13.0
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/v1cont/yad/releases/download/v10.1/yad-10.1.tar.xz
+LINK=https://github.com/v1cont/yad/releases/download/v13.0/yad-13.0.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"

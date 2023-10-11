@@ -6,7 +6,7 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=libass
-VERSION=0.17.0
+VERSION=0.17.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://github.com/libass/libass/releases/download/0.17.0/libass-0.17.0.tar.xz
+LINK=https://github.com/libass/libass/releases/download/0.17.1/libass-0.17.1.tar.xz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"

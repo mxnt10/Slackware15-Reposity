@@ -6,7 +6,7 @@
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
 PRGNAM=libstatgrab
-VERSION=0.92
+VERSION=0.92.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -23,7 +23,7 @@ esac
 CWD=$PWD
 TMP=/var/tmp/MXNT
 PKG=$TMP/package-$PRGNAM
-LINK=https://ftp.i-scream.org/pub/i-scream/libstatgrab/libstatgrab-0.92.tar.gz
+LINK=https://ftp.i-scream.org/pub/i-scream/libstatgrab/libstatgrab-0.92.1.tar.gz
 
 if [ "$ARCH" = "i586" ]; then
 	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
