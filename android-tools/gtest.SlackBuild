@@ -1,0 +1,131 @@
+#!/bin/bash
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+PRGNAM=gtest
+SRCNAM=googletest
+VERSION=1.10.0
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/var/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://github.com/google/googletest/archive/release-1.10.0/googletest-release-1.10.0.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/gtest/gtest-PR2491-Fix-gnu-install-dirs-pkg-config.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/gtest/gtest-PR2556-pkg-config-Remove-pthread-link-flag-from-Cflags.patch
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK1 $LINK2 $LINK3
+rm -rf $TMP
+mkdir -p $TMP $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$SRCNAM*-$VERSION.tar.?z*
+cd $SRCNAM*-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+for i in $CWD/*.patch ; do patch -p1 < $i ; done
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+mkdir -p build
+cd build
+  cmake \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DCMAKE_INSTALL_LIBDIR=lib$LIBDIRSUFFIX \
+    -DBUILD_SHARED_LIBS=ON \
+    -DCMAKE_SKIP_RPATH=ON \
+    -DCMAKE_BUILD_TYPE=Release ..
+  make $NUMJOBS
+cd ..
+
+mkdir -p $PKG/usr/lib$LIBDIRSUFFIX $PKG/usr/include/$PRGNAM/internal/custom \
+    $PKG/usr/include/gmock/internal/custom
+
+install -m 0644 googlemock/include/gmock/*.h $PKG/usr/include/gmock
+install -m 0644 googlemock/include/gmock/internal/*.h $PKG/usr/include/gmock/internal/
+install -m 0644 googlemock/include/gmock/internal/custom/*.h \
+    $PKG/usr/include/gmock/internal/custom
+
+install -m 0644 googletest/include/$PRGNAM/*.h $PKG/usr/include/$PRGNAM/
+install -m 0644 googletest/include/$PRGNAM/internal/*.h $PKG/usr/include/$PRGNAM/internal/
+install -m 0644 googletest/include/$PRGNAM/internal/custom/*.h \
+    $PKG/usr/include/$PRGNAM/internal/custom
+
+install -s -m 0755 build/lib/*.so $PKG/usr/lib$LIBDIRSUFFIX
+mkdir -p $PKG/usr/lib$LIBDIRSUFFIX/pkgconfig
+for i in gmock gmock_main gtest gtest_main ; do
+  sed "s| -lpthread||g" build/googletest/generated/${i}.pc \
+    > $PKG/usr/lib$LIBDIRSUFFIX/pkgconfig/${i}.pc
+done
+
+mkdir -p $PKG/usr/src
+cp -R googlemock $PKG/usr/src
+cp -R googletest $PKG/usr/src
+(cd $PKG/usr/src ; ln -svf googlemock gmock ; ln -svf googletest gtest)
+
+for dir in googlemock googletest; do
+  mkdir -p $PKG/usr/doc/$PRGNAM-$VERSION/$dir
+  for file in CONTRIBUTORS LICENSE README.md docs samples; do
+    [ -e $PKG/usr/src/$dir/$file ] && ln -s ../../../src/$dir/$file $PKG/usr/doc/$PRGNAM-$VERSION/$dir
+  done
+done
+
+echo "     |-----handy-ruler------------------------------------------------------|
+gtest: gtest (Google C++ Testing Framework)
+gtest:
+gtest: Google's framework for writing C++ tests on a variety of platforms
+gtest: (Linux, Mac OS X, Windows, Cygwin, Windows CE, and Symbian). Based
+gtest: on the xUnit architecture. Supports automatic test discovery, a rich
+gtest: set of assertions, user-defined assertions, death tests, fatal and
+gtest: non-fatal failures, value- and type-parameterized tests, various
+gtest: options for running the tests, and XML test report generation.
+gtest:
+gtest: Homepage: http://code.google.com/p/googletest
+gtest:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
