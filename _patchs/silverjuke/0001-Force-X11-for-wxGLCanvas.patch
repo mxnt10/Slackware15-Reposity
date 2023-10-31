@@ -1,0 +1,41 @@
+From: "Dr. Tobias Quathamer" <toddy@debian.org>
+Date: Wed, 31 Jul 2019 23:55:13 +0200
+Subject: Force X11 for wxGLCanvas
+
+---
+ src/sjbase/mainapp.cpp | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
+
+diff --git a/src/sjbase/mainapp.cpp b/src/sjbase/mainapp.cpp
+index d6643ed..4dab056 100644
+--- a/src/sjbase/mainapp.cpp
++++ b/src/sjbase/mainapp.cpp
+@@ -236,6 +236,23 @@ public:
+  ******************************************************************************/
+ 
+ 
++// Currently, wxGLCanvas on wxGTK is only supported on X11 displays.  If a
++// user attempts to use wxGLCanvas on Wayland, for example, the application
++// will core dump.
++// Silverjuke uses wxGLCanvas, so force usage of X11.
++//
++// See https://trac.wxwidgets.org/ticket/17702#comment:14
++#ifdef __WXGTK3__
++struct ForceX11 {
++	ForceX11() {
++		setenv("GDK_BACKEND", "x11", 1);
++	}
++};
++
++static struct ForceX11 forcex11;
++#endif
++
++
+ IMPLEMENT_APP(SjMainApp)
+ 
+ 
+@@ -651,4 +668,3 @@ void SjMainApp::FatalError()
+ 	// show message that we will quite now
+ 	::wxLogFatalError(wxString::Format(/*n/t, maybe locale error?*/wxT("We'll terminating %s now.\nSorry, there's nothing we can do."), SJ_PROGRAM_NAME));
+ }
+-

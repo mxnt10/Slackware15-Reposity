@@ -1,0 +1,75 @@
+From: "Dr. Tobias Quathamer" <toddy@debian.org>
+Date: Thu, 25 Jun 2020 13:53:07 +0200
+Subject: Replace URL of freedb with gnudb.gnudb.org
+
+---
+ docs/user-guide.md                 | 10 +++++-----
+ src/sjmodules/tageditor/freedb.cpp |  2 +-
+ src/sjmodules/tageditor/freedb.h   |  2 +-
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/docs/user-guide.md b/docs/user-guide.md
+index 3c72c37..5d7f777 100644
+--- a/docs/user-guide.md
++++ b/docs/user-guide.md
+@@ -1304,11 +1304,11 @@ Finally, clicking OK will show a detailed confirmation dialog; if everything is
+ okay there, press OK once again and the changes will be written.
+ 
+ 
+-Query freedb
++Query gnudb
+ --------------------------------------------------------------------------------
+ 
+ When editing track information using the Track Editor, you can also query the
+-freedb-Database for missing track information.
++gnudb-Database for missing track information.
+ 
+ This works best, if you select all tracks of a given album. Then open the Track
+ Editor and select "Query online database..." from the "Menu..." button. A little
+@@ -1316,9 +1316,9 @@ moment later, you get a list with possible albums. If the correct album is in
+ the list, select it and click on "OK". After that, the normal confirmation
+ dialog is shown where you can also edit the suggested information.
+ 
+-The default server used to query the freedb database is http://www.freedb.org ,
++The default server used to query the gnudb database is http://gnudb.gnudb.org ,
+ however, you can also define a mirror that is closer to you at "Advanced /
+-Further options / Freedb: Server name".
++Further options / Gnudb: Server name".
+ 
+ 
+ Video screen
+@@ -1499,7 +1499,7 @@ The options in detail:
+   
+ - **Ask ...** - Other options to enable/disable questions asked by Silverjuke.
+   
+-- **Freedb** - See chapter "Query freedb".
++- **Gnudb** - See chapter "Query gnudb".
+ 
+ - **Image cache** - With the option RAM cache you can set the amount of memory
+   to use to cache covers; by default 2 MB are used here which is enough for 
+diff --git a/src/sjmodules/tageditor/freedb.cpp b/src/sjmodules/tageditor/freedb.cpp
+index eb51588..7939790 100644
+--- a/src/sjmodules/tageditor/freedb.cpp
++++ b/src/sjmodules/tageditor/freedb.cpp
+@@ -136,7 +136,7 @@ bool SjFreedbQuery::Query(const wxArrayString& localUrls, wxWindow* rcvWindow, i
+ 	}
+ 	else if( trackCount <= 0 )
+ 	{
+-		m_error = wxT("No tracks given to query freedb for.")/*n/t - should not happen*/;
++		m_error = wxT("No tracks given to query gnudb for.")/*n/t - should not happen*/;
+ 		m_state = SJ_FREEDB_STATE_QUERY_ERROR;
+ 		return FALSE;
+ 	}
+diff --git a/src/sjmodules/tageditor/freedb.h b/src/sjmodules/tageditor/freedb.h
+index 2be6819..43d4de5 100644
+--- a/src/sjmodules/tageditor/freedb.h
++++ b/src/sjmodules/tageditor/freedb.h
+@@ -33,7 +33,7 @@
+ #include <sjtools/http.h>
+ 
+ 
+-#define SJ_FREEDB_DEF_HOST wxT("freedb.freedb.org")
++#define SJ_FREEDB_DEF_HOST wxT("gnudb.gnudb.org")
+ 
+ 
+ class SjFreedbTrack

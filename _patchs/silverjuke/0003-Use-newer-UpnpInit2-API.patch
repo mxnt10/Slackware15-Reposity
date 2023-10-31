@@ -1,0 +1,21 @@
+From: Bastian Germann <bage@debian.org>
+Date: Tue, 20 Jun 2023 20:52:15 +0200
+Subject: Use newer UpnpInit2 API
+
+---
+ src/sjmodules/upnp.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/sjmodules/upnp.cpp b/src/sjmodules/upnp.cpp
+index a41b0e3..fa80f25 100644
+--- a/src/sjmodules/upnp.cpp
++++ b/src/sjmodules/upnp.cpp
+@@ -178,7 +178,7 @@ bool SjUpnpModule::InitLibupnp()
+ 
+ 	// init library - NB: we may be in a working thread here (eg. ImgThread), however, this seems not to be a problem
+ 	int error;
+-	if( (error=UpnpInit(NULL, 0)) != UPNP_E_SUCCESS ) {
++	if( (error=UpnpInit2(NULL, 0)) != UPNP_E_SUCCESS ) {
+ 		LogUpnpError("Cannot init", error);
+ 		ExitLibupnp();
+ 		return false; // error
