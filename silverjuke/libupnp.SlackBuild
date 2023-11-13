@@ -1,0 +1,107 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=libupnp
+VERSION=1.14.18
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ "${STATIC:-no}" != "no" ] && ENABLESTATIC=yes || ENABLESTATIC=no
+[ "${IPV6:-no}" != "no" ] && ENABLEIPV6=yes || ENABLEIPV6=no
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/pupnp/pupnp/releases/download/release-1.14.18/libupnp-1.14.18.tar.bz2
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+LARGEFILE="" ; [ "$ARCH" = "i686" ] || [ "$ARCH" = "i586" ] && LARGEFILE="--disable-largefile"
+
+set -e
+wget -O $PRGNAM-$VERSION.tar.gz -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  --enable-shared=yes \
+  --enable-static=$ENABLESTATIC \
+  --enable-ipv6=$ENABLEIPV6 \
+  $LARGEFILE \
+  --build=$ARCH-slackware-linux
+make $NUMJOBS; make install DESTDIR=$PKG
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+rm -f $PKG/{,usr/}lib${LIBDIRSUFFIX}/*.la
+cp -a COPYING THANKS ChangeLog $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "       |-----handy-ruler------------------------------------------------------|
+libupnp: libupnp (Portable SDK for UPnP Devices)
+libupnp:
+libupnp: The portable SDK for UPnP Devices (libupnp) provides developers with
+libupnp: an API and open source code for building control points, devices, and
+libupnp: bridges that are compliant with Version 1.0 of the Universal Plug and
+libupnp: Play Device Architecture Specification and support several operating
+libupnp: systems like Linux, *BSD, Solaris and others.
+libupnp:
+libupnp: libupnp is used in UPnP implentations in Open Source projects over the
+libupnp: World. It is 100% compatible fork of original libupnp.
+libupnp:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

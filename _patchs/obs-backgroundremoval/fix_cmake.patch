@@ -1,0 +1,32 @@
+--- obs-backgroundremoval-1.1.7-source/CMakeLists.txt.orig	2023-10-11 01:01:57.000000000 -0300
++++ obs-backgroundremoval-1.1.7-source/CMakeLists.txt	2023-11-13 00:08:10.941967524 -0300
+@@ -37,12 +37,15 @@
+ set(USE_SYSTEM_ONNXRUNTIME
+     OFF
+     CACHE STRING "Use system ONNX Runtime")
++set(Onnxruntime_INCLUDE_DIR /usr/include)
++set(Onnxruntime_LIBRARIES onnxruntime)
+ if(USE_SYSTEM_ONNXRUNTIME)
+   if(OS_LINUX)
+-    find_package(Onnxruntime 1.14.1 REQUIRED)
++    #find_package(Onnxruntime 1.14.1 REQUIRED)
+     set(Onnxruntime_INCLUDE_PATH
+         ${Onnxruntime_INCLUDE_DIR} ${Onnxruntime_INCLUDE_DIR}/onnxruntime
+-        ${Onnxruntime_INCLUDE_DIR}/onnxruntime/core/session ${Onnxruntime_INCLUDE_DIR}/onnxruntime/core/providers/cpu)
++        ${Onnxruntime_INCLUDE_DIR}/onnxruntime/core/session ${Onnxruntime_INCLUDE_DIR}/onnxruntime/core/providers/cpu
++        ${Onnxruntime_INCLUDE_DIR}/onnxruntime/core/providers/tensorrt)
+     target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE "${Onnxruntime_LIBRARIES}")
+     target_include_directories(${CMAKE_PROJECT_NAME} SYSTEM PUBLIC "${Onnxruntime_INCLUDE_PATH}")
+   else()
+@@ -57,7 +60,10 @@
+     CACHE STRING "Use system OpenCV")
+ if(USE_SYSTEM_OPENCV)
+   if(OS_LINUX)
+-    find_package(OpenCV REQUIRED COMPONENTS core imgproc)
++    set(OpenCV_LIBRARIES opencv_core opencv_imgproc)
++    set(OpenCV_INCLUDE_DIRS /usr/include/opencv408 /usr/include/opencv408/opencv2/core
++        /usr/include/opencv408/opencv2/imgproc)
++    #find_package(OpenCV REQUIRED COMPONENTS core imgproc)
+     target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE "${OpenCV_LIBRARIES}")
+     target_include_directories(${CMAKE_PROJECT_NAME} SYSTEM PUBLIC "${OpenCV_INCLUDE_DIRS}")
+   else()

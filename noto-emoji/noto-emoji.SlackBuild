@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=noto-emoji
+SRCNAM=noto-emoji
+ARCH=noarch
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+VERSION=$(grep -Eom1 "(([0-9]+)\.)+[0-9]+_*([a-z0-9])*" <(grep -Ev "([0-9]+\.)+[0-9]+k" <(links -dump https://github.com/googlefonts/noto-emoji/tags)))
+echo "$VERSION"
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+PKG=/tmp/MXNT/package-$PRGNAM
+LINK1=https://github.com/googlefonts/noto-emoji/raw/main/fonts/NotoColorEmoji.ttf
+LINK2=https://gist.githubusercontent.com/hexchain/47f550472e79d0805060/raw/d9ecd5a5fcb901bcfb75115f4b602f6c1d3020c1/51-noto-color-emoji.conf.xml
+
+set -e
+wget -O NotoColorEmoji.ttf $LINK1
+wget -c $LINK2
+rm -rf $PKG
+mkdir -p $PKG/install
+cd $PKG
+
+install -d $PKG/usr/share/fonts/TTF/
+install -m644 $CWD/NotoColorEmoji.ttf $PKG/usr/share/fonts/TTF/
+
+mkdir -p $PKG/etc/fonts/conf.avail/
+install -m 0644 $CWD/51-noto-color-emoji.conf.xml $PKG/etc/fonts/conf.avail/51-noto-color-emoji.conf
+
+echo "          |-----handy-ruler------------------------------------------------------|
+noto-emoji: noto-emoji (Noto Emoji fonts)
+noto-emoji:
+noto-emoji: Color and Black-and-White Noto emoji fonts, and tools for working
+noto-emoji: with them.
+noto-emoji:
+noto-emoji: https://github.com/googlei18n/noto-emoji
+noto-emoji:
+noto-emoji:
+noto-emoji:
+noto-emoji:
+noto-emoji:" > $PKG/install/slack-desc
+
+echo "# Update the X font indexes:
+if [ -x /usr/bin/mkfontdir ]; then
+  ( cd /usr/share/fonts/TTF
+    mkfontscale .
+    mkfontdir .
+  )
+fi
+
+if [ -x /usr/bin/fc-cache ]; then
+  /usr/bin/fc-cache -f
+fi
+" > $PKG/install/doinst.sh
+
+/sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

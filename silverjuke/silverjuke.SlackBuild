@@ -1,0 +1,137 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/libupnp* 2>&-)" ] && { echo -e "\nDependência Faltante: libupnp !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/wxGTK3*  2>&-)" ] && { echo -e "\nDependência Faltante: wxGTK3 !\n";  ERRO=1; }
+[ "$ERRO" = 1 ] && exit 1
+
+PRGNAM=silverjuke
+VERSION=18.2.1
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://github.com/silverjuke/silverjuke/archive/refs/tags/v18.2.1.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/silverjuke/0001-Force-X11-for-wxGLCanvas.patch
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/silverjuke/0002-Replace-URL-of-freedb-with-gnudb.gnudb.org.patch
+LINK4=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/silverjuke/0003-Use-newer-UpnpInit2-API.patch
+LINK5=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/silverjuke/wx3.2-compat.patch
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -O $PRGNAM-$VERSION.tar.gz -c $LINK1
+wget -c $LINK2 $LINK3 $LINK4 $LINK5
+rm -rf $TMP
+mkdir -p $PKG/{install,usr/doc/$PRGNAM-$VERSION}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+patch -p1 < $CWD/0001-Force-X11-for-wxGLCanvas.patch
+patch -p1 < $CWD/0002-Replace-URL-of-freedb-with-gnudb.gnudb.org.patch
+patch -p1 < $CWD/0003-Use-newer-UpnpInit2-API.patch
+patch -p1 < $CWD/wx3.2-compat.patch
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+./autogen.sh
+CFLAGS="$SLKCFLAGS" \
+CXXFLAGS="$SLKCFLAGS" \
+./configure \
+  --prefix=/usr \
+  --libdir=/usr/lib${LIBDIRSUFFIX} \
+  --sysconfdir=/etc \
+  --localstatedir=/var \
+  --mandir=/usr/man \
+  --docdir=/usr/doc/$PRGNAM-$VERSION \
+  --disable-static \
+  --build=$ARCH-slackware-linux
+make $NUMJOBS; make install-strip DESTDIR=$PKG
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+find $PKG/usr/man -type f -exec gzip -9 {} \;
+for i in $( find $PKG/usr/man -type l ) ; do ln -s $( readlink $i ).gz $i.gz ; rm $i ; done
+
+echo "
+          |-----handy-ruler------------------------------------------------------|
+silverjuke: silverjuke (jukebox, karaoke, and kiosk mode mp3 player)
+silverjuke:
+silverjuke: Easy to use jukebox solution implemented in wxWidgets.
+silverjuke: Some of the features are:
+silverjuke: * Wide range of supported audio formats (MP1, MP2, MP3, MPC, MP+,
+silverjuke: Ogg-Vorbis, FLAC, Monkey's Audio, WavPack, WAV, AIFF, MOD),
+silverjuke: more formats can be implemented using modules
+silverjuke: * Internal sound processing with 32 bit (for crossfading,
+silverjuke: autovolume, jingles, smart shuffle, VST effect plugings)
+silverjuke: * Kiosk mode, Track information can be edited (ID3-tags), Support
+silverjuke: for playlists (M3U, PLS, CUE), Fully skinnable and Powerful search." > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
