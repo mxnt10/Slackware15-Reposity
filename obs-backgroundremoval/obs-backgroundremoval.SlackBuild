@@ -1,0 +1,73 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != "x86_64" ] && { echo -e "\n Not Support !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/onnxruntime* 2>&-)" ] && { echo -e "\nDependência Faltante: onnxruntime !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/libopencv408* 2>&-)" ] && { echo -e "\nDependência Faltante: libopencv408 !\n"; ERRO=1; }
+[ "$ERRO" = 1 ] && exit 1
+
+PRGNAM=obs-backgroundremoval
+VERSION=1.1.7
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://github.com/occ-ai/obs-backgroundremoval/releases/download/1.1.7/obs-backgroundremoval-1.1.7-source.tar.xz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/_patchs/obs-backgroundremoval/fix_cmake.patch
+
+set -e
+wget -c $LINK1 $LINK2
+rm -rf $TMP
+mkdir -p $PKG/install
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION*.tar.?z*
+cd $PRGNAM-$VERSION*
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+patch -p1 -i $CWD/fix_cmake.patch
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+cmake -B build --preset linux-x86_64 -DQT_VERSION=5 -DUSE_SYSTEM_ONNXRUNTIME=ON  -DUSE_SYSTEM_OPENCV=ON
+cmake --build build $NUMJOBS
+cmake --install build --prefix "$PKG/usr"
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+echo "                     |-----handy-ruler------------------------------------------------------|
+obs-backgroundremoval: obs-backgroundremoval (Background removal plugin for OBS studio)
+obs-backgroundremoval:
+obs-backgroundremoval: An OBS plugin for removing background in portrait images (video),
+obs-backgroundremoval: making it easy to replace the background when recording or
+obs-backgroundremoval: streaming.
+obs-backgroundremoval:
+obs-backgroundremoval: https://github.com/occ-ai/obs-backgroundremoval
+obs-backgroundremoval:
+obs-backgroundremoval:
+obs-backgroundremoval:
+obs-backgroundremoval:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
