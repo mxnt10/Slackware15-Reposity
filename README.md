@@ -8,15 +8,8 @@ Package repository for Slackware 15.0 Stable.
 | `quake2`                   | `8.00`           | `i586` `x86_64` `arm`   |                         |
 | `smc`                      | `20140328`       | `x86_64`                |                         |
 | `allegro4`                 | `4.4.2`          | `i586` `x86_64` `arm`   | `opensonic`             |
-| `pycharm`                  | `2022.1.1`       | `noarch`                |                         |
-| `face`                     | `3.0.1`          | `noarch`                |                         |
-| `gnotifier`                | `3.0.3`          | `noarch`                |                         |
-| `insta`                    | `3.0.1`          | `noarch`                |                         |
-| `kazam`                    | `1.5.4`          | `noarch`                |                         |
 | `protonvpn-cli`            | `2.2.11`         | `i586` `x86_64` `arm`   | `protonvpn-gui`         |
 | `protonvpn-gui`            | `2.1.1`          | `i586` `x86_64` `arm`   |                         |
-| `swapfile`                 | `1.1`            | `noarch`                |                         |
-| `whats`                    | `3.0.1`          | `noarch`                |                         |
 | `BeautifulSoup4`           | `4.11.1`         | `i586` `x86_64` `arm`   | `gnotifier` `whats`     |
 | `python3-ConfigParser`     | `5.2.0`          | `i586` `x86_64` `arm`   | `protonvpn-gui`         |
 | `python3-distutils-extra`  | `2.39`           | `i586` `x86_64` `arm`   | `kazam`                 |
@@ -30,10 +23,8 @@ Package repository for Slackware 15.0 Stable.
 | `python3-xlib`             | `0.31`           | `i586` `x86_64` `arm`   | `kazam`                 |
 | `cabextract`               | `1.9.1`          | `i586` `x86_64` `arm`   |                         |
 | `dpkg`                     | `1.21.8`         | `i586` `x86_64` `arm`   |                         |
-| `grc`                      | `1.13`           | `i586` `x86_64` `arm`   |                         |
 | `lcab`                     | `1.0b12`         | `i586` `x86_64` `arm`   |                         |
 | `luna-wallpapers`          | `0.2`            | `noarch`                |                         |
-| `refine`                   | `3.1`            | `i586` `x86_64` `arm`   |                         |
 | `fortune-mod-br`           | `20160820`       | `noarch`                |                         |
 | `fortune-mod`              | `2.22.0`         | `i586` `x86_64` `arm`   | `fortune-mod-br`        |
 | `recode`                   | `3.7.12`         | `i586` `x86_64` `arm`   | `fortune-mod`  -->

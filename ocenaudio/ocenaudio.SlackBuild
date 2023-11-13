@@ -7,7 +7,6 @@
 [ ! "$(ls /var/log/packages/jack* 2>&-)" ] && { echo -e "\nDependência Faltante: jack !\n"; exit 1; }
 
 PRGNAM=ocenaudio
-VERSION=3.13.1
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
 
@@ -28,10 +27,11 @@ CWD=$PWD
 PKG=/var/tmp/package-$PRGNAM
 
 set -e
-wget -c $LINK
+wget -O ${LINK##*/} $LINK
+VERSION=$(ar p ${LINK##*/} control.tar.gz | tar xzO ./control | grep Version | awk '{print $2}' | cut -d- -f1)
 rm -rf $PKG
 mkdir -p $TMP $PKG/{install,usr/{bin,doc/$PRGNAM-$VERSION}}
-cd $PKG; ar p $CWD/${PRGNAM}_*.deb data.tar.xz | tar xJv
+cd $PKG; ar p $CWD/${LINK##*/} data.tar.xz | tar xJv
 
 chown -R root:root .
 chmod -R u+w,go+r-w,a+X-s .

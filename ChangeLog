@@ -1,6 +1,21 @@
+# released - 2023-11--13
+- Adicionado patchs de correção.
+- Adicionado:
+    - clementine.
+    - cmake.
+    - isomaster.
+    - noto-emoji.
+    - obs-backgroundremoval.
+    - silverjuke.
+    - upscayl.
+- Atualizado:
+    - google-chrome.
+    - ocenaudio.
+
 # released - 3023-10-29
 - Adicionado:
     - android-tools.
+
 # released - 3023-10-08
 - Adicionado:
     - easymp3gain.
@@ -32,13 +47,13 @@
     - upscayl.
 
 # released - 2023-05-28
-- Adicionado os diretórios de Slackbuilds:
+- Adicionado:
    - ckdeps.
    - clouddown.
    - frequencycpu.
 
 # released - 2023-05-13
-- Adicionado os diretórios de Slackbuilds:
+- Adicionado:
    - asciiquarium.
    - ccat.
    - cmatrix.
@@ -68,14 +83,17 @@
 - Adicionado patchs de correção aos diretórios dos projetos:
    - codeblocks.
    - conky.
-- Adicionado os diretórios de Slackbuilds:
+- Adicionado:
    - frostWire.
+   - google-chrome.
+   - google-earth.
    - hypnotix.
    - mpv.
    - ocenaudio.
    - p7zip.
-- Atualizado discord 0.0.24 -> 0.0.25.
-- Modificações a ajustes nos Slackbuilds que precisam de patch.
+- Atualizado:
+    - discord 0.0.24 -> 0.0.25.
+- Modificações e ajustes nos Slackbuilds que precisam de patch.
 
 # released - 2023-02-12
 - Adicionado os diretórios de Slackbuilds:
