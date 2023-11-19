@@ -1,0 +1,283 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/nodejs* 2>&-)" ] && { echo -e "\nDependência Faltante: nodejs !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/md4c*   2>&-)" ] && { echo -e "\nDependência Faltante: md4c !  \n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/double-conversion* 2>&-)" ] && { echo -e "\nDependência Faltante: double-conversion !\n"; ERRO=1; }
+[ ! "$(ls /var/log/packages/html5lib*          2>&-)" ] && { echo -e "\nDependência Faltante: html5lib !         \n"; ERRO=1; }
+[ "$ERRO" = 1 ] && exit 1
+
+PRGNAM=qt6
+SRCNAM=qt-everywhere-src
+VERSION=6.5.2
+BSCLANG=libclang-release_130-based-linux-Ubuntu20.04-gcc9.3-x86_64
+CCACHE=${CCACHE:-OFF}
+EXAMPLES=${EXAMPLES:-OFF}
+LINKED_OPENSSL=${LINKED_OPENSSL:-ON}
+PROPRIETARY_CODECS=${PROPRIETARY_CODECS:-OFF}
+SYSTEM_FFMPEG=${SYSTEM_FFMPEG:-ON}
+SYSTEM_HARFBUZZ=${SYSTEM_HARFBUZZ:-OFF}
+SYSTEM_SQLITE=${SYSTEM_SQLITE:-ON}
+SYSTEM_XCB_INPUT=${SYSTEM_XCB_INPUT:-ON}
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=${TMP:-/tmp/MXNT}
+PKG=$TMP/package-$PRGNAM
+LINK1=https://download.qt.io/official_releases/qt/6.5/6.5.2/single/qt-everywhere-src-6.5.2.tar.xz
+LINK2=https://download.qt.io/development_releases/prebuilt/libclang/libclang-release_130-based-linux-Ubuntu20.04-gcc9.3-x86_64.7z
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK1 $LINK2
+[ "$TMP" != "/tmp" ] && rm -rf $TMP
+[ "$TMP" != "/tmp/MXNT" ] && mkdir -p $TMP
+mkdir -p $PKG/{install,usr/{doc/$PRGNAM-$VERSION,share/applications}}
+cd $TMP; tar xvf $CWD/$SRCNAM-$VERSION.tar.xz
+cd $SRCNAM-$VERSION
+bsdtar xvf $CWD/$BSCLANG.7z
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+sed -i '54i #include <cstdint>' qt3d/src/3rdparty/assimp/src/code/AssetLib/FBX/FBXBinaryTokenizer.cpp
+
+export CC=clang
+export CXX=clang++
+export CFLAGS="$SLKCFLAGS"
+
+mkdir -p build
+cd build
+  cmake \
+    -G Ninja \
+    -Wno-dev \
+    -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+    -DCMAKE_INSTALL_PREFIX=/usr \
+    -DClang_DIR=$TMP/$SRCNAM-$VERSION/libclang/lib/cmake/clang \
+    -DFEATURE_openssl_linked=$LINKED_OPENSSL \
+    -DFEATURE_system_harfbuzz=$SYSTEM_HARFBUZZ \
+    -DFEATURE_system_sqlite=$SYSTEM_SQLITE \
+    -DFEATURE_system_xcb_xinput=$SYSTEM_XCB_INPUT \
+    -DFEATURE_webengine_proprietary_codecs=$PROPRIETARY_CODECS \
+    -DFEATURE_webengine_system_ffmpeg=$SYSTEM_FFMPEG \
+    -DINSTALL_ARCHDATADIR=./lib${LIBDIRSUFFIX} \
+    -DINSTALL_BINDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/bin \
+    -DINSTALL_DESCRIPTIONSDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/modules \
+    -DINSTALL_DOCDIR=./doc/$PRGNAM-$VERSION \
+    -DINSTALL_EXAMPLESDIR=./doc/$PRGNAM-$VERSION/examples \
+    -DINSTALL_INCLUDEDIR=./include/$PRGNAM \
+    -DINSTALL_LIBDIR=./lib${LIBDIRSUFFIX} \
+    -DINSTALL_LIBEXECDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/libexec \
+    -DINSTALL_MKSPECSDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/mkspecs \
+    -DINSTALL_PLUGINSDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/plugins \
+    -DINSTALL_QMLDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/qml \
+    -DINSTALL_TRANSLATIONSDIR=./share/$PRGNAM/translations \
+    -DINSTALL_TESTSDIR=./lib${LIBDIRSUFFIX}/$PRGNAM/tests \
+    -DQT_BUILD_EXAMPLES=$EXAMPLES \
+    -DQT_USE_CCACHE=$CCACHE \
+    -DCMAKE_BUILD_TYPE=Release ..
+  cmake --build . $NUMJOBS
+  DESTDIR=$PKG cmake --install . --strip
+cd ..
+
+rm -R $PKG/usr/lib$LIBDIRSUFFIX/cmake/Qt6/QtBuildInternals
+rmdir $PKG/usr/lib$LIBDIRSUFFIX/cmake/Qt6/ios
+rmdir $PKG/usr/lib$LIBDIRSUFFIX/cmake/Qt6/macos
+
+if [ -d "$PKG/usr/phrasebooks" ]; then
+  mv $PKG/usr/phrasebooks $PKG/usr/share/$PRGNAM/
+fi
+if [ -d "$PKG/usr/resources" ]; then
+  mv $PKG/usr/resources $PKG/usr/share/$PRGNAM/
+fi
+
+if [ "$EXAMPLES" = "ON" ]; then
+  find -L $PKG/usr/doc/$PRGNAM-$VERSION/examples -type d -exec chmod 755 {} \;
+  find -L $PKG/usr/doc/$PRGNAM-$VERSION/examples -type f -exec chmod 644 {} \;
+fi
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+mkdir -p $PKG/usr/bin
+for FILE in $PKG/usr/lib${LIBDIRSUFFIX}/qt6/bin/* ; do
+  if ! [[ $FILE =~ (6$|cmake$) ]]; then
+    ln -s ../lib${LIBDIRSUFFIX}/qt6/bin/$(basename $FILE) $PKG/usr/bin/$(basename $FILE)-qt6
+  fi
+done
+
+install -D -m 0644 qttools/src/assistant/assistant/images/assistant-128.png \
+  $PKG/usr/share/icons/hicolor/128x128/apps/assistant-qt6.png
+install -D -m 0644 qttools/src/designer/src/designer/images/designer.png \
+  $PKG/usr/share/icons/hicolor/128x128/apps/designer-qt6.png
+install -D -m 0644 qttools/src/qdbus/qdbusviewer/images/qdbusviewer-128.png \
+  $PKG/usr/share/icons/hicolor/128x128/apps/qdbusviewer-qt6.png
+install -D -m 0644 qttools/src/linguist/linguist/images/icons/linguist-128-32.png \
+  $PKG/usr/share/icons/hicolor/128x128/apps/linguist-qt6.png
+
+cp -a .QT-ENTERPRISE-LICENSE-AGREEMENT LICENSE.* README.md $PKG/usr/doc/$PRGNAM-$VERSION
+mkdir -p $PKG/etc/profile.d
+
+echo "#!/bin/csh
+# Environment path variables for the Qt package:
+if ( ! \$?QT6DIR ) then
+    # It's best to use the generic directory to avoid
+    # compiling in a version-containing path:
+    if ( -d /usr/lib${LIBDIRSUFFIX}/qt6 ) then
+        setenv QT6DIR /usr/lib${LIBDIRSUFFIX}/qt6
+    else
+        # Find the newest Qt directory and set \$QT6DIR to that:
+        foreach qtd ( /usr/lib${LIBDIRSUFFIX}/qt6-* )
+            if ( -d \$qtd ) then
+                setenv QT6DIR \$qtd
+            endif
+        end
+    endif
+endif
+set path = ( \$path \$QT6DIR/bin )
+" > $PKG/etc/profile.d/$PRGNAM.csh
+
+echo "#!/bin/sh
+# Environment variables for the Qt package.
+#
+# It's best to use the generic directory to avoid
+# compiling in a version-containing path:
+if [ -d /usr/lib${LIBDIRSUFFIX}/qt6 ]; then
+  QT6DIR=/usr/lib${LIBDIRSUFFIX}/qt6
+else
+  # Find the newest Qt directory and set \$QT6DIR to that:
+  for qtd in /usr/lib${LIBDIRSUFFIX}/qt6-* ; do
+    if [ -d \$qtd ]; then
+      QT6DIR=\$qtd
+    fi
+  done
+fi
+PATH=\"\$PATH:\$QT6DIR/bin\"
+export QT6DIR
+" > $PKG/etc/profile.d/$PRGNAM.sh
+
+echo "[Desktop Entry]
+Name=Qt6 Assistant
+Comment=Shows Qt6 documentation and examples
+Exec=/usr/lib${LIBDIRSUFFIX}/qt6/bin/assistant
+Icon=assistant-qt6
+Terminal=false
+Type=Application
+Categories=Qt;Development;Documentation;
+" > $PKG/usr/share/applications/assistant-qt6.desktop
+
+echo "[Desktop Entry]
+Name=Qt6 Designer
+GenericName=Interface Designer
+Comment=Design GUIs for Qt6 applications
+Exec=/usr/lib${LIBDIRSUFFIX}/qt6/bin/designer
+Icon=designer-qt6
+MimeType=application/x-designer;
+Terminal=false
+Type=Application
+Categories=Qt;Development;
+" > $PKG/usr/share/applications/designer-qt6.desktop
+
+echo "[Desktop Entry]
+Name=Qt6 Linguist
+Comment=Add translations to Qt6 applications
+Exec=/usr/lib${LIBDIRSUFFIX}/qt6/bin/linguist
+Icon=linguist-qt6
+MimeType=text/vnd.trolltech.linguist;application/x-linguist;
+Terminal=false
+Type=Application
+Categories=Qt;Development;
+" > $PKG/usr/share/applications/linguist-qt6.desktop
+
+echo "[Desktop Entry]
+Name=Qt6 QDbusViewer
+GenericName=Qt6 D-Bus Debugger
+Comment=Debug D-Bus applications
+Exec=/usr/lib${LIBDIRSUFFIX}/qt6/bin/qdbusviewer
+Icon=qdbusviewer-qt6
+Terminal=false
+Type=Application
+Categories=Qt;Development;Debugger;
+" > $PKG/usr/share/applications/qdbusviewer-qt6.desktop
+
+echo "   |-----handy-ruler------------------------------------------------------|
+qt6: qt6 (Application Development Framework)
+qt6:
+qt6: Qt is a cross-platform application development framework for desktop,
+qt6: embedded and mobile. Supported Platforms include Linux, OS X,
+qt6: Windows, VxWorks, QNX, Android, iOS, BlackBerry, Sailfish OS and
+qt6: others.
+qt6:
+qt6: Homepage: https://qt.io
+qt6:
+qt6:
+qt6:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+[ "$TMP" != "/tmp" ] && rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

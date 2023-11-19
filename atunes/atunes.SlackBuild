@@ -1,0 +1,121 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ ! "$(ls /var/log/packages/zulu-openjdk8* 2>&-)" ] && { echo -e "\nDependência Faltante: zulu-openjdk8 !\n"; exit 1; }
+
+PRGNAM=atunes
+VERSION=3.1.2
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK1=https://ufpr.dl.sourceforge.net/project/atunes/atunes/aTunes%203.1.2/atunes-3.1.2-bin.tar.gz
+
+set -e
+wget -c $LINK1
+rm -rf $TMP
+mkdir -p $PKG/{install,opt/aTunes,usr/{bin,doc/$PRGNAM-$VERSION,share/applications}}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION*.tar.?z*
+cd $PRGNAM-$VERSION*
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+cp aTunes.sh aTunes
+sed -i "30s|java|/usr/lib64/zulu-openjdk8/bin/java|" aTunes
+
+chmod +x aTunes
+mkdir -p $PKG/opt/aTunes
+rm -rf *.exe *.dll *.ico win_tools
+cp -a * $PKG/opt/aTunes
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+case "$ARCH" in
+  i?86) ;; # OK
+  *) rm -f $PKG/opt/aTunes/libJXGrabKey.so ;;
+esac
+
+cat > $PKG/usr/bin/$PRGNAM <<EOF
+#!/bin/sh
+exec /opt/aTunes/aTunes \"\$@\"
+EOF
+chmod 755 $PKG/usr/bin/$PRGNAM
+
+cp -a license.txt $PKG/usr/doc/$PRGNAM-$VERSION
+
+echo "[Desktop Entry]
+Version=1.0
+Type=Application
+Name=aTunes
+GenericName=Music Player
+Comment=Listen to music
+Icon=/opt/aTunes/atunes.png
+Categories=AudioVideo;Audio;Player;Java;
+Exec=/opt/aTunes/aTunes %U
+Terminal=false
+MimeType=application/x-ogg;audio/midi;audio/mp3;audio/mpeg;audio/mpegurl;audio/ogg;audio/prs.sid;audio/x-flac;audio/x-it;audio/x-mod;audio/x-mp3;audio/x-mpeg;audio/x-mpegurl;audio/x-ms-wma;audio/x-musepack;audio/x-s3m;audio/x-scpls;audio/x-stm;audio/x-wav;audio/x-xm;application/ogg;audio/x-vorbis+ogg;application/xspf+xml;application/x-cue;" > $PKG/usr/share/applications/atunes.desktop
+
+echo "      |-----handy-ruler------------------------------------------------------|
+atunes: atunes (full-featured audio player and manager)
+atunes:
+atunes: Currently plays mp3, ogg, wma, wav, flac, mp4 and radio streaming,
+atunes: allowing users to easily edit tags, organize music and rip Audio CDs.
+atunes:
+atunes:
+atunes: website: http://www.atunes.org/
+atunes:
+atunes:
+atunes:
+atunes:" > $PKG/install/slack-desc
+
+echo "if [ -x /usr/bin/update-desktop-database ]; then
+	/usr/bin/update-desktop-database -q usr/share/applications >/dev/null 2>&1
+fi
+
+if [ -x /usr/bin/update-mime-database ]; then
+	/usr/bin/update-mime-database usr/share/mime >/dev/null 2>&1
+fi
+
+if [ -e usr/share/icons/hicolor/icon-theme.cache ]; then
+	if [ -x /usr/bin/gtk-update-icon-cache ]; then
+		/usr/bin/gtk-update-icon-cache usr/share/icons/hicolor >/dev/null 2>&1
+	fi
+fi
+
+if [ -e usr/share/glib-2.0/schemas ]; then
+	if [ -x /usr/bin/glib-compile-schemas ]; then
+		/usr/bin/glib-compile-schemas usr/share/glib-2.0/schemas >/dev/null 2>&1
+	fi
+fi" > $PKG/install/doinst.sh
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

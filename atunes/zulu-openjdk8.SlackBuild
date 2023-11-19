@@ -1,0 +1,86 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+
+PRGNAM=zulu-openjdk8
+VERSION=8.0.382
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+PKG=/tmp/MXNT/package-$PRGNAM
+LINK1=https://cdn.azul.com/zulu/bin/zulu8.72.0.17-ca-jdk8.0.382-linux_x64.tar.gz
+LINK2=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/atunes/zulu-scripts/zulu-openjdk8.csh
+LINK3=https://raw.githubusercontent.com/mxnt10/Slackware15-Reposity/master/atunes/zulu-scripts/zulu-openjdk8.sh
+
+set -e
+wget -c $LINK1 $LINK2 $LINK3
+rm -rf $PKG
+mkdir -p $PKG/{install,usr/{doc/$PRGNAM-$VERSION,lib64}}
+cd $PKG/usr/lib64
+tar xvf $CWD/zulu8.72.0.17-ca-jdk8.0.382-linux_x64.tar.gz
+mv zulu8.72.0.17-ca-jdk8.0.382-linux_x64 $PRGNAM
+ln -sf ${PRGNAM} zulu8.72.0.17-ca-jdk8.0.382-linux_x64
+
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+find $PKG/usr/lib64/$PRGNAM -type f -name "*.so" -exec chmod +x {} \; 2> /dev/null || true
+
+if [ "${CREATE_LIBJVM_SYMLINK:-yes}" = "yes" ] ; then
+  (
+    cd $PKG/usr/lib64
+    if [ -e $PRGNAM/jre/lib/amd64/server/libjvm.so ] ; then
+      ln -sf $PRGNAM/jre/lib/amd64/server/libjvm.so
+    fi
+  )
+fi
+
+mkdir -p ${PKG}/etc/profile.d
+for SCRIPT in ${PRGNAM}.sh ${PRGNAM}.csh ; do
+  cat ${CWD}/${SCRIPT} \
+    | sed -e "s;lib/${PRGNAM};lib64/${PRGNAM};" \
+    > ${PKG}/etc/profile.d/${SCRIPT}
+  chmod 755 ${PKG}/etc/profile.d/${SCRIPT}
+done
+
+for DOCFILE in ASSEMBLY_EXCEPTION LICENSE Welcome.html release DISCLAIMER THIRD_PARTY_README readme.txt ; do
+    cp -a ${PKG}/usr/lib64/${PRGNAM}/${DOCFILE} ${PKG}/usr/doc/${PRGNAM}-${VERSION}
+done
+
+echo "             |-----handy-ruler------------------------------------------------------|
+zulu-openjdk8: zulu-openjdk8 (Open Implementation of JDK)
+zulu-openjdk8:
+zulu-openjdk8: Zulu is a Java Development Kit (JDK), and a compliant implementation
+zulu-openjdk8: of the Java Standard Edition (SE) specification that contains all the
+zulu-openjdk8: Java components needed to build and run Java SE applications. Zulu
+zulu-openjdk8: has been verified by passing all tests in the Java SE 8 version of
+zulu-openjdk8: the OpenJDK Community Technology Compatibility Kit (TCK).
+zulu-openjdk8:
+zulu-openjdk8: https://www.azul.com/downloads/
+zulu-openjdk8:
+zulu-openjdk8:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $PKG
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0

@@ -1,0 +1,97 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=obs-vkcapture
+VERSION=1.4.5
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+if [ -z "$ARCH" ]; then
+  case "$( uname -m )" in
+    i?86) ARCH=i586 ;;
+    arm*) ARCH=arm ;;
+       *) ARCH=$( uname -m ) ;;
+  esac
+fi
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/nowrep/obs-vkcapture/archive/refs/tags/v1.4.5/obs-vkcapture-1.4.5.tar.gz
+
+if [ "$ARCH" = "i586" ]; then
+	SLKCFLAGS="-O2 -march=i586 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "i686" ]; then
+	SLKCFLAGS="-O2 -march=i686 -mtune=i686"
+	LIBDIRSUFFIX=""
+elif [ "$ARCH" = "aarch64" ]; then
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX="64"
+elif [ "$ARCH" = "x86_64" ]; then
+	SLKCFLAGS="-O2 -fPIC"
+	LIBDIRSUFFIX="64"
+else
+	SLKCFLAGS="-O2"
+	LIBDIRSUFFIX=""
+fi
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/install
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
+
+cmake \
+  -B build \
+  -DCMAKE_C_FLAGS:STRING="$SLKCFLAGS" \
+  -DCMAKE_CXX_FLAGS:STRING="$SLKCFLAGS" \
+  -DCMAKE_INSTALL_PREFIX=/usr \
+  -DCMAKE_INSTALL_LIBDIR=lib${LIBDIRSUFFIX} \
+  -DLIB_SUFFIX=${LIBDIRSUFFIX} \
+  -DMAN_INSTALL_DIR=/usr/man \
+  -DCMAKE_BUILD_TYPE=Release
+make $NUMJOBS -C build; make -C build install DESTDIR=$PKG
+
+find $PKG -print0 | xargs -0 file | grep -e "executable" -e "shared object" | grep ELF | cut -f 1 -d : | xargs strip --strip-unneeded 2> /dev/null || true
+
+echo "             |-----handy-ruler------------------------------------------------------|
+obs-vkcapture: obs-vkcapture (game capture in Vulkan and OpenGL)
+obs-vkcapture:
+obs-vkcapture: Open source software for game capture in Vulkan and OpenGL
+obs-vkcapture: in OBS-Studio.
+obs-vkcapture:
+obs-vkcapture: using x11: OBS_USE_EGL=1 obs
+obs-vkcapture:
+obs-vkcapture: Vulkan: obs-vkcapture game
+obs-vkcapture: OpenGL: obs-glcapture game
+obs-vkcapture:
+obs-vkcapture:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
