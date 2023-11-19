@@ -38,7 +38,7 @@ patch -p1 -i $CWD/fix_cmake.patch
 
 NUMJOBS=${NUMJOBS:-" -j$(expr $(nproc) + 1) "}
 
-cmake -B build --preset linux-x86_64 -DQT_VERSION=5 -DUSE_SYSTEM_ONNXRUNTIME=ON  -DUSE_SYSTEM_OPENCV=ON
+cmake -B build --preset linux-x86_64 -DUSE_SYSTEM_ONNXRUNTIME=ON -DUSE_SYSTEM_OPENCV=ON
 cmake --build build $NUMJOBS
 cmake --install build --prefix "$PKG/usr"
 

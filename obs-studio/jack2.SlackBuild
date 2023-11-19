@@ -5,7 +5,7 @@
 
 [ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
 
-PRGNAM=jack
+PRGNAM=jack2
 SRCNAM=jack2
 VERSION=1.9.22
 BUILD=${BUILD:-1}
@@ -74,18 +74,18 @@ cp -a README* *.rst $PKG/usr/doc/$PRGNAM-$VERSION
 chown root:audio $PKG/usr/bin/*
 chmod 0750 $PKG/usr/bin/*
 
-echo '    |-----handy-ruler------------------------------------------------------|
-jack: jack (Jack Sound Server)
-jack:
-jack: JACK is a low-latency audio server written mainly for Linux.
-jack: It can connect a number of different applications to an audio
-jack: device as well as allow them to share audio among themselves.
-jack:
-jack:
-jack:
-jack:
-jack:
-jack:' > $PKG/install/slack-desc
+echo '     |-----handy-ruler------------------------------------------------------|
+jack2: jack2 (Jack Sound Server)
+jack2:
+jack2: JACK is a low-latency audio server written mainly for Linux.
+jack2: It can connect a number of different applications to an audio
+jack2: device as well as allow them to share audio among themselves.
+jack2:
+jack2:
+jack2:
+jack2:
+jack2:
+jack2:' > $PKG/install/slack-desc
 
 cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
 chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
