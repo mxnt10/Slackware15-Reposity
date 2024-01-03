@@ -11,16 +11,30 @@ gtk4        N                                                | NONE
 libadwaita  https://gitlab.gnome.org/GNOME/libadwaita/-/tags | NONE
 pango       N                                                | NONE
 
+-------------
+android-tools  N                                          | MANUAL
+gtest          https://github.com/google/googletest/tags  | MET0
+protobuf3      N                                          | NONE
+
 ------------
 asciiquarium         https://robobunny.com/projects/asciiquarium/html/ | MET0
 perl-Curses          https://metacpan.org/pod/Curses                   | MET0
 perl-Term-Animation  https://metacpan.org/pod/Term::Animation          | MET0
+
+atunes         http://www.atunes.org/  | MET0
+zulu-openjdk8  N                       | MANUAL
 
 ----
 ccat  https://github.com/owenthereal/ccat/tags | MET0
 
 ------
 ckdeps  N | MAIN
+
+----------
+clementine          N                                             | MANUAL
+chromaprint         https://github.com/acoustid/chromaprint/tags  | MET0
+GST-PLUGINS-UGLY -
+PROTOBUF3 -
 
 ------
 clouddown  N | MAIN
@@ -115,7 +129,7 @@ nulloy            https://github.com/nulloy/nulloy/tags       | MET0
 gst-plugins-ugly  https://gstreamer.freedesktop.org/download/ | NONE
 
 ---------
-ocenaudio  https://www.ocenaudio.com/en/download                | MET0
+ocenaudio  https://www.ocenaudio.com/en/download                | NONE
 jack       https://github.com/jackaudio/jack2-releases/releases | MET0
 
 -----
