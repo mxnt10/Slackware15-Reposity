@@ -1,0 +1,69 @@
+#!/bin/sh
+
+# Copyright 2024 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+
+PRGNAM=junest
+VERSION=7.4.7
+ARCH=noarch
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://github.com/fsquillace/junest/archive/refs/tags/7.4.7.tar.gz
+
+set -e
+wget -c -O $PRGNAM-$VERSION.tar.gz $LINK
+rm -rf $TMP
+mkdir -p $PKG/{install,opt,usr/{bin,doc/$PRGNAM-$VERSION}}
+cd $TMP; tar xvf $CWD/$PRGNAM-$VERSION.tar.?z*
+cd $PRGNAM-$VERSION
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+rm -rf .git* .travis*
+cp -a *md LICENSE VERSION $PKG/usr/doc/$PRGNAM-$VERSION
+
+cd ..
+cp -R $PRGNAM-$VERSION $PKG/opt/junest
+
+cd $PKG
+
+ln -sf /opt/junest/bin/junest $PKG/usr/bin/junest
+ln -sf /opt/junest/bin/sudoj $PKG/usr/bin/sudoj
+
+echo "      |-----handy-ruler------------------------------------------------------|
+junest: junest (lightweight Arch Linux based distro)
+junest:
+junest: The lightweight Arch Linux based distro that runs, without
+junest: root privileges, on top of any other Linux distro.
+junest:
+junest: https://github.com/fsquillace/junest
+junest:
+junest:
+junest:
+junest:
+junest:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
