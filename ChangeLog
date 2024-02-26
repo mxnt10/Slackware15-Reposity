@@ -1,3 +1,9 @@
+# released - 2024-02-25
+- Modificações em slackbuilds-create.
+- Adicionado:
+    - epson-inkjet-printer-escpr.
+- Atualizado:
+    - libsystemd0.
 # released - 2024-01-03
 - Adicionado:
     - junest.

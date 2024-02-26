@@ -7,7 +7,7 @@
 [ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
 
 PRGNAM=libsystemd0
-VERSION=252.17-1~deb12u1
+VERSION=247.3-7+deb11u4
 ARCH=x86_64
 BUILD=${BUILD:-1}
 TAG=${TAG:-_mxnt}
@@ -18,8 +18,8 @@ TAG=${TAG:-_mxnt}
 
 CWD=$PWD
 PKG=/var/tmp/package-$PRGNAM
-LINK1=http://deb.debian.org/debian/pool/main/s/systemd/libsystemd0_252.17-1~deb12u1_amd64.deb
-LINK2=http://deb.debian.org/debian/pool/main/s/systemd/libsystemd-dev_252.17-1~deb12u1_amd64.deb
+LINK1=http://ftp.debian.org/debian/pool/main/s/systemd/libsystemd0_247.3-7+deb11u4_amd64.deb
+LINK2=http://ftp.debian.org/debian/pool/main/s/systemd/libsystemd-dev_247.3-7+deb11u4_amd64.deb
 
 set -e
 wget -c $LINK1 $LINK2

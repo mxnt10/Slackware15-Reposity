@@ -1,0 +1,66 @@
+#!/bin/sh
+
+# Copyright 2023 Mauricio Ferrari <m10ferrari1200@gmail.com>
+# All rights reserved.
+
+[ $UID != 0 ] && { echo -e "\nExecute como Root !\n"; exit 1; }
+[ "`uname -m`" != x86_64 ] && { echo -e "\n Not Support !\n"; exit 1; }
+[ "$ERRO" = 1 ] && exit 1
+
+PRGNAM=epson-inkjet-printer-escpr
+VERSION=1.8.4
+ARCH=x86_64
+BUILD=${BUILD:-1}
+TAG=${TAG:-_mxnt}
+
+[ -e "../../_PKGS" ] && { mkdir -p ../../_PKGS/$PRGNAM; chown -R 1000:users ../../_PKGS; cd ../../_PKGS/$PRGNAM; } || {
+    mkdir -p PKGS/$PRGNAM; chown -R 1000:users PKGS; cd PKGS/$PRGNAM
+}
+
+CWD=$PWD
+TMP=/tmp/MXNT
+PKG=$TMP/package-$PRGNAM
+LINK=https://download3.ebz.epson.net/dsc/f/03/00/15/57/21/e3cfbe59d0e6739340bbbbe891e9a22f31b6b8eb/epson-inkjet-printer-escpr_1.8.4-1_amd64.deb
+
+set -e
+wget -c $LINK
+rm -rf $TMP
+mkdir -p $PKG/{etc/cups/ppd/$PRGNAM,install,usr/lib64}
+cd $PKG; ar p $CWD/${PRGNAM}_${VERSION}*_amd64.deb data.tar.xz | tar xJv
+
+chown -R root:root .
+chmod -R u+w,go+r-w,a+X-s .
+
+cp opt/$PRGNAM/lib64/* $PKG/usr/lib64
+cd opt/$PRGNAM/ppds/Epson
+gzip -d *.gz
+mv *.ppd $PKG/etc/cups/ppd/$PRGNAM
+cd ../..; rm -rf ppds share
+
+echo "                          |-----handy-ruler------------------------------------------------------|
+epson-inkjet-printer-escpr: epson-inkjet-printer-escpr (Driver for Epson MF Inkjet Printers)
+epson-inkjet-printer-escpr:
+epson-inkjet-printer-escpr: This software is a filter program used with CUPS in Linux.
+epson-inkjet-printer-escpr: It enables high quality print with Seiko Epson Color Ink Jet Printers.
+epson-inkjet-printer-escpr: This package can be used for all EPSON ESC/P-R printers.
+epson-inkjet-printer-escpr: For a detailed list of supported printers, see:
+epson-inkjet-printer-escpr: http://download.ebz.epson.net/dsc/search/01/search/?OSC=LX
+epson-inkjet-printer-escpr:
+epson-inkjet-printer-escpr:
+epson-inkjet-printer-escpr: epson-inkjet-printer-escpr home: https://www.epson.com
+epson-inkjet-printer-escpr:" > $PKG/install/slack-desc
+
+cd $PKG; /sbin/makepkg -l y -c n $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+chown -R 1000:users $CWD/$PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz
+rm -rf $TMP
+
+cd $CWD
+[ ${TIME:-0} != 0 ] && TIME="-t $TIME" || TIME=
+if [ "${INST:-no}" = "yes" ]; then
+	OPTION=y
+else
+	read $TIME -p "O pacote já pode ser instalado? (y/n) (default=n)" OPTION
+fi
+case "$OPTION" in
+	y|Y) /sbin/upgradepkg --install-new --reinstall $PRGNAM-$VERSION-$ARCH-$BUILD$TAG.txz ;;
+esac; exit 0
