@@ -1,3 +1,12 @@
+# released - 2024-11-17
+- Adicionado:
+    - figlet.
+    - gimp.
+    - meson.
+    - toilet.
+- Removido:
+    - discord.
+    - freeoffice2021.
 # released - 2024-10-12
 - Removido:
     - notable.

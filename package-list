@@ -21,6 +21,7 @@ asciiquarium         https://robobunny.com/projects/asciiquarium/html/ | MET0
 perl-Curses          https://metacpan.org/pod/Curses                   | MET0
 perl-Term-Animation  https://metacpan.org/pod/Term::Animation          | MET0
 
+------
 atunes         http://www.atunes.org/  | MET0
 zulu-openjdk8  N                       | MANUAL
 
@@ -38,6 +39,9 @@ PROTOBUF3 -
 
 ------
 clouddown  N | MAIN
+
+-----
+cmake  N | MANUAL
 
 -------
 cmatrix  https://github.com/abishekvashok/cmatrix/tags | MET0
@@ -62,19 +66,20 @@ glfw3        https://www.glfw.org/                               | MET0
 libcpuid     https://github.com/anrieff/libcpuid/releases        | MET0
 libstatgrab  https://github.com/libstatgrab/libstatgrab/releases | MET0
 
--------
-discord  https://archlinux.org/packages/?name=discord | MET0
-
+-----------
 easymp3gain  N                                                                  | MANUAL
 aacgain      N                                                                  | MANUAL
 mp3gain      https://aur.archlinux.org/packages/mp3gain                         | MET0
 vorbisgain   https://pkgs.alpinelinux.org/package/edge/community/x86/vorbisgain | MET0
 
+--------------------------
+epson-inkjet-printer-escpr  N | MANUAL
+
+------
+figlet  N | MANUAL
+
 --------
 flareget  https://flareget.com/download | MET0
-
---------------
-freeoffice2021  N | MANUAL
 
 ------------
 frequencycpu  N | MAIN
@@ -100,7 +105,7 @@ xapp                  N                                                         
 yt-dlp                https://raw.githubusercontent.com/yt-dlp/yt-dlp/master/Changelog.md | MET0
 
 ---------
-iptvnator  https://github.com/4gray/iptvnator/tags | MET0
+isomaster  N | MANUAL
 
 -----
 kazam                    N                                                   | MANUAL
@@ -109,6 +114,9 @@ python3-xlib             https://github.com/python-xlib/python-xlib/releases | M
 
 -----------
 libsystemd0  N | MANUAL
+
+------
+lolcat  N | MANUAL
 
 ---------------
 mandriva-cursor  N | MAIN
@@ -121,16 +129,33 @@ mpv     https://github.com/mpv-player/mpv/tags | NONE
 libass  https://github.com/libass/libass/tags  | MET0
 LUA     -
 
--------
-notable  https://github.com/notable/notable/tags | MET0
+----------
+noto-emoji  N | MANUAL
 
 ------
 nulloy            https://github.com/nulloy/nulloy/tags       | MET0
 gst-plugins-ugly  https://gstreamer.freedesktop.org/download/ | NONE
 
+---------------------
+obs-backgroundremoval  N | MANUAL
+QT6                    -
+
+----------
+obs-studio  N | MANUAL
+openvpl     N | MANUAL
+JACK2       -
+QT6         -
+
+-------------
+obs-vkcapture  N | MANUAL
+
 ---------
 ocenaudio  https://www.ocenaudio.com/en/download                | NONE
-jack       https://github.com/jackaudio/jack2-releases/releases | MET0
+jack2      https://github.com/jackaudio/jack2-releases/releases | MET0
+
+---------
+opensonic  http://opensnc.sourceforge.net/home/download2.php | MET1
+allegro4   N                                                 | MANUAL
 
 -----
 p7zip   https://github.com/p7zip-project/p7zip/tags | MET0
@@ -139,9 +164,6 @@ WXGTK3  -
 -------
 photoqt  https://photoqt.org/                 | MET0
 pugixml  https://github.com/zeux/pugixml/tags | MET0
-
--------
-pycharm  N | MANUAL
 
 -----------
 qbittorrent           https://www.qbittorrent.org/news.php      | MET0
@@ -152,17 +174,27 @@ QMPlay2       https://github.com/zaps166/QMPlay2/releases             | MET0
 libsidplayfp  https://sourceforge.net/projects/sidplay-residfp/files/ | MET0
 LIBASS -
 
+---
+qt6                N | MANUAL
+double-conversion  N | MANUAL
+html5lib           N | MANUAL
+md4c               N | MANUAL
+nodejs             N | MANUAL
+
 ------
 refine  N | MAIN
 
 --
 sl  N | MANUAL
 
+---
+smc  N | MAIN
+
 -------
 spotify  N | MANUAL
 
---------
-telegram  https://github.com/telegramdesktop/tdesktop/tags | MET0
+------
+tiolet  N | MANUAL
 
 ------------
 transmageddon     N | MANUAL
@@ -175,9 +207,6 @@ aria2  https://github.com/aria2/aria2/releases        | MET0
 --------
 umplayer  N | MANUAL
 
-------
-vscode  https://github.com/microsoft/vscode/tags | MET0
-
 ---------
 xnconvert  https://www.xnview.com/en/xnconvert/ | MET0
 
@@ -188,20 +217,13 @@ yad  https://github.com/v1cont/yad/tags | MET0
 zenity  N | MANUAL
 
 
-allegro4                 N                                                                          | NONE
 flare-game               https://github.com/flareteam/flare-engine/tags                             | MET1
-opensonic                http://opensnc.sourceforge.net/home/download2.php                          | MET1
 quake2                   N                                                                          | MANUAL
-smc                      N                                                                          | MAIN
 libgme                   https://bitbucket.org/mpyne/game-music-emu/downloads/                      | MET1
-
 fortune-mod-br           N                                                                          | MANUAL
 fortune-mod              https://github.com/shlomif/fortune-mod/tags                                | NONE
 recode                   https://github.com/rrthomas/recode/tags                                    | MET1
-
 BeautifulSoup4           https://pypi.org/project/beautifulsoup4/                                   | MET2
-protonvpn-cli            https://github.com/ProtonVPN/linux-cli-community/tags                      | MET1
-protonvpn-gui            https://github.com/ProtonVPN/linux-gui/tags                                | MET1
 python3-ConfigParser     https://pypi.org/project/configparser/                                     | MET2
 python3-docopt           https://pypi.org/project/docopt/                                           | MET2
 python3-Jinja2           https://pypi.org/project/Jinja2/                                           | MET2
